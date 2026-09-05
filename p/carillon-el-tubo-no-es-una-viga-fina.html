@@ -1,0 +1,54 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El carillón: el tubo no es una viga fina</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>El carillón: el tubo no es una viga fina</h1>
+<p>Un carillón tubular no suena por el aire que lleva dentro. Suena porque el tubo se dobla. Golpeas y el metal flexiona en un modo libre-libre, con dos nodos a un 22,4 % de cada punta —de ahí el agujero para colgarlo—, y esa flexión es la nota.</p>
+<p>Todas las calculadoras de carillón que hay en la red usan la misma fórmula:</p>
+<p>``<code> f₁ = (4,7300)² / (2π L²) · √(E/ρ) · √(D² + d²)/4 </code>``</p>
+<p>Es Euler-Bernoulli: la viga fina de 1750. Supone que las secciones no se deforman por cortante y que no tienen inercia al girar. Para una viga de puente es exacta. Para un tubo de carillón —OD 18 mm, largo 457 mm, esbeltez L/r ≈ 76— no lo es. Y para los tubos gordos de las tablas publicadas, L/r ≈ 22, ya no es ni aproximada.</p>
+<p>Metí la física que falta (Timoshenko: cortante con el coeficiente de Cowper para sección hueca, más inercia rotatoria) en un FEM, y lo pasé por las <strong>588 filas de las tablas precalculadas de Lee Hite</strong> — diez diámetros de tubo EMT, de 0,706&quot; a 4,5&quot;, desde C1 hasta B5.</p>
+<h3>Lo que sale</h3>
+<p><strong>La fórmula reproduce las tablas publicadas perfectamente.</strong> Error mediano 0,058 %, máximo 0,233 %. Eso no es una validación: es la prueba de que Hite y yo hacemos la misma cuenta con las mismas constantes. Confirma la aritmética, no la física.</p>
+<p><strong>Y la cuenta está sesgada, siempre en el mismo sentido.</strong> Las 588 filas, sin una sola excepción, suenan <strong>más graves</strong> de lo que la tabla promete. Tiene que ser así: el cortante quita rigidez y la inercia rotatoria añade inercia, y ninguno de los dos puede subir una frecuencia. Lo que no era obvio es cuánto:</p>
+<p>| | corrección | |---|---| | mediana de las 588 filas | <strong>−17,4 cents</strong> | | la peor (tubo 4,5&quot;, nota más aguda) | <strong>−169,0 cents</strong> | | el tubo fino de carillón típico a C5 | <strong>−15,4 cents</strong> |</p>
+<p>En el tubo fino los −15,4 cents se reparten a medias: −7,7 de inercia rotatoria, −7,7 de cortante. No es un efecto exótico, son las dos mitades de lo mismo.</p>
+<h3>La parte que importa al que corta</h3>
+<p>Quince cents suena poco. Pero mira la escala de al lado:</p>
+<p>``` LISTA DE CORTE — carillón pentatónico sobre C5, tubo EMT ½&quot; (OD 17,93 / ID 15,80 mm)</p>
+<p>nota   f (Hz)   L fórmula   L corregido    dif    colgado   tolerancia ±5 c C5     523,3     456,9        454,8      −2,0     102,0        0,66 mm D5     587,3     431,2        429,0      −2,2      96,2        0,62 mm E5     659,3     407,0        404,7      −2,3      90,7        0,58 mm G5     784,0     373,2        370,7      −2,5      83,1        0,54 mm A5     880,0     352,3        349,6      −2,6      78,4        0,50 mm C6    1046,5     323,0        320,2      −2,9      71,8        0,46 mm ```</p>
+<p>La corrección es de 2 a 3 mm. <strong>La tolerancia de afinación es de medio milímetro.</strong> La corrección vale cuatro o cinco veces lo que el corte entero puede permitirse.</p>
+<p>Esa tolerancia sale de que f ∝ 1/L², o sea Δcents = −3462·ΔL/L. Es <em>relativa</em>, y de ahí una cosa que se lee al revés de la intuición: <strong>el tubo corto es el difícil</strong>. El C6 de 320 mm te da 0,46 mm de margen; el C5 de 455 mm te da 0,66. Cuanto más aguda la nota, menos milímetros de sierra tienes. Y como sólo puedes acortar, se corta largo y se lima — cada 0,1 mm son +1,1 cents en el C5 y +1,6 en el C6.</p>
+<h3>El error no es un desafine, es una escala mal hecha</h3>
+<p>Aquí está lo que hace que esto importe de verdad. La corrección crece con la frecuencia para un mismo tubo, así que <strong>no baja el carillón entero: le comprime la escala</strong>. Entre C4 y B5 (1,92 octavas) de una misma familia:</p>
+<p>``<code> OD (in)      C4         B5      diferencia 0,706     −13,5      −34,9        21,3 c 1,163     −16,1      −54,3        38,2 c 2,197     −27,9      −93,7        65,8 c 3,500     −40,2     −136,8        96,6 c 4,500     −51,2     −169,0       117,9 c </code>``</p>
+<p>Con tubo fino son 21 cents de compresión: la octava sale corta, la desafinación no se oye como &quot;está bajo&quot; sino como &quot;está raro&quot;. Con tubo gordo son 118 cents: una octava que mide un semitono menos de lo que debe.</p>
+<h3>Dos regalos sueltos</h3>
+<p><strong>El material casi no elige la nota.</strong> Mismo tubo, mismo largo, distinto metal:</p>
+<p>``<code> acero      √(E/ρ) = 5048 m/s     510,08 Hz      — aluminio   √(E/ρ) = 5052 m/s     510,45 Hz    +1,2 cents cobre      √(E/ρ) = 3614 m/s     365,14 Hz     −579 cents latón      √(E/ρ) = 3430 m/s     346,58 Hz     −669 cents </code>``</p>
+<p>El acero y el aluminio caen a <strong>1,2 cents</strong> el uno del otro. Es una coincidencia material preciosa: el aluminio tiene un tercio de la rigidez del acero y un tercio de la densidad, y la nota sólo ve el cociente. El cobre y el latón sí cambian de mundo: casi medio tono por debajo. Elegir aluminio en vez de acero cambia el timbre y la duración del sonido, no la altura.</p>
+<p><strong>La ley cuadrática no es una calculadora.</strong> Ajusté <code>cents = −a·(r/L)²</code>, un solo parámetro, a las 588 filas: R² = 0,9896, con residuos de hasta <strong>17,5 cents</strong>. Como intuición vale —la corrección va con el cuadrado de la gordura relativa— pero cortar con ella se equivoca por más de lo que se oye. El desarrollo tiene término siguiente y en los tubos gordos ya manda.</p>
+<h3>Lo que esto NO es</h3>
+<p>Comparé dos modelos, no un modelo contra una medida. Timoshenko lleva más física dentro que Euler-Bernoulli, y eso es un argumento razonable, no una prueba. Busqué medidas reales publicadas de tubos de carillón y lo único que encontré (238 Hz teórico contra 244 medido) venía sin dimensiones ni material.</p>
+<p>El test que cerraría el círculo lo dejo escrito porque es bonito y barato: <strong>las razones entre parciales cancelan E, ρ y L</strong>. Euler-Bernoulli dice f₂/f₁ = 2,75654 para cualquier tubo del universo. Timoshenko dice menos, y dice cuánto menos en función de r/L y de nada más. Con un carillón, un micrófono y una FFT se sabe cuál de los dos manda, sin medir el tubo ni saber de qué es.</p>
+<hr>
+<p>usarlo: convergencia de malla (0,08 cents), límite esbelto (converge a Euler-Bernoulli, error ∝ (r/L)²) y razón de modos (2,75660 contra 2,75654).*</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

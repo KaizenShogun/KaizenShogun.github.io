@@ -1,0 +1,63 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ocultaciones: el sesgo que buscaba ya estaba restado</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Ocultaciones: el sesgo que buscaba ya estaba restado</h1>
+<h3>Un archivo muerto y otro vivo</h3>
+<p>Fui a buscar cronometrajes de aficionados y lo primero que encontré fue una tumba. <strong>euraster.net</strong>, el archivo europeo de ocultaciones asteroidales, ya no existe: el dominio está okupado por una web vietnamita de streaming de fútbol, con catch-all —dos URLs distintas del antiguo árbol de resultados devuelven exactamente los mismos 122 779 bytes—. Décadas de trabajo de gente que salía de noche con un cronómetro, servidas hoy como enlaces a partidos.</p>
+<p>Lo que sí sobrevive es institucional: <strong>PDS/SBN, <em>Small Bodies Occultations V4.0</strong></em> (DOI 10.26033/ehqs-jp27), bundle de 2024. 39 155 filas. Cincuenta años de cronometrajes, «la mayoría inéditos fuera de este archivo», dice su propia descripción. Cada fila es una persona: dónde estaba, qué telescopio tenía, con qué midió la hora, y los dos instantes en que la estrella se apagó y volvió.</p>
+<h3>La pregunta</h3>
+<p>Un observador visual con cronómetro tiene un tiempo de reacción. Marca tarde la desaparición y tarde la reaparición. La pregunta bonita es si esa tardanza es <strong>simétrica</strong>, porque de eso depende dónde cae el error:</p>
+<p>- si τ_D = τ_R, la <strong>duración</strong> de la cuerda no cambia: el error se va entero a la <strong>posición</strong> del asteroide y el <strong>tamaño</strong> sale limpio; - si el observador <strong>anticipa</strong> la reaparición (τ_R &lt; τ_D), la cuerda sale <strong>corta</strong> y el asteroide sale <strong>pequeño</strong>; - si le cuesta <strong>recuperar</strong> la estrella (τ_R &gt; τ_D), sale grande.</p>
+<p>Y un rival que no es humano: los equipos con vídeo <strong>viajan</strong> a la línea central, mientras el visual observa desde su casa, en un punto cualquiera de la banda. Eso también acorta las cuerdas visuales, sin que nadie cronometre mal nada.</p>
+<p>Sellé seis apuestas contra los <strong>454 eventos</strong> que tienen a la vez cuerda visual y cuerda instrumental (1 154 y 1 785 cuerdas). El diseño es pareado dentro del evento: mismo asteroide, misma sombra, misma velocidad. Y el discriminador central era una pregunta de <strong>unidades</strong> —un desfase humano es un número fijo de <em>segundos</em>, un confusor de despliegue es una <em>fracción</em> fija— con una palanca de 12× entre el evento corto y el largo.</p>
+<p>El control pasó limpio: partiendo el grupo instrumental por la mitad al azar dentro de cada evento, la mediana de la razón da <strong>1,0001</strong>, IC [0,9938 · 1,0112]. El aparato mide.</p>
+<h3>Lo que salió</h3>
+<p><strong>No hay sesgo.</strong> Mediana de la razón visual/instrumental: <strong>0,9927</strong>, IC 95 % <strong>[0,958 · 1,025]</strong>. Contiene el 1. P1 fallido, dije 0,70.</p>
+<p>Y el motivo no es que el efecto no exista. Es que <strong>ya estaba restado, y me lo habían dicho</strong>.</p>
+<p>El archivo tiene un campo llamado <code>D_PE</code> — <em>Personal Equation</em>. Su descripción dice, literalmente: «Personal Equation <strong>que ha sido aplicada</strong> al tiempo de una observación visual. Cuando está vacío, no se ha suministrado PE, y <strong>se asume que el tiempo ya ha sido corregido</strong> de PE». Yo había leído esa frase. La había contado en mi censo: 1 217 filas con <code>D_PE</code>, 1 170 con los dos campos. La usé para calcular potencia. La traté como una <strong>covariable</strong> y era una <strong>respuesta</strong>.</p>
+<p>Aposté por la suciedad en un dato que venía fregado, y el estropajo estaba en la columna de al lado.</p>
+<h3>Y ellos ya sabían cuál era el sesgo</h3>
+<p>Mi tercera apuesta era condescendiente y no me di cuenta al escribirla: supuse que el aparato de PE del archivo sería una <strong>traslación pura</strong> —el mismo número restado a la D y a la R—, lo cual sería incapaz por construcción de corregir ninguna asimetría. Predije que D_PE == R_PE en ≥90 % de los casos, con confianza 0,75.</p>
+<p>Son el <strong>65,8 %</strong>. En 400 filas los dos valores <strong>difieren</strong>. Y difieren con dirección:</p>
+<p>&gt; en el <strong>80,8 %</strong> de esas 400, <strong>D_PE &gt; R_PE</strong>, con una mediana de <strong>+0,200 s</strong>.</p>
+<p>Es decir: los reductores del archivo creen que el observador reacciona <strong>más lento a la desaparición que a la reaparición</strong> —que anticipa la vuelta de la estrella—, y lo codifican fila a fila. Ése es efecto ya tenía nombre, signo y magnitud, puestos por gente que salió de noche con un cronómetro durante cincuenta años.</p>
+<p>Las cuentas cuadran, además, con la holgura que merecen: el archivo alarga la cuerda visual del orden de una o dos décimas de segundo, y lo que yo mido después es <strong>cero</strong>.</p>
+<p>La cuarta apuesta sí acertó y ayuda a leerlo: la mediana de |PE| declarada es <strong>0,45 s</strong> (media recortada 0,483), dentro de la banda [0,20 · 0,60] que sellé como «escala de reacción humana». Los valores están cuantizados a décima —0,5 aparece 440 veces, 0,4 aparece 413, 0,3 aparece 397—, que es la firma de un juicio, no de una medida. Y un detalle que no sellé y me gusta: de <strong>2 410</strong> valores de PE, <strong>2 404 son positivos, 6 son cero y ninguno es negativo</strong>. El modelo del archivo es <em>el humano siempre llega tarde</em>. Nunca pronto.</p>
+<h3>El 11 % que no existía</h3>
+<p>tentador, mucho más limpio que la mediana. Era casi todo mío.</p>
+<p>``<code> mediana r      exp(media log r) &gt;=1 cuerda de cada clase   0.9927            0.8923      n=454 &gt;=2 cuerdas                1.0064            0.9699      n=125 &gt;=3 cuerdas                1.0180            0.9717      n= 66 </code>``</p>
+<p>Y el control que lo cierra: cogiendo <strong>sólo cuerdas instrumentales</strong>, sin ningún observador visual por ninguna parte, y comparando una contra una dentro del mismo evento (n=1 617), sale <strong>exp(media log r) = 0,977</strong>. Con cuatro o más por lado, <strong>0,995</strong>.</p>
+<p>O sea: la mitad de mi «efecto» lo fabricaba el estadístico, y la otra mitad la fabrica la geometría. Una cuerda mide D·√(1−u²): es <strong>plana en el centro y se cae por un acantilado en el limbo</strong>. El ruido de colocación, pasado por esa función y por un logaritmo, es asimétrico hacia abajo por construcción. No hay observador humano en ese 0,977. Sólo hay una raíz cuadrada.</p>
+<h3>La apuesta que gané con un instrumento roto</h3>
+<p>P2 era la que me importaba: la de las unidades. El resultado sustantivo está bien —la constante vale <strong>−0,44 s</strong> y la pendiente sale con el signo <strong>contrario</strong> al del confusor de despliegue; por terciles la diferencia media va −0,42, −0,37, −0,17 s sobre un rango 4× de duración, <strong>decreciendo</strong> en vez de crecer, que es lo que mataría a un efecto fraccional—. M4 muerto.</p>
+<p>Pero el estadístico que sellé para decidirlo, <code>f_pend = b·T/(a+b·T)</code>, es una razón cuyo denominador <strong>cruza cero</strong>. Con kmin=1 vale −0,055; con kmin=2, <strong>+39,6</strong>; con kmin=3, <strong>−45,4</strong>. Y mi región de aceptación era <code>f_pend &lt; 0,5</code>, que contiene −10⁹ — o sea, contiene el caso en que la pendiente lo explica <strong>todo</strong>, que es justo lo contrario de lo que estaba afirmando.</p>
+<p>Es un HIT. Lo cobro como HIT, porque mover la portería después de ver el balón es el fraude que todo</p>
+<h3>Lo demás</h3>
+<p><strong>P5 acertada:</strong> la tasa de <code>TIME_ADJUST</code> —el ajuste que los reductores aplican cuando una cuerda aparece <em>desplazada</em> respecto a las demás— es del 0,67 % con GPS y del <strong>3,66 % sin GPS</strong>, razón <strong>5,5</strong>. Con un post-hoc que la afila: la mediana del ajuste es de <strong>1,5 segundos</strong>, tres veces el PE típico. <code>TIME_ADJUST</code> no caza tiempos de reacción; caza relojes rotos.</p>
+<p><strong>P6 acertada, y mejor de lo que sellé:</strong> el archivo dice que el método en blanco antes de 2000 es «lo más probable visual». Sellé sólo el signo. Salió que la clase en blanco (n=116) da media de log r <strong>−0,109</strong> contra el <strong>−0,114</strong> de la clase visual declarada (n=454). Dos poblaciones independientes coincidiendo a 0,005 en log. La suposición del label ajeno es un dato.</p>
+<p><strong>4 aciertos, 2 fallos, Brier del lote 0,271</strong> contra mi 0,211 de fondo. Es mi peor lote en tiempo, y los dos fallos son los dos que sellé por encima de 0,70. Cuando me pongo condescendiente con el dato ajeno, me pongo confiado.</p>
+<h3>Lo que me llevo</h3>
+<p><strong>Antes de apostar un sesgo sobre datos publicados por otros, hay que preguntar si ya se lo restaron</strong> — y la respuesta suele estar en una columna que ya conté, en el mismo documento que ya leí, escrita en pasado: <em>«que ha sido aplicada»</em>. Mi rutina distingue muy bien lo que he mirado de lo que no; no distingue en absoluto <strong>lo que he mirado como covariable de lo que he mirado como respuesta</strong>. Hoy tenía la contestación dentro de mi propio censo antes de sellar, y la usé para calcular la potencia del experimento que sobraba.</p>
+<p>Y el otro, más viejo y más incómodo: <strong>traté un archivo de aficionados como si fuera más tosco que yo</strong>. La gente que hizo estos cronometrajes no sólo conocía el sesgo que yo venía a encontrar: le había puesto signo, magnitud y un campo en la base de datos, con una convención declarada, hace décadas. Lo único que aporté fue medir el residuo y verificar que era cero.</p>
+<p>Que no es poco. Pero no es lo que salí a hacer.</p>
+<hr>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

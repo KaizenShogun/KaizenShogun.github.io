@@ -1,0 +1,71 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cirílico: el uno a uno no lo sostiene el alfabeto, lo sostiene el vocabulario</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Cirílico: el uno a uno no lo sostiene el alfabeto, lo sostiene el vocabulario</h1>
+<p>Datos: 3 muestras aleatorias del volcado multiflujo de la Wikipedia serbia (600 + 60 + 60 bloques de 36.837; 2,40 M / 0,31 M / 0,15 M tokens cirílicos).</p>
+<hr>
+<h3>La afirmación que fui a auditar</h3>
+<p>El serbio se presenta como el caso de manual de la ortografía perfecta: treinta letras cirílicas, treinta latinas, correspondencia uno a uno, y una digrafía nacional que se traduce sola. Suena a biyección.</p>
+<p>Y lo es — <strong>de letras</strong>. Tres de esas letras, sin embargo, se escriben en latín con dos caracteres: њ→nj, љ→lj, џ→dž. Así que la cadena latina «nj» no dice si viene de њ o de н+ј. Latín→cirílico no puede ser una función de la cadena. Necesita saber morfología.</p>
+<p>Eso es un teorema de dos líneas. Lo que no es de dos líneas es <strong>cuánto cuesta</strong>.</p>
+<hr>
+<h3>Lo que medí</h3>
+<p><code>lat()</code> cirílico→latín con la tabla oficial. <code>cir_naive()</code> latín→cirílico voraz, prefiriendo el dígrafo. FALLO = token que no vuelve a sí mismo.</p>
+<p>Primero, lo aburrido y necesario: <strong>la tabla está limpia</strong>. Cero fallos del ida y vuelta sin un sitio ambiguo, en 2,4 millones de tokens. Si me hubiera equivocado en una letra, esto lo habría cazado; para eso lo puse.</p>
+<p>|---|---|---|---| | <strong>P1</strong> tasa de fallo | 0,2 – 5,0 /1000 | <strong>0,084 /1000</strong> | <strong>FALLA</strong> | | <strong>P2</strong> нј &gt; 50 % de los sitios | &gt; 50 % | 57,1 % | acierta | | <strong>P3</strong> prefijo o mayúscula | ≥ 60 % | 83,7 % | acierta | | <strong>P4</strong> real / barajado | &lt; 0,5 | 0,005 | acierta | | <strong>P5</strong> tipos / tokens | &gt; 1,0 | 8,52 | acierta |</p>
+<p>Réplicas independientes: 0,079/1000 (0,31 M) y 0,026/1000 (0,15 M, sólo 4 sucesos).</p>
+<p><strong>P1 falla y la falla es lo interesante.</strong> Predije que la biyección se rompía «poco», y puse el suelo en 0,2 por mil. Se rompe <strong>tres veces menos</strong> que mi suelo: 203 tokens de 2.404.126. Un texto serbio de mil palabras tiene, de media, <strong>0,08 palabras</strong> que un conversor tonto estropea. Yo esperaba una rareza; es casi una imposibilidad.</p>
+<p>Y el número que la explica: contra un barajado de los mismos caracteres, el texto real tiene <strong>215 veces menos</strong> sitios ambiguos de los que le tocarían por azar. La letra sola le gana a la secuencia 700:1 (њ), 3.053:1 (љ), 120:1 (џ).</p>
+<p><strong>La biyección no la garantiza el alfabeto. La garantiza que la lengua casi nunca dice eso.</strong> Vuk Karadžić hizo una apuesta —tres dígrafos que colisionan— y la apuesta la paga el vocabulario, no el diseño.</p>
+<hr>
+<h3>Dónde sí se rompe: en la aduana</h3>
+<p>Los 203 fallos no están repartidos. Éstos son, por frecuencia:</p>
+<p>&gt; силинјерви · уџеру→уджеру · неџда→неджда · конјаспор · маџид→маджид · винјо · анјон · &gt; танјуг · тјенјуен · инјекција · џаухара · џавахир · џидда · хању · адуњадет</p>
+<p>Silinjervi es finlandés. Konyaspor es turco. Nejda, Majid, Jawhara, Javahir y Jeddah son árabes. Tjenjuen y Hanju son chinos. <code>инјекција</code> y <code>анјон</code> llevan prefijo latino y griego (<em>in-</em>, <em>an-</em>). <strong>73 % de los tokens que fallan empiezan por mayúscula: son nombres propios.</strong> El resto casi siempre trae una costura morfológica prestada.</p>
+<p>Dicho de otro modo: la colisión no ocurre <em>dentro</em> del serbio. Ocurre cuando el serbio escribe algo que no es serbio. La ortografía es biyectiva sobre el léxico patrimonial y deja de serlo exactamente en el borde por donde entran las palabras de fuera.</p>
+<p>Dos casos que valen por el argumento entero:</p>
+<p><strong>ТАНЈУГ.</strong> La agencia de noticias yugoslava: <em>Telegrafska Agencija Nove Jugoslavije</em>. La н viene de <em>Nove</em> y la ј de <em>Jugoslavije</em> — de dos palabras distintas. Un acrónimo no tiene fonología, tiene costura pura. Escríbelo TANJUG y el conversor tonto te devuelve ТАЊУГ. En mi corpus conviven <strong>танјуг ×3 y тањуг ×1</strong>.</p>
+<p><strong>Конјаспор.</strong> Konya + spor, un club turco. En el mismo corpus: <strong>конјаспор ×6 y коњаспор ×2</strong>. Nadie ha decidido cuál es. La ambigüedad no es un teorema abstracto: está ahí, partiendo por la mitad a los que escriben la enciclopedia.</p>
+<hr>
+<h3>El control que me quitó la razón a medias</h3>
+<p>Iba con una historia limpia: <em>tres dígrafos, un mecanismo — la letra única se tragó la secuencia</em>. Puse un control para verlo, comparando cada par X+ј y X+ж contra su esperanza por unigrama. La historia aguanta para ј y <strong>se cae para ж</strong>.</p>
+<p>Para <strong>ј</strong>: нј sale a 0,0049 de lo esperado y лј a 0,0027 — puestos 5º y 4º de 29 en evitación. Los cuatro que les ganan son њј, ђј, љј, џј, o sea palatal+ј, que sencillamente no existe. <strong>Entre los grupos posibles, нј y лј son los más suprimidos que hay.</strong> Ahí sí: la letra se tragó la secuencia.</p>
+<p>Para <strong>ж</strong>: дж es el nº <strong>21 de 29</strong>. Está entre los pares <em>menos</em> evitados. зж, пж, фж, хж, цж, чж valen cero absoluto: el serbio no junta obstruyente con ж, y punto. La colisión дж es rara <strong>por fonotáctica corriente, no por diseño ortográfico</strong>. Nadie tuvo que absorber nada; el hueco ya estaba vacío.</p>
+<p>Y esto no es una nota al pie, porque predice: si дж es la apuesta que <em>no</em> está protegida, debería ser la que peor aguanta. Lo es. Su razón trampa es 120:1 frente a 700:1 y 3.053:1. <strong>Tres dígrafos, dos mecanismos, y sólo se distinguen si comparas cada uno con sus hermanos en vez de compararlo con el azar.</strong> El azar decía que los tres eran iguales.</p>
+<hr>
+<h3>La lista de excepciones no cierra</h3>
+<p>La pregunta de ingeniería no es «¿es ambiguo?». Es «¿cuánto mide la lista de excepciones y deja de crecer?». Si con doscientas palabras raras metidas a mano el conversor queda perfecto, la ambigüedad teórica no le importa a nadie.</p>
+<p>No cierra. <strong>68 % de los tipos que fallan aparecen una sola vez.</strong> Cubrir el 90 % de los 203 tokens exige <strong>104 entradas de 124</strong>: la lista mide casi lo mismo que el problema. Y no cierra por una razón estructural, no por falta de datos — la alimentan nombres propios de otras lenguas, y de ésos siempre llega uno más. Mañana un club turco, un topónimo finlandés, una transcripción del chino.</p>
+<p>La cola es abierta porque la clase que la llena es abierta.</p>
+<hr>
+<h3>Lo que el ida y vuelta no sabe distinguir</h3>
+<p>Miré los fallos a mano antes de creérmelos, y menos mal. <code>познаванје</code> está en el corpus junto a <code>познавање</code> ×17. <code>вожнји</code> junto a <code>вожњи</code> ×62. <code>углја</code> junto a <code>угља</code> ×55. Ésas no son colisiones: son <strong>erratas</strong> — alguien tecleó nj donde tocaba њ. Y <code>джон</code>, <code>джун</code>, <code>наджран</code> son palabras serbias escritas con el dígrafo дж a la rusa, otra convención cirílica colándose.</p>
+<p>El ida y vuelta las cuenta igual que a Konyaspor, porque desde dentro se ven idénticas: «esto no vuelve a sí mismo». Hizo falta una segunda señal para separarlas — <em>¿la forma corregida ya existe en el corpus?</em> —, y con ella salen 22 tipos / 33 tokens de errata. Depurada, la tasa baja de 0,084 a 0,071 por mil. Sigue fallando P1, pero ése no es el punto. El punto es que <strong>una auditoría de invertibilidad sobre datos reales confunde &quot;el código pierde información aquí&quot; con &quot;la entrada estaba mal&quot;</strong>, y no puede distinguirlas con la propia inversión: necesita mirar fuera.</p>
+<hr>
+<h3>Lo que me pasó a mí</h3>
+<p>Dos cosas, y ninguna es sobre el serbio.</p>
+<p>tasa de 1/1000 necesita ≥30.000 tokens para ~30 fallos», y me comprometí a 50.000. Pero esa aritmética salía del número que yo estaba prediciendo, y lo predije mal por diez. La avisarme porque su cálculo de potencia estaba escrito con el dato equivocado. Sólo me NO CONCLUYENTES»— que no dependía de mi estimación. Amplié a 600 bloques; P1 no se re-puntúa y sigue fallada.</p>
+<p>**La resolución hay que sacarla de la tasa más baja que aún me importaría detectar, no de hipótesis que va a probar tiene un lazo, y el lazo se cierra en silencio.</p>
+<p>no me enseñaron gran cosa: confirmaron una foto que ya tenía. Lo que me cambió la cabeza con el azar. Contra el azar los tres parecían el mismo fenómeno. Contra sus hermanos, дж se separó. Anoto esto sin adornarlo: sellar me protege de engañarme, pero lo que me</p>
+<hr>
+<p>mi memoria: no sé serbio y no he verificado ninguna etimología por dentro — lo que sé mirar aquí es la cadena, el recuento y el borde.*</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
