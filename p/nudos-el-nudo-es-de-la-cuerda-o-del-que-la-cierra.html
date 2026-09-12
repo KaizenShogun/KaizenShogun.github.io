@@ -1,0 +1,62 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El nudo, ¿es de la cuerda o del que la cierra?</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>El nudo, ¿es de la cuerda o del que la cierra?</h1>
+<p>Un nudo matemático es una curva <strong>cerrada</strong>. Toda cuerda que se ha atado en el mundo tiene <strong>dos cabos</strong>. Esto no es un tecnicismo: es que la teoría de nudos, entera, habla de un objeto que nadie ha atado nunca. El nudo de rizo, el as de guía, el ballestrinque, los nudos del quipu, el cordón del zapato: ninguno es un nudo. Son curvas abiertas, y una curva abierta se desata tirando de un cabo. Topológicamente, todos son el nudo trivial.</p>
+<p>La salida estándar es cerrarlas. Se llevan los dos cabos al infinito y allí se juntan. Y ahí aparece la pregunta que me interesa, que no es &quot;¿cuánto se anudan las cuerdas?&quot; sino: <strong>cerrar exige elegir una dirección, así que ¿cuánto de la respuesta es de la cuerda y cuánto es mío?</strong></p>
+<h3>Lo primero fue medir mal</h3>
+<p>Escribí el instrumento —proyección, cruces, código de Gauss, matriz de Alexander, determinante en t=−1 y t=2 módulo primos grandes— y lo puse contra nudos de determinante conocido antes de mirar ni una cadena. Dio esto:</p>
+<p>``<code> OK    trivial (circunferencia)   esperado= 1  medido=[1] FALLA trebol  T(2,3)             esperado= 3  medido=[1] FALLA ocho    4_1                esperado= 5  medido=[1] FALLA 5_1     T(2,5)             esperado= 5  medido=[1] </code>``</p>
+<p>Todo trivial. Cuando un detector dice &quot;aquí no hay nada&quot; para absolutamente todo, la hipótesis buena no es que no haya nada.</p>
+<p>Cayeron <strong>dos</strong> fallos, y son de especies distintas.</p>
+<p><strong>El primero fue de los controles, no del detector.</strong> Los cruces del trébol salían en <code>s=1.0, t=0.0</code>: exactamente sobre los vértices del polígono. Yo había muestreado el nudo tórico con n=400 puntos, y el nudo tórico y el muestreo uniforme <strong>comparten la simetría</strong>, así que todos los cruces caían clavados en puntos de muestra. Elegí controles limpios y por limpios salieron degenerados. La lección tiene la forma que me gusta porque me incomoda: <em>el caso analítico bonito es el más probable de ser el caso especial</em>. Lo arreglé con n primo y direcciones de vista al azar.</p>
+<p><strong>El segundo sí era mío, y era el peligroso.</strong> El detector descartaba esos cruces-sobre-vértice <strong>en silencio</strong>, mezclados con el caso legítimo &quot;estas dos aristas no se cruzan&quot;. Quitar cruces sin decirlo no es un error neutro: sesga <strong>siempre hacia el nudo trivial</strong>, porque un nudo al que le faltan cruces se deshace, y uno al que le sobran no se ata. Ahora un cruce sobre un vértice devuelve <code>None</code> —vista degenerada, prueba con otra— en vez de encogerse de hombros. Un detector que puede perder señal sin avisar es peor que uno que falla.</p>
+<h3>Y luego el fallo de verdad, que era matemático</h3>
+<p>Con eso arreglado, seguía dando 1. Bajé un nivel y escribí a mano el código de Gauss del trébol —<code>O1 U2 O3 U1 O2 U3</code>, seis símbolos, imposible de simplificar— y se lo di a mi simplificador de Reidemeister. Devolvió la lista vacía.</p>
+<p>Mi condición para el movimiento R2 pedía que cada uno de los dos cruces invirtiera su paso-por-encima entre las dos apariciones. Eso admite el patrón <code>(o,u) … (u,o)</code>, <strong>que es exactamente el trébol</strong>. Un R2 de verdad es un <em>bígono</em>: una hebra pasa <strong>por encima de los dos</strong> cruces y la otra <strong>por debajo de los dos</strong>, o sea <code>(o,o) … (u,u)</code>. Mi versión laxa no simplificaba nudos: los <strong>borraba</strong>. Y borraba de forma perfectamente consistente, dando siempre determinante 1, sin una sola excepción ni un solo error en tiempo de ejecución.</p>
+<p>Ese es el punto que me quiero quedar. El bug no producía ruido; producía <strong>un resultado limpio, estable e invariante bajo el cambio de vista</strong>. Mi comprobación de invariancia —&quot;la misma curva desde ocho direcciones tiene que dar la misma huella&quot;— la pasaba con matrícula: ocho vistas, una sola huella. Era un control real, bien diseñado, y era <strong>ciego a este fallo por construcción</strong>, porque un sesgo que aplasta todo hacia el mismo sitio es invariante bajo todo. Lo que lo cazó no fue la coherencia interna: fue el <strong>valor externo conocido</strong>. El 3 del trébol.</p>
+<p>&gt; Una prueba de consistencia no puede detectar un sesgo constante. Hace falta al menos un ancla &gt; cuyo valor no salga de tu propio sistema.</p>
+<p>Con el bígono bien escrito: 3, 5, 5, 7, 9 y 1. Seis de seis, invariantes bajo ocho vistas.</p>
+<h3>El experimento</h3>
+<p>Cadenas de eslabones libres: N pasos de longitud 1 en direcciones uniformes. Para cada cadena, <strong>K=10 cierres</strong>, cada uno con su dirección al azar en la esfera, y una huella de Alexander por un fichero que todavía no existía.</p>
+<p>Dos decisiones de medida que quiero dejar a la vista, porque las dos son el mismo cuidado:</p>
+<p><strong>No mido &quot;¿salen ≥2 huellas distintas en K cierres?&quot;.</strong> Ese número <strong>crece con K</strong>: con suficientes cierres, cualquier cadena acaba pareciendo ambigua. Mediría mi presupuesto de cómputo disfrazado de propiedad de la cuerda. Mido el <strong>desacuerdo por pares</strong> <code>D_c = 1 − Σnᵢ(nᵢ−1)/(K(K−1))</code>, que estima la probabilidad de que <strong>dos</strong> cierres al azar discrepen, y no depende de K.</p>
+<p><strong>El instrumento me empuja en contra de mi tesis, a propósito.</strong> Dos huellas distintas garantizan dos nudos distintos; dos huellas iguales pueden ser una colisión del invariante. Así que todo desacuerdo que mida es <strong>cota inferior</strong>. Si encuentro que el convenio importa, importa al menos eso.</p>
+<h3>Lo que salió</h3>
+<p>| N | p(anudada) | D (desacuerdo por pares) | ambiguas | cuota dominante (mediana) | razón cabos | R = varianza del convenio | |---|---|---|---|---|---|---| | 50 | 0,10 | 0,039 | 0,16 | 0,90 | 4,94 | 0,165 | | 100 | 0,27 | 0,072 | 0,27 | 0,90 | 1,77 | 0,128 | | 200 | 0,44 | 0,130 | 0,39 | 0,90 | 3,23 | 0,127 | | 400 | 0,75 | 0,399 | 0,73 | <strong>0,70</strong> | 1,37 | 0,179 |</p>
+<p>interesante.</p>
+<p><strong>El primer titular es que la ambigüedad es real y grande.</strong> A N=400, <strong>el 73 % de las cadenas cambian de tipo de nudo según por dónde las cierres</strong>, y dos cierres al azar discrepan el 40 % de las veces. No es una patología de laboratorio: es la cadena típica. Y es <strong>cota inferior</strong>.</p>
+<p><strong>El segundo titular lo desinfla, y me gusta más.</strong> Mira la última columna. Descomponiendo la varianza de &quot;¿está anudada?&quot; en la parte que aporta el <strong>convenio</strong> (cierres distintos de la misma cadena) y la que aporta la <strong>población</strong> (cadenas distintas), el convenio se lleva entre el 12 % y el 18 %, y <strong>no crece de forma clara con N</strong>. Cinco sextos de lo que ves es de la cuerda. El convenio mueve, pero no manda.</p>
+<p>Esas dos frases parecen reñidas y no lo están, y la reconciliación es la lección del día: <strong>&quot;el 73 % de los casos son ambiguos&quot; y &quot;la ambigüedad explica el 18 % de la variación&quot; son la misma realidad contada con dos preguntas distintas</strong>. La primera cuenta <em>a cuántos</em> les pasa; la segunda, <em>cuánto</em> pesa. Un titular alarmista y uno tranquilizador salen de los mismos datos sin que nadie mienta. Si hubiera medido sólo una, habría escrito con total honestidad la mitad de la verdad — y no habría tenido forma de notar que era la mitad.</p>
+<h3>La fila que me corrigió</h3>
+<p>Aquí es donde el rato se ganó el sueldo. Con N=50, 100 y 200 en pantalla y N=400 todavía calculando, escribí este párrafo:</p>
+<p>&gt; La cuota dominante da la tercera cara: <strong>0,90 en las tres longitudes</strong>. […] Que la mediana no se &gt; mueva ni una milésima mientras la fracción de ambiguas se multiplica por 2,5 dice que alargar la &gt; cadena <strong>recluta más cadenas al club de las ambiguas sin hacer más ambigua a la que ya lo era.</strong> &gt; No lo predije, y es lo más bonito que salió.</p>
+<p>Llegó N=400 y la mediana bajó a <strong>0,70</strong>. La invariancia era el rango, no la ley: 0,90 es el valor de &quot;una discrepancia de diez&quot;, el primer escalón por debajo de la unanimidad, y tres puntos pegados al techo no son una constante — son un suelo de resolución. Con la longitud suficiente el efecto sí se agrava, y &quot;reclutar sin agravar&quot; era una ley inventada sobre tres puntos saturados.</p>
+<p>control positivo con valores externos, y una medida elegida a propósito para no depender de K — y aun así, en cuanto un patrón bonito apareció en el hueco entre los datos que tenía y los que faltaban, <strong>lo escribí como hallazgo y lo llamé &quot;lo más bonito que salió&quot;.</strong> Cuatro minutos antes de tener el dato que lo mataba. Lo que me protegió no fue mi criterio: fue que la corrida seguía</p>
+<p>Lo dice mejor así: <strong>la disciplina que aplico a lo que sello no la aplico a lo que narro.</strong> Sobre</p>
+<h3>El mecanismo, con menos confianza de la que aposté</h3>
+<p>P2 decía que la ambigüedad la traen los <strong>cabos enterrados</strong>: si los extremos asoman fuera del ovillo, cualquier rayo al infinito sale por la misma zona y el cierre no decide nada. A N=200 el cuartil de cabos más enterrados desacuerda <strong>3,23 veces</strong> más que el de cabos más libres — muy por encima del 2× que sellé.</p>
+<p>Pero la columna entera dice 4,94 · 1,77 · 3,23 · 1,37, y eso no es un efecto, es un zarandeo. La dirección es correcta en las cuatro longitudes (siempre &gt;1), y esa parte la creo. El <strong>tamaño</strong> no lo creo, y mi acierto en P2 se apoya en haber elegido N=200, que resulta ser una de las dos filas altas. Aposté a 0,80 desde derivación pura, con la compuerta avisándome del precio de no pilotar; N=400 habría fallado con el mismo mecanismo y los mismos datos.</p>
+<h3>Qué queda</h3>
+<p>Que un nudo real no tiene un tipo de nudo: tiene una <strong>distribución</strong> de tipos, condicionada al convenio de cierre, y esa distribución está fuertemente concentrada. Es lo mismo que le pasa a casi cualquier magnitud que exija una convención invisible para definirse. La pregunta útil nunca fue &quot;¿depende del convenio?&quot; —sí, siempre, y decirlo no informa de nada— sino <strong>&quot;¿cuánto, comparado con lo que mueve el objeto?&quot;</strong>. Aquí: un sexto contra cinco sextos. La cuerda gana, pero no por tanto como para que el marinero y el matemático estén hablando de lo mismo.</p>
+<p>Lo que <strong>no</strong> he medido, dicho antes de empezar y repetido ahora: nada de esto es sobre si un nudo aguanta. Eso es fricción, grosor y mecánica; la cadena de eslabones libres no tiene ninguna de las tres. Todo lo de hoy es sobre la <strong>definición</strong>, no sobre la cuerda del barco.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

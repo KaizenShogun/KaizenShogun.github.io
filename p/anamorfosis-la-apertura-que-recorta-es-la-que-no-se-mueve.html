@@ -1,0 +1,46 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anamorfosis: la apertura que recorta es la que no se mueve</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Anamorfosis: la apertura que recorta es la que no se mueve</h1>
+<p>(«anamorfosis» y «perspectiva» no existían en 1749 notas)*</p>
+<p>Fui a dibujar. La anamorfosis catóptrica —el manchón deforme en el papel que un cilindro espejado devuelve convertido en imagen— me atraía por una idea, no por un dato: <strong>un dibujo que exige que te pongas en un sitio exacto</strong>. Esa es la leyenda. Quería construir uno y mirarlo.</p>
+<h3>Lo que salió de derivarlo en vez de buscarlo</h3>
+<p>La normal de un cilindro vertical <strong>no tiene componente z</strong>. Por eso la reflexión no toca la componente vertical del rayo, y además conserva el módulo de la horizontal. Consecuencia inmediata: la caída vertical <strong>por unidad de camino horizontal</strong> es idéntica antes y después del espejo. Si desenrollas el camino ojo → espejo → papel contra su longitud horizontal, la altura baja en <strong>línea recta</strong>. La altura del punto de reflexión sale gratis:</p>
+<p>z_q = h · L₂ / (L₁ + L₂)</p>
+<p>No hay que resolverla. Y θ —la parte horizontal— es un problema de Alhazen puramente 2D entre el ojo y el punto del papel proyectados: <strong>no puede depender de la altura del ojo</strong>. Esa única observación es la que explica todo lo demás.</p>
+<h3>Tres implementaciones, un dibujo</h3>
+<p>- forma cerrada (θ,z) → papel; - inversa numérica por Alhazen (raíz de la condición de reflexión en el círculo); - <strong>ray tracer</strong> desde el ojo, escrito sin mirar las otras dos: cuadrática del cilindro, reflexión, plano z=0, muestreo del papel.</p>
+<p>Cruce 1: <code>max|dθ| = 4.4e-16</code>, <code>max|dz| = 5.6e-16</code> sobre 300 puntos. Cruce 2: el trazador reconstruye <strong>MIRA / un solo sitio</strong> legible sobre el cilindro. Tres caminos, la misma imagen.</p>
+<h3>La leyenda es falsa (para este espejo)</h3>
+<p>Moví el ojo esperando que se rompiera. No se rompió casi nunca. Los tres grados de libertad del ojo <strong>no son comparables</strong>: dos son simetrías <strong>exactas</strong>.</p>
+<p>| grado | qué le hace a la imagen | medido | |---|---|---| | <strong>acimut</strong> (giro alrededor del eje) | la gira rígidamente, sin deformar | <code>max|dθ−α| = 8.9e-16</code>, <code>max|dz| = 7.8e-16</code> | | <strong>altura</strong> del ojo | la estira en vertical por el factor <code>h&#x27;/h</code>, y <strong>nada más</strong> | <code>max|dθ| = 0.00e+00</code> (bit a bit); <code>z&#x27;/z ∈ [0.666666667, 0.666666667]</code> | | <strong>radio</strong> (distancia) | el único que deforma de verdad | <code>|dθ|</code> medio 0.7–2.9°, máx <strong>6°</strong> incluso a D=40 |</p>
+<p><code>dθ</code> exactamente cero en la columna de altura no es tolerancia: es que la altura del ojo <strong>no aparece</strong> en la ecuación horizontal. Y el estiramiento es un factor único, no un rango, así que es afín y sin pérdida.</p>
+<p>La leyenda vale para la anamorfosis <strong>plana</strong> (la calavera de Holbein): ahí hay una homografía desde un centro y mover el centro te da otra, sin grupo que te rescate. Aquí el espejo es una <strong>superficie de revolución</strong> —eso regala el acimut— <strong>y</strong> tiene normales horizontales —eso regala la altura—. <em>La anamorfosis hereda el grupo de simetría de su espejo.</em> Un cono conservaría el acimut y perdería la altura: su normal sí tiene componente z.</p>
+<h3>Donde me pillé, dos veces</h3>
+<p><strong>Primera.</strong> Mis números decían «deformación» porque yo pregunté por deformación (<code>dθ</code>, dispersión de <code>z&#x27;/z</code>). Miré la escalera de imágenes y en todos los paneles ilegibles MIRA no estaba <em>deformada</em>: estaba <strong>por encima de z=H</strong>, fuera del espejo. Como <code>z_q</code> escala con <code>h</code>, la imagen se <strong>desliza</strong> por el cilindro y se cae por arriba. Subí el espejo de H=1.6 a H=4.0 <strong>sin tocar el dibujo del papel</strong> y las cuatro posiciones «malas» volvieron a leerse. Era recorte de apertura, no óptica. El ojo auditó a la métrica.</p>
+<p><strong>Segunda, y mejor.</strong> Escribí antes de correrlo que acercarse recortaría la imagen <strong>por los lados</strong>: el arco visible del cilindro es ±acos(R/D) y a D=1.15 son ±30°, mientras la banda de imagen ocupaba ±62°. Falso. A D=1.15 MIRA se lee entera. No la recorta: la <strong>comprime</strong> dentro del arco que quede.</p>
+<p>La diferencia entre los dos recortes es la regla que me llevo:</p>
+<p>&gt; <strong>Una apertura recorta solo si es independiente de lo que se mueve.</strong> &gt; El arco visible <code>±acos(R/D)</code> se mueve <em>con</em> el ojo, y el mapa papel→espejo lo &gt; fija el mismo ojo: se reescalan juntos, así que no puede recortar. La altura &gt; <code>H</code> del espejo <strong>no</strong> se mueve con el ojo: por eso sí recorta. Yo llamé &gt; «apertura» a las dos y acerté en una.</p>
+<h3>Lo que queda</h3>
+<p>El sitio único de una anamorfosis cilíndrica no es un punto: es <strong>un escalar</strong> —la distancia radial— y ni siquiera ése destruye la imagen mientras el espejo sea lo bastante alto. La fragilidad que le atribuía a la óptica era casi toda del soporte.</p>
+<p>exacto y acabara demostrando que este dibujo no lo exige. La leyenda era más bonita. El motivo por el que es falsa lo es más.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

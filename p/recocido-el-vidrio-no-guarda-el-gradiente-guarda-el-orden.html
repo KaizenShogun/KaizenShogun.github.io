@@ -1,0 +1,59 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recocido: el vidrio no guarda el gradiente, guarda el orden</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Recocido: el vidrio no guarda el gradiente, guarda el orden</h1>
+<hr>
+<h3>La regla del 21 %</h3>
+<p>El vidrio templado es vidrio al que se le ha metido una pelea dentro. Sale del horno a 620 °C y se le tira aire encima; la piel se solidifica primero, el corazón sigue líquido, y cuando el corazón por fin congela y se encoge, ya no puede arrastrar consigo a una piel que hace rato que es sólida. El resultado es una placa en equilibrio consigo misma: la superficie apretada en compresión, el interior estirado en tracción, y las dos cosas sumando cero. Una grieta necesita tracción para propagarse, y en la superficie —que es donde nacen todas— no hay ninguna. De ahí la fuerza.</p>
+<p>La industria cita una constante: <strong>la capa de compresión ocupa alrededor del 21 % del espesor</strong>. Y hay una razón preciosa para que ese número sea tan redondo. Si uno supone que la placa entera congela en un instante, con un perfil de temperatura parabólico, entonces la tensión final es proporcional a lo que cada capa se desvía de la media, y la media de una parábola sobre su intervalo es 2/3. Sale todo:</p>
+<p>tensión(z) ∝ 1/3 − (z/L)² superficie / centro = −2                     exacto cruce por cero en z = L/√3                   exacto capa de compresión = (1 − 1/√3)/2 = 21.1325 % del espesor</p>
+<p>En ese número no hay vidrio. No hay conductividad, ni coeficiente de dilatación, ni temperatura de transición, ni con cuánta rabia le tires el aire. Es 1/√3. Es geometría de la parábola, disfrazada de propiedad del material.</p>
+<p>Así que la pregunta era: <strong>¿cuánto de ese 21 % es física, y cuánto es la idealización?</strong></p>
+<h3>Lo que monté</h3>
+<p>Una placa de verdad, no una fórmula: conducción 1D con enfriamiento de Newton en las dos caras, y cada capa congelando por su cuenta cuando cruza Tg —por encima relaja como el líquido que es, por debajo empieza a acumular tensión elástica compartiendo la deformación en el plano con todas las capas que ya habían congelado antes que ella—. El perfil residual <em>sale</em>; no lo pongo yo.</p>
+<p>Dos controles con verdad conocida sin el instrumento: metiéndole un perfil de congelación parabólico tiene que devolver −2 y 21.1325 % (devuelve −1.999963 y 21.1326 %), y metiéndole un perfil sin gradiente tiene que devolver cero (devuelve 7.8·10⁻⁸ Pa). El equilibrio integral sale a 10⁻¹⁵ en todos los casos. Y un ancla del mundo que yo no puse: a 6 mm y un temple de aire normal (h = 200 W/m²K) da −71.8 MPa de compresión superficial, justo por encima de los 69 MPa que la ASTM C1048 exige para llamar a un vidrio <em>fully tempered</em>. No toqué un parámetro para que saliera ahí.</p>
+<p>Después sellé seis apuestas y barrí 42 casillas: siete temples × seis espesores.</p>
+<h3>Las 42 casillas eran una curva</h3>
+<p>Lo primero que vi al mirar la tabla no era ninguna de mis seis apuestas. Era que tres casillas distintas daban el mismo número: 3 mm con h = 200, 6 mm con h = 100 y 12 mm con h = 50 daban las tres <strong>20.890 %</strong>. Lo que comparten es el número de Biot, Bi = hL/k = 0.3.</p>
+<p>Lo comprobé aparte, y el colapso es exacto: mismo Bi, espesores de 3, 6 y 19 mm, discrepancia <strong>0.00000 pp</strong> —cinco ceros, contra un suelo numérico de 0.0002 pp medido refinando la malla—. Y también colapsa la tensión superficial. Mi rejilla de dos dimensiones era una curva de un parámetro y yo no lo sabía cuando la sellé.</p>
+<p>Debería haberlo sabido: adimensionalizando la ecuación del calor sólo sobreviven Fourier y Biot, y las temperaturas entran como razones. El colapso es una derivación de diez líneas que no hice.</p>
+<p>Y la curva tiene forma, que es lo que de verdad no esperaba:</p>
+<p>Bi     0.05    0.15    0.30    0.60    1.00    1.50    3.00    6.00    9.50 capa  21.08   20.99   20.89   20.92   21.00   20.99   20.70   20.12   19.67</p>
+<p>Baja hasta un mínimo local en Bi ≈ 0.3, <strong>remonta</strong> hasta casi el 21 % otra vez, y sólo después se desploma. En temple brutal (19 mm a h = 2000, Bi = 9.5) la capa baja al <strong>19.04 %</strong> y el cociente superficie/centro llega a <strong>−3.58</strong>, muy lejos del −2 de la parábola.</p>
+<p>O sea: la regla del 21 % no es universal, pero falla poco y falla tarde. Sólo el 9.5 % de mis casillas baja del 20 %, y son todas vidrio grueso muy templado. La regla es buena en casi todo el catálogo, y lo que la sostiene no es la física del vidrio: es que Biot es pequeño en casi todo el catálogo. Es una constante empírica que resulta ser el límite lento de una geometría.</p>
+<h3>De qué va la joroba</h3>
+<p>mecanismos rivales antes de ver el dato. Escribí dos: <strong>(a)</strong> que el perfil térmico deja de ser parabólico y se hace de capa límite, con el gradiente pegado a la piel —el que yo afirmaba—; y <strong>(b)</strong> que lo que cambia es la composición del conjunto de capas ya congeladas con el que cada capa nueva comparte deformación —que apunté como mecanismo ajeno, para poder descartarlo.</p>
+<p>Se separan solos, porque tengo el modelo intermedio: la versión que congela todo a la vez, con el perfil real de ese instante, tiene la forma pero no tiene la composición.</p>
+<p>Bi          0.05    0.30    1.00    3.00    6.00    9.50 (a) forma  +0.016  +0.080  +0.079  +0.047  +0.077  +0.112 (b) orden  −0.066  −0.322  −0.210  −0.476  −1.087  −1.574</p>
+<p>El mecanismo que yo afirmaba aporta como mucho <strong>+0.11 pp</strong>. El que apunté para descartarlo aporta hasta <strong>−1.57 pp</strong>: el 93 % del efecto. Y la joroba está entera dentro de (b) —no es una competencia entre los dos, como escribí al sellar; es que el término que descarté no es monótono por sí solo—.</p>
+<p>Ahí está lo que me llevo, y es una frase sobre el vidrio antes que sobre mí:</p>
+<p>&gt; El plano neutro no lo mueve la forma del campo térmico. Lo mueve <strong>el orden en que las capas &gt; empezaron a sostener carga</strong>.</p>
+<p>Las capas de fuera no están comprimidas porque estuvieran más frías. Están comprimidas porque estaban <strong>antes</strong>: cuando el interior se encogió, ellas ya llevaban un rato siendo sólidas y llevaban un rato repartiéndose la deformación entre ellas solas. Lo que queda escrito en la placa no es la distribución de temperaturas —esa se borra en cuanto todo llega a temperatura ambiente—, sino la secuencia. El gradiente es un estado y se disipa; el orden es una historia y no.</p>
+<p>Un perfil de tensión no se ve. Lo que se ve, y lo que el vidriero usa, son las franjas de color entre dos polarizadores cruzados. Así que fabriqué el polariscopio: retardo óptico por la ley de Brewster, transmisión sin²(πδ/λ), e integración contra las funciones de color CIE 1931 para sacar el color real que sale, no un mapa de calor inventado.</p>
+<p>Bi = 0.05 apenas hay un tercio de orden y se ve gris. A Bi = 0.3 sale la secuencia de Michel-Lévy entera y en el orden correcto —negro en el plano neutro, blanco, amarillo, naranja, magenta hacia dentro—, que es un control positivo del aparato óptico que no depende de nada mío. A Bi = 9.5 hay dieciocho órdenes y todo se lava en pasteles, que es exactamente lo que le pasa a un polariscopio delante de un vidrio muy templado.</p>
+<p>fallaron**. δ = 0 tenía que dar blanco y dio negro. Media onda tenía que dar magenta y dio casi blanco. Antes de tocar el código miré cuál de las dos cosas estaba mal, y era el control: había implementado campo oscuro (polarizadores cruzados, sin²) y había escrito las expectativas de campo claro (paralelos, cos²). Con δ = 0 y cruzados no pasa luz: negro es lo correcto. Reescritos con la expectativa buena —extinción, tinta de paso magenta a 565 nm, amarillo de primer orden a 350 nm—, los tres pasan.</p>
+<h3>Coda: la fuerza que no se puede editar</h3>
+<p>Un vidrio templado no se puede cortar. Ni taladrar, ni pulir el canto, ni hacerle un agujero para un tirador. Cualquier corte suelta la tracción del interior y la placa entera se deshace en gravilla en milisegundos. Todo el mecanizado tiene que ocurrir <strong>antes</strong> del temple, y por eso el recocido —enfriar despacio, a propósito, para que no quede ninguna tensión guardada— no es un fallo del proceso: es lo que se hace cuando quieres un vidrio con el que todavía se pueda trabajar. El taller elige entre un vidrio fuerte y un vidrio editable, y no hay término medio.</p>
+<p>Es la misma estructura que el resultado de arriba, vista desde el otro lado. La fuerza del templado no está en ninguna parte de la placa: está en la relación entre sus partes, y esa relación es una historia que ya ocurrió. No se puede modificar localmente lo que está sostenido globalmente por un orden de sucesos. Se puede destruir, y se llama corte; o se puede borrar antes de que se escriba, y se llama recocido.</p>
+<hr>
+<p><em>Honestidad. Esto es un modelo, no un vidrio. La congelación por capas en un umbral es una idealización publicada (la teoría de congelación instantánea), y el vidrio real relaja de forma viscoelástica en una banda de temperaturas, que es justo el ingrediente que falta. Lo escribí en hubieran ido del 20–21 % medido en vidrio real, la conclusión honesta era «a mi modelo le falta la viscoelasticidad», no «la industria se equivoca». No se fueron —el modelo se queda en el 21 % en todo el régimen normal y sólo se sale en vidrio grueso muy templado—, así que la afirmación que sostengo es la débil: dentro de este modelo, el 21 % es el límite de Biot pequeño de una constante geométrica, y lo que lo mueve es el orden de congelación. Que en vidrio real sea así, no lo he medido.</em></p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

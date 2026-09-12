@@ -1,0 +1,71 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El exponente que dosifica: qué mide de verdad la fórmula de 1916 con la que se calcula la quimioterapia</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>El exponente que dosifica: qué mide de verdad la fórmula de 1916 con la que se calcula la quimioterapia</h1>
+<p>Casi toda la quimioterapia citotóxica se dosifica en <strong>miligramos por metro cuadrado de superficie corporal</strong>. La superficie corporal de un paciente no se mide nunca: se estima con una fórmula de talla y peso. La de referencia mundial es la de <strong>Du Bois y Du Bois, 1916</strong>:</p>
+<p><code>BSA = 0,007184 · W^0,425 · H^0,725</code>  (W en kg, H en cm, resultado en m²)</p>
+<p>Se ajustó sobre <strong>nueve sujetos</strong> envueltos en moldes de papel. Ese dato es de segunda mano —lo repiten Shuter y Aslani (2000) y toda la literatura posterior; yo no he visto la tabla original—, pero no hace falta la tabla para lo que sigue. Conviven con ella al menos ocho fórmulas más —Mosteller, Haycock, Gehan-George, Boyd, Fujimoto, Takahira, Shuter-Aslani, Schlich—, todas publicadas, todas en calculadoras clínicas, y todas tratadas como intercambiables.</p>
+<p>Quería saber dos cosas: <strong>cuánto importa cuál se elija</strong>, y sobre todo si hay alguna manera de <strong>medir cuál acierta</strong> en vez de comparar ajustes entre sí. Los datos son NHANES 2017-2018 (CDC, dominio público): <strong>5.120 adultos</strong> de 20 años o más con talla y peso, excluidas 55 gestantes, con los pesos muestrales del examen.</p>
+<p>es la mejor parte.</p>
+<h3>Primero: sí discrepan, y se ve en la jeringa</h3>
+<p>Sobre las siete fórmulas de uso clínico corriente, la dispersión <code>(máx − mín) / mediana</code> para cada adulto real:</p>
+<p>- percentil 25: <strong>4,1 %</strong> - mediana: <strong>5,8 %</strong> - percentil 90: <strong>9,1 %</strong> - percentil 99: <strong>12,0 %</strong> - adultos por encima del 10 %: <strong>5,4 %</strong></p>
+<p>Traducido a una dosis de doxorrubicina de 60 mg/m², la sola elección de fórmula mueve <strong>6,7 mg en el adulto mediano</strong>, 11,9 mg en el percentil 90 y hasta 31 mg en el caso extremo de la muestra. No es un abismo, pero tampoco es cero, y no es aleatorio: <strong>Boyd pone el máximo en 4.187 de los 5.120 y Fujimoto pone el mínimo en 5.094</strong>. El desacuerdo no es una nube: son dos fórmulas contra el resto.</p>
+<h3>Segundo: el desacuerdo vive entero en un solo eje</h3>
+<p>Para dos leyes de potencia cualesquiera hay una identidad exacta —no un ajuste—:</p>
+<p><code>log(BSA_f / BSA_g) = Δlog a + Δd · log H + Δq · log(W/H³)</code></p>
+<p>donde <code>Δq</code> es la diferencia de exponentes del peso y <code>Δd = Δp + 3Δq</code> es la diferencia de <strong>grado isométrico</strong>. El primer término reparte el desacuerdo al eje del <strong>tamaño</strong> (lo alta que es la gente); el segundo, al eje de la <strong>forma</strong> (lo corpulenta que es).</p>
+<p>En los <strong>14 pares</strong> evaluables, el término de forma gana al de talla en <strong>los 14</strong>, sin un solo empate, y por entre uno y tres órdenes de magnitud. La causa está medida y es simple: en esta población, <strong>sd(log H) = 0,061</strong> y <strong>sd(log W/H³) = 0,241</strong>. Los humanos somos estrechos en altura y anchos en corpulencia. (El par Du Bois–Takahira dio las dos varianzas exactamente cero: tienen</p>
+<h3>La apuesta que perdí: el argumento dimensional es cierto y es casi irrelevante</h3>
+<p>Si un cuerpo se agranda como una fotografía —<code>H → kH</code>, y por tanto <code>W → k³W</code>—, su superficie <strong>tiene</strong> que crecer como <code>k²</code>. Eso fija un grado isométrico <code>d = p + 3q = 2</code> exacto. Es el criterio más limpio que se le puede pedir a una fórmula de superficie, porque no depende de ningún dato: es geometría.</p>
+<p>| fórmula | grado | error | |---|---|---| | Du Bois, Mosteller, Takahira | 2,0000 | 0 exacto | | Fujimoto | 1,9950 | 0,005 | | Shuter-Aslani | 1,9780 | 0,022 | | Haycock | 2,0098 | 0,010 | | Gehan-George | 1,9661 | 0,034 | | Boyd | 1,955 a 1,888 | depende del peso | | Schlich (hombres) | 2,3800 | 0,380 | | Schlich (mujeres) | 2,4600 | 0,460 |</p>
+<p>Schlich es un escándalo dimensional: dice que una copia un 10 % más grande de usted tiene un 27 % más de piel, cuando la respuesta correcta es 21 %. Aposté a 0,60 que ese defecto se vería en la población real —que Schlich se apartaría más del 10 % de la mediana de las demás en al menos uno de cada cuatro adultos—.</p>
+<p>Si a Schlich le quito su sesgo de nivel (una constante mal calibrada, −6,7 % mediano) y la recentro, la fracción que discrepa más del 10 % <strong>se hunde de 0,102 a 0,0009</strong>. Es decir: casi todo su desacuerdo es una constante, y <strong>prácticamente nada es el grado roto</strong>.</p>
+<p>La aritmética de por qué: un error de grado de 0,4 multiplicado por una desviación típica de <code>log H</code> de 0,061 da un 2,4 % de dispersión sobre toda la población adulta. El defecto es real, es grave sobre el papel, y <strong>es invisible</strong> — porque los humanos no recorren bastante el eje donde vive. El criterio que parecía más profundo era el menos consecuente.</p>
+<p>Es la lección de método que me llevo, y sirve fuera de aquí: <strong>el tamaño de un defecto en principio no dice nada sobre su tamaño en la población donde se aplica.</strong> Hay que multiplicarlo por cuánto viaja de verdad esa población por el eje del defecto. Un argumento dimensional impecable puede no tener con qué morder.</p>
+<h3>La medición que sí decide: dónde se pone la superficie cuando alguien pesa más</h3>
+<p>Comparar fórmulas entre sí no dice cuál acierta. Hace falta un tercer instrumento, y hay uno escondido en los mismos datos.</p>
+<p>Para un cilindro generalizado —un prisma de sección cualquiera, no hace falta que sea circular— la superficie lateral es <strong>perímetro × longitud, exactamente</strong>. Una cinta métrica mide perímetros. Y NHANES pasa la cinta: cintura, brazo, cadera.</p>
+<p>El detalle que lo hace funcionar es que <strong>yo no necesito el nivel, sólo el exponente</strong>. Un miembro real es cónico y curvo, así que su superficie verdadera es el perímetro por la longitud multiplicado por un factor de forma que no sé calcular. Pero ese factor <strong>se cancela en la derivada logarítmica</strong>: cualquier constante que no cambie con el peso desaparece al preguntar <em>cómo crece</em>. Así que, a talla fija, el exponente de superficie de un segmento <strong>es</strong> el exponente de su perímetro, y ése sí se mide.</p>
+<p>Regresión ponderada de <code>log(circunferencia)</code> sobre <code>log H</code> y <code>log W</code>, en adultos no gestantes:</p>
+<p>- <strong>cintura: 0,6805</strong> (n = 4.884) - <strong>brazo: 0,5986</strong> (n = 4.937) - <strong>cadera: 0,5060</strong> (n = 4.894)</p>
+<p>El contraste cintura–brazo es <strong>+0,080 ± 0,009</strong> (bootstrap de 1.000 remuestras), <strong>8,8 errores estándar</strong>: la grasa del adulto es central, y se mide. El estimador pasó sus dos controles antes de tocar los datos reales — sobre una población sintética con elasticidad 0,62 por construcción devolvió 0,618, y permutando el peso entre personas devolvió −0,003.</p>
+<p>Ponderando por la regla de los nueves (cabeza 9 %, tronco 36 %, brazos 18 %, piernas 36 %, con la cabeza a elasticidad 0 porque NHANES no le pasa la cinta a los adultos):</p>
+<p><strong>q_cuerpo = 0,535</strong></p>
+<p>Por sexo: 0,529 en hombres, 0,539 en mujeres. Y ahora la lista que importa, ordenada por distancia al exponente medido:</p>
+<p>- <strong>Haycock 0,5378 — a 0,003</strong> - Gehan-George 0,51456 — a 0,020 - Mosteller 0,5 — a 0,035 - Fujimoto 0,444 — a 0,091 - <strong>Du Bois 0,425 — a 0,110</strong></p>
+<p><strong>La fórmula que dosifica la quimioterapia en todo el mundo es la que más se aleja del exponente que sale de medir cuerpos reales con una cinta.</strong></p>
+<p>Y hay una coincidencia que no esperaba. Si impongo el grado 2 exacto sobre el exponente medido, el exponente de la talla queda <strong>forzado</strong>: <code>p = 2 − 3q = 0,3953</code>. Haycock, en 1978, publicó <strong>0,3964</strong>. Difieren en 0,0011. La fórmula de Haycock <em>es</em>, con tres decimales, la ley de potencia dimensionalmente coherente con el exponente que sale de la cinta métrica — sin que nadie la construyera así.</p>
+<h3>Lo que cuesta</h3>
+<p>Calibro Du Bois y la ley del exponente medido para que <strong>coincidan exactamente</strong> en el adulto mediano (167,6 cm, 80,8 kg), de modo que sólo cambie la pendiente y no el nivel. Lo que queda es puramente el efecto del exponente:</p>
+<p>- IMC &lt; 25 (26,6 % de adultos): Du Bois queda <strong>+2,7 %</strong> → +2,8 mg sobre 60 mg/m² - IMC 25-30 (31,0 %): +0,6 % - IMC 30-35 (22,4 %): −1,2 % - IMC 35-40 (11,0 %): −2,8 % - <strong>IMC ≥ 40 (9,0 %): −5,0 %</strong> → −6,4 mg - persona más pesada de la muestra (219,6 kg): <strong>−13,0 %</strong></p>
+<p>El exponente de 1916 se inclina sistemáticamente <strong>en contra de los cuerpos grandes</strong>, que son precisamente los que en 1916 casi no existían en la muestra.</p>
+<h3>Lo que esto NO dice</h3>
+<p>Con la misma seriedad con la que afirmo lo de arriba:</p>
+<p><strong>No es una recomendación de dosificación.</strong> Mide cómo <em>crece</em> la superficie con el peso, no cuál es la superficie verdadera de nadie. El <strong>nivel</strong> de cada fórmula es una pregunta distinta que aquí no he tocado, y la discusión clínica sobre dosificar citotóxicos en pacientes obesos es mucho más ancha que la geometría: hay farmacocinética, toxicidad y guías con literatura propia.</p>
+<p><strong>El eslabón más débil es usar la cintura como perímetro de todo el tronco.</strong> El tórax engorda menos que el abdomen, así que ese supuesto <strong>infla q</strong>. Las cotas: si el tronco toma la media de cintura y cadera, q = 0,504; en el extremo absurdo de que todo el cuerpo engorde como la cadera, q = 0,455. Lo defendible es <strong>q entre 0,50 y 0,60</strong>. Bajo todos los supuestos que probé, q queda por encima de 0,425.</p>
+<p>Los demás supuestos, declarados antes de medir: la cadera hace de sustituto de las piernas (no hay perímetro de muslo); las longitudes de segmento no cambian con el peso a talla fija; el engrosamiento dentro de un segmento conserva la forma (si no, el factor de forma deja de cancelarse); y esto es elasticidad <strong>transversal entre personas</strong>, no la trayectoria de un individuo que engorda — aunque la transversal es justo la que una fórmula de (H, W) tiene que reproducir.</p>
+<p>cuotas, con las tres elasticidades a 0,5, debía dar 0,455. Dio 0,450, y el instrumento tenía razón: <strong>la regla de los nueves suma 99, no 100</strong> (el 1 % restante es el perineo). El error iba en mi contra: renormalizando, q sube a 0,540.</p>
+<h3>Reproducirlo</h3>
+<p>Datos, íntegros y públicos: <code>https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2017/DataFiles/BMX_J.xpt</code> y <code>https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2017/DataFiles/DEMO_J.xpt</code>.</p>
+<p>potencia y sus unidades <strong>antes</strong> de correr el análisis; por eso puedo decir que perdí la de Schlich en vez de contar que siempre supe que el argumento dimensional era flojo. No lo sabía: le había puesto 0,60.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

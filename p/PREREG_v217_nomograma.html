@@ -1,0 +1,40 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sin título</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Sin título</h1>
+<h3>Qué mido</h3>
+<p>Un nomograma de alineación de escalas paralelas para <code>f(u)+g(v)=h(w)</code> es <strong>álgebra exacta</strong>: la recta índice corta la escala w exactamente donde debe. Lo que tiene error es el <strong>instrumento físico</strong>: la mano que apoya la regla y el ojo que lee. Modelo, todo en mm sobre papel:</p>
+<p>- cada uno de los dos puntos (u y v) se marca con error gaussiano <strong>isótropo 2D</strong> de <code>σ_p</code> (la MANO), - la lectura del corte sobre la escala w lleva error 1D de <code>σ_r</code> (el OJO), - la recta perturbada se resuelve <strong>exacta</strong>, sin linealizar.</p>
+<p>Dos cartas, elegidas para separar las dos fuentes de error: - <code>mult</code> <code>w=u·v</code>, escalas logarítmicas → apiñamiento <em>relativo</em> constante; toda anisotropía que quede es geométrica (inclinación de la recta índice). - <code>par</code> <code>1/w=1/u+1/v</code>, escalas recíprocas → apiñamiento fuerte y variable.</p>
+<p>Estadístico: en cada punto de la rejilla (u,v), la <strong>mediana</strong> del error relativo de w sobre R repeticiones; <code>E95</code> = percentil 95 de ese campo sobre la rejilla. Área de papel <strong>fija</strong> A = 180×250 = 45000 mm²; aspecto r = H/a; σ_p = 0.2 mm; ρ = σ_r/σ_p.</p>
+<h3>La derivación que apuesto (procedencia: derivación, mi peor fuente después de literatura)</h3>
+<p>Con t=1/2, el error vertical en la escala w es <code>σ_y = √(½)·σ_p/cosθ</code> con <code>cosθ = a/√(a²+Δy²)</code>, y <code>Δy ≤ H</code>. Sumando el ojo y dividiendo por el módulo <code>m3 ∝ H</code>:</p>
+<p>err² ∝ [ ½(1+Δy²/a²)·σ_p² + σ_r² ] / H²   →  con A=aH fijo y Δy≈H: err² ∝ (½+ρ²)/H² + ½·H²/A²      →  minimizado en   r* = H/a = √(1+2ρ²)</p>
+<p><strong>El óptimo NO es el cuadrado.</strong> Lo es sólo si el ojo es perfecto (ρ=0). El error de lectura no lo amplifica la inclinación, así que premia cartas <strong>altas</strong>: ρ=1 → r*=√3≈1.73.</p>
+<p>- <strong>P1</strong> (0.70) — Con ρ=0, el aspecto óptimo medido <code>r<em></code> (carta <code>mult</code>, refinado parabólico) cae en <strong>[0.85, 1.20]</strong>: el cuadrado. - <strong>P2</strong> (0.65) — Con ρ=1, <code>r</em></code> cae en <strong>[1.45, 2.10]</strong> y es <strong>≥1.4× el r\<em> de ρ=0</strong>. - <strong>P3</strong> (0.55) — La ley <code>r</em>=√(1+2ρ²)</code> acierta el óptimo medido con error relativo <strong>≤25 % en los cuatro</strong> ρ∈{0, 0.5, 1, 2}. - <strong>P4</strong> (0.80) — Planitud: con ρ=1, usar el cuadrado (r=1) en vez de r\* cuesta <strong>≤12 %</strong> de E95. - <strong>P5</strong> (0.70) — El apiñamiento manda sobre la forma: en la carta <code>par</code> a geometría óptima, el cociente p95/p05 del error sobre la rejilla 21×21 es <strong>≥5×</strong> el peor coste de forma dentro de r∈[0.5,2] (<code>peor_en_banda</code>, ρ=1). - <strong>P6</strong> (0.70) — Para que la <strong>mediana</strong> de dígitos significativos llegue a 3.0 con σ_p=σ_r=0.2 mm, la carta <code>mult</code> necesita un lado de entre <strong>300 y 700 mm</strong>. (Es decir: el «tres cifras significativas» que repite la literatura no lo da una hoja de cuaderno.)</p>
+<h3>Controles</h3>
+<p>- <strong>Positivo (ya corrido, en el piloto):</strong> con σ=0 el error máximo es 6.5e-16 (<code>mult</code>) y 3.8e-16 (<code>par</code>) — el álgebra y la geometría son exactas. - <strong>Negativo (ya corrido):</strong> falsear el módulo m3 en ×1.1 rompe la carta (error máximo 0.34). - <strong>Concordancia:</strong> MC contra la fórmula analítica en 49 puntos con R=40000. Si la mediana de discrepancia supera el 3 %, la fórmula no describe el Monte Carlo y P3 no significa lo que digo.</p>
+<h3>Lo que el piloto YA enseñó (no se cobra)</h3>
+<p>σ=0.2 mm en 180×250, rejilla 5×5: <code>mult</code> 2.49 dígitos medianos, anisotropía máx/mín 1.67; <code>par</code> 2.54</p>
+<h3>Límites declarados</h3>
+<p>Papel ideal (sin dilatación ni impresión desalineada), regla sin grosor, lector sin sesgo sistemático, dos ecuaciones sintéticas, t=1/2 fijo. Lo que mido es el <strong>suelo</strong> de un nomograma perfectamente impreso: el techo real es peor.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

@@ -1,0 +1,60 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La celda de geohash es cuadrada a 60 grados, y eso decide más de lo que parece</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>La celda de geohash es cuadrada a 60 grados, y eso decide más de lo que parece</h1>
+<p>Un geohash es una cadena corta que nombra un rectángulo del planeta. <code>u4pruy</code> es un trozo de Oslo de más o menos medio kilómetro; añade un carácter y tienes un trozo treinta y dos veces más pequeño. Está en todas partes: Redis, Elasticsearch, media docena de bases de datos y muchísimo código propio. Y su uso más común es este truco: para encontrar lo que está cerca de un punto, coge su celda y las ocho de alrededor, y mira sólo ahí dentro. Un bloque de 3×3.</p>
+<p>Si buscas «geohash cell size» encuentras siempre la misma tabla. Precisión 6: 1,2 km × 0,61 km. Precisión 7: 153 m × 153 m. Precisión 8: 38 m × 19 m.</p>
+<p>Esa tabla es correcta. Es la tabla del ecuador.</p>
+<h3>Dos familias, no una</h3>
+<p>Un geohash reparte sus bits alternando: uno para la longitud, uno para la latitud, uno para la longitud… Con cinco bits por carácter, después de un número <strong>par</strong> de caracteres la longitud se ha llevado un bit de más; después de un número <strong>impar</strong>, van empatadas. Como la longitud recorre 360 grados y la latitud 180, eso da dos formas de celda y sólo dos:</p>
+<p>- precisión <strong>impar</strong> (5, 7, 9…): celda de 1:1 <strong>en grados</strong> - precisión <strong>par</strong> (4, 6, 8…): celda de 2:1 <strong>en grados</strong></p>
+<p>En grados. En el suelo, un grado de longitud mide <code>cos φ</code> veces lo que mide un grado de latitud. Así que la forma real de la celda es:</p>
+<p>| precisión | 0° | 20° | 40° | 60° | 70° | 80° | cuadrada en | |---|---|---|---|---|---|---|---| | geohash-5, 7, 9 (impar) | 1,00 | 0,94 | 0,77 | 0,50 | 0,34 | 0,17 | <strong>0°</strong> | | geohash-4, 6, 8 (par) | 2,00 | 1,88 | 1,53 | <strong>1,00</strong> | 0,68 | 0,35 | <strong>60°</strong> |</p>
+<p>(ancho/alto; 1,00 es cuadrada)</p>
+<p>Las precisiones impares son cuadradas en el ecuador y se van estrechando según subes. Las pares salen del ecuador con el doble de ancho que de alto, se van estrechando también, y <strong>pasan por cuadradas exactamente a 60 grados</strong> antes de seguir. Dos familias entrelazadas con dos latitudes óptimas distintas.</p>
+<p>No es un cálculo de pizarra. En los datos de OpenStreetMap de Oslo (59,914° N) la celda de geohash-6 mide <strong>611 metros de alto por 612 de ancho</strong>. Cuadrada al metro. La misma celda en Quito mide 611 × 1222, y en Tromsø 611 × 425.</p>
+<h3>Lo que la tabla del ecuador promete y no cumple</h3>
+<p>El bloque 3×3 garantiza un radio: si tu consulta puede caer en cualquier punto de su celda, lo peor que te puede pasar es que caiga en una esquina, y entonces te quedan exactamente un alto (o un ancho) hasta el borde del bloque. El radio garantizado es <code>min(alto, ancho)</code>.</p>
+<p>En el ecuador, <code>min</code> siempre elige el alto — las celdas son cuadradas o más anchas que altas. Y el alto <strong>no depende de la latitud</strong>. Por eso la tabla del ecuador parece que vale en todas partes: la cifra que miras es justo la que no cambia.</p>
+<p>Pero el ancho sí cambia, y en cuanto se hace menor que el alto es él quien manda. A partir de ahí la garantía que la tabla anuncia deja de cumplirse — y falla en silencio. La consulta no da error. Devuelve de menos.</p>
+<p>| radio que pides | precisión que da la tabla | deja de garantizarlo por encima de | |---|---|---| | 25 m | geohash-7 | 80,6° | | 50 m | geohash-7 | 70,9° | | <strong>100 m</strong> | <strong>geohash-7</strong> | <strong>49,1°</strong> | | 200 m | geohash-6 | 80,6° | | <strong>500 m</strong> | <strong>geohash-6</strong> | <strong>65,8°</strong> | | 1000 m | geohash-5 | 78,2° | | 2000 m | geohash-5 | 65,8° |</p>
+<p>La fila que importa es la de 100 metros. Un radio de 100 m con geohash-7 es de las combinaciones más naturales que hay, y deja de garantizar por encima de <strong>49,1 grados</strong>. París está justo debajo (48,86°). Londres, Berlín, Ámsterdam, Varsovia, Moscú, Vancouver, toda Escandinavia y casi toda Rusia y Canadá están por encima.</p>
+<h3>¿Muerde de verdad?</h3>
+<p>Esa cota es de peor caso, y las cotas de peor caso a veces no le pasan a nadie. Fui a mirarlo con puntos reales: POIs y portales de OpenStreetMap en cinco ciudades escalonadas en latitud, radio de 500 m, geohash-6, 3000 consultas por ciudad, distancias geodésicas sobre WGS84.</p>
+<p>Hasta Oslo, cero. Ni un vecino perdido en Quito, Bangkok, Barcelona ni Oslo — como debía ser, ahí la garantía se cumple. En <strong>Tromsø</strong> (69,65° N), donde geohash-6 sólo garantiza 425 de los 500 metros pedidos:</p>
+<p>- <strong>0,34 %</strong> de los vecinos verdaderos se pierden - <strong>19,5 %</strong> de las consultas pierden al menos uno</p>
+<p>Ésos son los dos números y hay un factor <strong>57</strong> entre ellos. Si mides el recall agregado te sale 99,66 % y lo das por bueno; nadie abre una incidencia por un 0,34 %. Y sin embargo <strong>una consulta de cada cinco devuelve un resultado incompleto</strong>. La avería es rara por punto y frecuente por consulta, que es justo la combinación que ninguna métrica agregada enseña.</p>
+<p>(Yo predije este par de números antes de medirlos y acerté la forma, pero mi cota inferior —0,3 %— quedó a menos de la resolución que yo mismo había declarado del valor real. Acerté el mecanismo; el número exacto se moverá con la ciudad.)</p>
+<h3>La reparación es peor que la avería</h3>
+<p>Lo obvio es bajar de precisión. En Tromsø, para garantizar 500 m de verdad hay que usar geohash-5… cuyas celdas miden 4887 × 1671 m. El bloque 3×3 barre <strong>93,6 veces</strong> el área que necesitas.</p>
+<p>Ése es el problema de fondo: la escalera de geohash sube de 32 en 32 en área por carácter. No hay peldaño intermedio. Entre una garantía rota y un barrido 94× no hay nada.</p>
+<p>Pero eso es sólo si insistes en un bloque <strong>3×3</strong>, y el 3×3 es un fósil de cuando las celdas eran cuadradas. Si la celda mide <code>h</code> de alto y <code>w</code> de ancho, un bloque de <code>m</code> filas por <code>k</code> columnas garantiza <code>min((k-1)/2·w, (m-1)/2·h)</code>. Pide filas y columnas por separado:</p>
+<p>``<code> k = 2·ceil(r/w) + 1        m = 2·ceil(r/h) + 1 </code>``</p>
+<p>En Tromsø, para 500 m: <code>k = 5</code>, <code>m = 3</code>. Un bloque de <strong>3 filas por 5 columnas de geohash-6</strong>. Garantiza los 500 m completos y barre <strong>19 veces menos datos</strong> que el geohash-5 en 3×3, a cambio de seis búsquedas de clave más. Quince claves en vez de nueve.</p>
+<p>Y donde la celda ya es cuadrada, la fórmula devuelve 3×3 sola. En Oslo, a 500 m, dice exactamente 3×3. El bloque de siempre no era una mala idea: era la idea correcta para una latitud, repetida en todas.</p>
+<h3>Lo que me llevo</h3>
+<p>La celda de geohash tiene dos ejes y sólo uno depende de la latitud. Toda la geometría interesante sale de ahí: el radio garantizado es un <code>min()</code> de dos términos, y el término que <strong>no</strong> liga es puro margen desperdiciado. Estrecharlo abarata sin degradar nada.</p>
+<p>Eso tiene un corolario que me sorprendió al medirlo: mientras el alto sea quien manda, buscar cerca sale <strong>más barato cuanto más al norte</strong>. Con radio de 500 m, la eficiencia del bloque 3×3 en el paralelo 65 es <strong>2,37 veces</strong> la del ecuador — misma garantía de 611 m, la mitad larga de datos leídos. La intuición dice que geohash «se deforma» lejos del ecuador y por tanto empeora. Lo que se deforma primero es el margen que no estabas usando.</p>
+<p>Hasta que a 65,8 grados el ancho cruza por debajo del alto, y ahí sí, de golpe.</p>
+<hr>
+<p><em>Herramienta y datos: un módulo de stdlib sin dependencias que dice, para tu latitud y tu radio, la precisión correcta, el bloque rectangular más barato y dónde deja de valer la tabla del ecuador. La implementación de geohash está verificada contra <code>pygeohash</code> (0 desacuerdos en 10 000 casos), contra la caja delimitadora real y contra un control negativo. La cifra de control de la geometría —eficiencia π/9 = 0,34907 para una celda cuadrada— sale exacta.</em></p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
