@@ -1,0 +1,47 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El π lo pone la tijera</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>El π lo pone la tijera</h1>
+<p>Hay un número que circula desde 1996 y que es demasiado bonito para no comprobarlo: <strong>la sinuosidad media de los ríos de la Tierra es π</strong>. Sinuosidad es un cociente honrado —metros de cauce partidos por metros de línea recta entre los dos extremos— y el resultado, 3,14, aparece en revistas serias, en libros de divulgación y en cualquier hilo que quiera enseñarte que la naturaleza sabe geometría.</p>
+<p>He bajado doce ríos reales de OpenStreetMap —Ebro, Loira, Vístula, Támesis, Po, Shannon, Moldava, Tisza, Klarälven, Misisipi, Murray, Río Grande—, los he cosido tramo a tramo hasta tener una polilínea continua por río, y he medido. No el número que dice el papel: <strong>la curva entera</strong>, la sinuosidad en función de con qué longitud de ventana la mides, de 500 metros a 375 kilómetros.</p>
+<h3>Lo primero: π no está</h3>
+<p>La mediana entre ríos, medida de extremo a extremo, sale <strong>1,84</strong>. La mayor sinuosidad que alcanza cualquier río en cualquier ventana es <strong>2,15</strong> (la Moldava). La curva mediana entre los doce, barrida por veinticuatro escalas, alcanza como máximo <strong>1,53</strong>. En ningún sitio hay un 3,14.</p>
+<p>Y no es cosa de mi rejilla. La curva sube como una potencia de la escala, S ~ L^0,079, y con esa ley se puede preguntar a qué ventana habría que ir para que la mediana llegara a π: sale <strong>870.000 kilómetros</strong>. Ciento treinta veces el Nilo. Veintidós vueltas a la Tierra. Ese tamaño de discrepancia no lo arregla ningún ajuste de método.</p>
+<h3>Lo segundo, que es lo que de verdad me llevo: no hay una escala del meandro</h3>
+<p>Yo iba con un modelo mental y era falso. Pensaba que la curva tendría un pico: un trozo corto de cauce es casi recto (S≈1), un río entero va de A a B y también tira derecho (S bajo), luego la sinuosidad tiene que <strong>subir hasta la escala del meandro y volver a bajar</strong>. Aposté a eso, y lo aposté con nombre y número: en al menos ocho de los doce ríos el máximo caería en el interior de la rejilla.</p>
+<p>Cayó en cuatro. La curva <strong>sube y no para de subir</strong>: 1,02 a medio kilómetro, 1,21 a cinco, 1,44 a cincuenta, 1,53 a trescientos setenta y cinco. Veintiún pasos de veintitrés van hacia arriba. En ocho de los doce ríos el máximo está en el borde alto de la rejilla, es decir, en la ventana más grande que cabía.</p>
+<p>Mi modelo era el de una onda. Lo comprobé con una: una sinusoide sintética de amplitud 2 km y periodo 20 km sí hace lo que yo esperaba —sube, llega a 1,09 hacia los dos periodos, y se aplana—, porque una sinusoide tiene <strong>una</strong> escala y se le nota. Un río no. Un río tiene curvas dentro de curvas dentro de valles: los meandros de un kilómetro viven dentro de bucles de diez que viven dentro de una cuenca de trescientos. Es la geometría de una costa, no la de una onda. despacio**, mientras haya río.</p>
+<p>Y ese despacio tiene número: 0,079 de exponente, o sea una dimensión fractal aparente de <strong>1,079</strong>. Muy baja —las costas rondan 1,15 a 1,25—. Un río es una cosa casi rectificable que, sin embargo, no se estabiliza nunca.</p>
+<h3>Lo tercero: de dónde sale el 3,14, visto en un solo río</h3>
+<p>De mis doce, exactamente uno cae dentro del rango [2,7–3,5] que se cita como el del resultado original. Es la <strong>Moldava, con 3,16</strong> — π con dos decimales buenos, por casualidad y de regalo.</p>
+<p>¿Es la Moldava el río más serpenteante de los doce? No. En ventana su máximo es 2,15, parecido al del Murray. Lo que tiene la Moldava es esto: el tramo que me bajé mide <strong>144 km de cauce y 46 km de cuerda</strong>, porque describe una U grande y sus dos extremos acabaron cerca el uno del otro. Sinuosidad 3,16.</p>
+<p>Ahí está el asunto entero. La sinuosidad no es una propiedad del río: es una propiedad <strong>del río y de los dos puntos donde pones la tijera</strong>. Y un río no viene con los puntos puestos. Elígelos separados y te da 1,4; elígelos en los dos extremos de un bucle y te da 3,2; elígelos a medio kilómetro y te da 1,02. El número famoso no describe cómo serpentean los ríos: describe a qué distancia estaba acostumbrado a cortarlos quien lo midió.</p>
+<p>dónde cortes. π no aparece en ella por ningún lado.</p>
+<h3>Contra mí mismo, que es la parte que no se puede saltar</h3>
+<p>Tres cosas que juegan en mi contra y que salen igual publicadas:</p>
+<p><strong>Una.</strong> Mis polilíneas son <strong>trozos</strong> de río, no ríos enteros —del Murray me salieron 240 km de 2.500—. Y como S crece con la escala, medir trozos <strong>baja</strong> el número: el sesgo empuja hacia mi conclusión. Cuánto: extrapolando la ley a un río entero de verdad, el Nilo, sale 2,14 — por con el viento a favor. No me apoyo en ella. La que aguanta sola es la de π, que falla por un factor de cien mil, no por un decimal.</p>
+<p><strong>Dos.</strong> Los ríos peor mapeados salen menos sinuosos: la correlación entre separación de vértices y sinuosidad es −0,50 (−0,34 a escala fija). Con doce ríos eso es ruido más que señal, pero el signo es el que me conviene y por eso lo digo. El Misisipi de OSM tiene 785 metros entre vértices: mi control de instrumento —simplificar a 100 m y ver cuánto cauce se pierde— lo aprueba con un 0,13 %, y lo aprueba <strong>en falso</strong>, porque no había nada por debajo de 100 m que quitar. Un control puede pasar por ausencia.</p>
+<p><strong>Tres.</strong> El control que sellé decía que mi sinusoide de prueba valía 1,575. Vale 1,0924. Me inventé el número que iba a servir de respuesta conocida, que es exactamente lo que un control existe para impedir. Lo que corre en el código sí compara contra una cuadratura calculada aparte —1,0936 medido contra 1,0924 esperado, y la recta da 1,000000— así que el control funciona; el que falló fui yo al escribirlo. Y al corregirlo lo escribí en medio del fichero honesta en el sitio equivocado cuesta lo mismo que una trampa. Está bien que cueste lo mismo.</p>
+<hr>
+<p>Queda una cosa que decir a favor del número. Stølum no midió doce ríos de OSM: corrió un modelo de meandros que se cortan y se rehacen, y en ese modelo la sinuosidad oscila alrededor de π porque el sistema se organiza al borde de una inestabilidad. Puede que en ese mundo el π sea real. Lo que ha viajado fuera del papel, y lo que se repite, es otra frase: <em>los ríos de la Tierra tienen sinuosidad π</em>. Esa, medida en ríos de la Tierra, con una tijera declarada de antemano, no se sostiene.</p>
+<p>Un río no tiene un número. Tiene una pendiente: 0,079. Es menos bonito y es suyo.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
