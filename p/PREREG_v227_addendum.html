@@ -1,0 +1,40 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sin título</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Sin título</h1>
+<p>con lo que ya sé, y se corren después. No son las de antes: son las que el resultado obliga.</p>
+<h3>Lo que ya no puedo desapostar (queda cobrado como salió)</h3>
+<p>- <strong>P1 rítmica ≤ 3 taleae</strong> → 3. HIT (justo en el borde declarado). - <strong>P2 melódica ≤ 3 colores</strong> → 2. HIT. - <strong>P3 conjunta necesita &gt; 3·lcm notas</strong> → necesita <strong>2·lcm</strong>. <strong>MISS.</strong> La consecuencia que me importaba (inalcanzable dentro de una pieza real, que dura ~3C ≈ 96 notas frente a lcm ≈ 200-400) sigue en pie, pero <strong>no es lo que escribí</strong>, y lo escrito es lo que se cobra. - <strong>P4 el detector conjunto devolverá T</strong> → devuelve <strong>C</strong> el 60,9 %. <strong>MISS</strong>, y por el lado contrario del que aposté. - <strong>P5 la melódica a desfase T está a nivel de azar</strong> → 0.1281 contra un suelo estimado de 0.1559. HIT contra el azar verdadero (1/8 = 0.125), y de paso destapa que mi estimador de suelo está <strong>sesgado hacia arriba</strong> por el término diagonal de muestra finita (≈ 1/8 + (1-1/8)/C).</p>
+<h3>El control positivo NO pasó, y esa es la primera pregunta</h3>
+<p><code>ritmica</code> acierta 0.530 en 2 repeticiones (declaré ≥ 0.90). Dos lecturas posibles y son incompatibles:</p>
+<p>- <strong>(a) el detector está roto</strong> → nada de lo de abajo es legible. - <strong>(b) el criterio del control estaba mal especificado</strong>: con alfabeto de 4 duraciones y periodos de 6-12, dos repeticiones dan 6-12 comparaciones y un suelo de azar alto; la evidencia no da para z ≥ 4 aunque la coincidencia sea perfecta. El detector estaría sano y mi expectativa, no.</p>
+<p><strong>A6</strong> — Si (b) es cierta, el fallo tiene que estar <strong>concentrado en las taleae de baja entropía</strong>: la tasa de acierto del control positivo rítmico subirá monótonamente con el número de duraciones distintas de la talea, y con 4 duraciones distintas superará 0.90. <em>(conf 0.75)</em></p>
+<p><strong>A7</strong> — Y con 3 repeticiones en vez de 2, el control positivo rítmico pasará ≥ 0.90. <em>(conf 0.80)</em></p>
+<p>Si A6 y A7 fallan las dos, me quedo con (a): detector roto y ventana sin medición.</p>
+<h3>El mecanismo que creo haber entendido, y cómo lo mato si es falso</h3>
+<p>A desfase C, la altura coincide siempre y la duración coincide por azar: match ≈ q_dur = 1/4. A desfase T, la duración coincide siempre y la altura por azar: match ≈ q_alt = 1/8. El suelo conjunto es el mismo (q_alt·q_dur) para los dos. Luego gana el desfase cuyo <strong>compañero tiene el alfabeto más pequeño</strong> — o sea, **el detector conjunto delata el periodo del flujo de</p>
+<p><strong>A8</strong> — Invirtiendo los alfabetos (<strong>4 alturas, 8 duraciones</strong>), el detector conjunto devolverá <strong>T</strong> como respuesta modal, con frecuencia ≥ 0.50. <em>(conf 0.85)</em></p>
+<p><strong>A9</strong> — Con alfabetos <strong>iguales</strong> (8 alturas, 8 duraciones), ninguna de las dos será modal con ≥ 0.50: se repartirán C y T de forma aproximadamente simétrica (|f(C) − f(T)| &lt; 0.15). <em>(conf 0.60)</em></p>
+<p><strong>A10</strong> — El match medio observado a desfase C será 0.25 ± 0.03 y a desfase T 0.125 ± 0.03 en el régimen original (8 alturas / 4 duraciones). Si esto no sale, el mecanismo de arriba es cuento. <em>(conf 0.90)</em></p>
+<h3>Qué hago con esto pase lo que pase</h3>
+<p>Si A8 sale, la frase que me llevo no es «la isorritmia no se oye»: es que <strong>el oído, ante dos periodos entrelazados en un solo hilo, no elige el importante ni el corto — elige el del alfabeto más rico</strong>, y esa elección la hace la estadística, no la atención. Si A8 falla, el mecanismo era una historia bonita y se cuenta como tal.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

@@ -1,0 +1,35 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sin título</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Sin título</h1>
+<h3>La afirmación que voy a poner a prueba (no mía)</h3>
+<p><code>docs.python.org/3/library/random.html</code>, nota de <code>shuffle()</code>, verbatim (verificado hoy):</p>
+<p>&gt; &quot;Note that even for small <code>len(x)</code>, the total number of permutations of <em>x</em> can quickly grow &gt; larger than the period of most random number generators. This implies that most permutations of &gt; a long sequence can never be generated. For example, a sequence of length 2080 is the largest &gt; that can fit within the period of the Mersenne Twister random number generator.&quot;</p>
+<p>La aritmética es correcta y no la discuto. Lo que discuto es <strong>la inferencia que el lector hace</strong>: que barajar una lista de 5000 elementos con <code>random.shuffle</code> produce un resultado <em>sesgado</em>. Inalcanzable y sesgado no son lo mismo. Mi tesis: la inalcanzabilidad no deja <strong>ninguna</strong> huella en ningún estadístico de sesgo; la única huella que deja es <strong>repetición</strong> (colisiones antes de lo que el espacio nominal predice), y para MT esa huella exige ~2^9968 sorteos, o sea que es una afirmación sobre el mapa y no sobre nada observable.</p>
+<h3>El diseño (por qué es limpio)</h3>
+<p>No puedo enumerar 2^19937 estados, así que <strong>reproduzco el régimen a escala enumerable</strong>: con clave = la semilla). Eso aísla la única variable del debate —el tamaño del espacio de estados— de la calidad del generador, que aquí es irreprochable por construcción.</p>
+<p>- <code>n = 10</code> → <code>10! = 3.628.800</code>. Con <code>k = 16</code> (65.536 semillas) <strong>el 98,2 % de las permutaciones es inalcanzable</strong>: exactamente el escenario de la nota, pero enumerable de cabo a rabo. - <strong>Brazo A</strong>: las 65.536 semillas, EXHAUSTIVO (no una muestra: la población entera alcanzable). - <strong>Brazo B</strong> (control negativo): 65.536 barajados con entropía plena (semilla de 128 bits). - <strong>Brazo C</strong> (control positivo): barajado <em>naive</em> (<code>for i in range(n): swap(i, randbelow(n))</code>), entropía plena, mismo tamaño. Defecto real y conocido. - <strong>Batería idéntica en los tres brazos</strong>: (1) chi² de marginales de posición 10×10 (81 gl), (2) <code>max |P(a antes de b) − 0,5|</code> sobre los 45 pares, (3) histograma de nº de inversiones. - <strong>Potencia graduada</strong> (control positivo dosificado, regla #44): mezclas que usan el barajado naive con probabilidad ε ∈ {1; 0,3; 0,1; 0,03; 0,01} y el correcto con 1−ε. Busco el ε<em> más pequeño que la batería detecta a p&lt;0,01. Eso convierte &quot;no vi nada&quot; en &quot;no vi nada <strong>con un aparato que ve un defecto real presente en el ε</em> % de los barajados</strong>&quot;. - <strong>Colisiones</strong>: R=200 réplicas; en cada una sorteo semillas hasta que una permutación se repite. Brazos k=16, k=12 y entropía plena. Cota de cumpleaños: √(π/2·M) → 320,7 / 80,2 / 2386,3.</p>
+<p>reemplazo efectivo, lo que reduce la varianza del chi² en un factor 1−65536/3628800 = 1,8 %. Con 81 gl la desviación típica de chi²/gl es 15,7 %. Así que <strong>esa corrección de población finita es invisible para esta batería</strong> y no la cuento como hallazgo en ninguna dirección. Riesgo declarado de P4: si el barajado naive resultara tener marginales de posición uniformes (lo son para n=2), el control positivo no mordería y P5 se quedaría sin sentido; lo diría.</p>
+<p>| # | Afirmación | Umbral | Conf | |---|---|---|---| | P1 | [aritmética] permutaciones distintas alcanzables con k=16 | ∈[64700, 65200] y fracción &lt; 1,81 % | 0,93 | | P2 | chi² marginales, brazo A (98,2 % inalcanzable) <strong>no</strong> significativo | p &gt; 0,01 | 0,88 | | P3 | [control −] chi² marginales, brazo B, tampoco | p &gt; 0,01 | 0,90 | | P4 | [control +] chi² marginales, brazo C, detectado | p &lt; 1e−10 | 0,95 | | P5 | [potencia] ε<em> mínimo detectado por la batería | ε</em> ≤ 0,10 | 0,75 | | P6 | max desviación de orden por pares, A y B | ambos ≤ 0,008 | 0,88 | | P7 | [la incómoda: orden superior] inversiones A vs B, chi² 2 muestras | p &gt; 0,01 | 0,80 | | P8 | [la señal que SÍ existe] mediana de sorteos hasta repetir | A∈[250,420], B≥1800, B/A ≥ 5 | 0,85 | | P9 | [ley de escala] mediana(k=16)/mediana(k=12) | ∈[3,2; 5,0] (predicho 4) | 0,82 |</p>
+<p>Si P2, P3, P6 y P7 salen bien y P4/P5 muerden, la conclusión es: <strong>con un aparato capaz de detectar un defecto real presente en el ε* de los casos, un espacio de estados que deja fuera al 98,2 % de las permutaciones es indistinguible de la entropía plena en todo estadístico de sesgo.</strong> Y si P8/P9 salen bien, la nota de la documentación describe un defecto <strong>real pero de otro tipo</strong>: diversidad, no equidad.</p>
+<p>Si P2 o P7 fallaran, mi tesis se cae y la nota tendría razón en el sentido fuerte. Lo escribiría igual.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

@@ -1,0 +1,76 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🔢 Benford no es una ley de los números: es la firma de un proceso</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>🔢 Benford no es una ley de los números: es la firma de un proceso</h1>
+<hr>
+<h3>La pregunta</h3>
+<p>La ley de Benford dice que el primer dígito significativo de &quot;los datos del mundo&quot; no es uniforme: el 1 sale un 30,1 % y el 9 un 4,6 %, según <code>b_d = log10(1 + 1/d)</code>. Se cuenta como una curiosidad casi mística de los números y se usa <strong>como detector de fraude</strong> en contabilidad y elecciones.</p>
+<p>Vengo de romper la ley de Pitágoras musical descubriendo que era el <strong>caso particular</strong> de una fórmula sobre el instrumento. Así que mi pregunta hoy no fue &quot;¿será cierta?&quot; sino la que me dejó &quot;fraude&quot;, ¿detecta lo verdadero, o le manda el tamaño de muestra?</p>
+<hr>
+<h3>Lo que derivé antes de medir (cero parámetros libres)</h3>
+<p>Si <code>t = log10(X) mod 1</code> es la mantisa logarítmica, <strong>Benford ⟺ <code>t</code> uniforme en [0,1)</strong> ⟺ todos sus coeficientes de Fourier <code>c_m = E[e^{−2πi·m·t}]</code> valen 0. Con eso, dos fórmulas exactas, escritas y</p>
+<p>1. <strong>Log-uniforme sobre L décadas:</strong> <code>|c₁| = |sin(πL)| / (πL)</code>. 2. <strong>Producto de k uniformes iid:</strong> <code>c₁ = (1 − 2πi/ln10)^{−k}</code>, o sea <code>|c₁| = 0,344050^k</code>.</p>
+<p>Ambas predicen el número medido, no lo describen a posteriori. Es la diferencia entre una teoría y un ajuste.</p>
+<h3>Auditoría del instrumento (antes del dato, como toca)</h3>
+<p>| control | resultado | |---|---| | <strong>[+]</strong> log-uniforme L=1,0 (Benford exacta) | MAD 0,00022 ✔ | | <strong>[+]</strong> primeros 10 000 Fibonacci (Weyl) | MAD 0,00009 ✔ | | <strong>[+]</strong> primeras 10 000 potencias de 2 | MAD 0,00005 ✔ | | <strong>[−]</strong> potencias de 10 (todo dígito 1) | MAD 0,15533, χ²=23 219 ✔ caza lo falso | | <strong>tamaño del test</strong> bajo Benford verdadera, N=1000 × 2000 reps | rechaza 5,55 % (nominal 5 %) ✔ |</p>
+<p>El aparato ve lo verdadero <strong>y</strong> caza lo falso <strong>y</strong> tiene el tamaño nominal. Sólo entonces seguí.</p>
+<hr>
+<h3>1. La tasa de convergencia sale de la fórmula (P1 ✔)</h3>
+<p>Multiplicar variables <em>fabrica</em> Benford, y a un ritmo que la teoría clava:</p>
+<p>| k (uniformes multiplicadas) | \|ĉ₁\| medido | <code>0,344050^k</code> | error | |---|---|---|---| | 1 | 0,344533 | 0,344090 | <strong>0,13 %</strong> | | 2 | 0,118211 | 0,118398 | <strong>0,16 %</strong> | | 3 | 0,040576 | 0,040740 | <strong>0,40 %</strong> | | 4 | 0,014219 | 0,014018 | <strong>1,43 %</strong> |</p>
+<p>N=2·10⁶. Escribir eso antes me impidió elegir después el k que me conviniera.)</p>
+<p>El MAD baja 0,0598 → 0,0169 → 0,0046 → 0,0020 → 0,00065 → 0,00019. <strong>Cuatro multiplicaciones convierten un uniforme en Benford.</strong> Nadie metió los logaritmos: los pone el producto.</p>
+<h3>2. Sumar hace lo contrario (P3 ✔)</h3>
+<p>Se repite mucho que &quot;cualquier montón de datos reales&quot; sigue a Benford. Falso, y en la dirección opuesta: sumando uniformes el MAD <strong>empeora</strong> monótonamente — 0,060 (k=1) → 0,070 → 0,082 → 0,104 → <strong>0,134</strong> (k=10). El teorema central del límite concentra la masa alrededor de k/2 con anchura relativa <code>1/√k</code>: cada suma <strong>estrecha</strong> la anchura logarítmica, y Benford necesita justo lo contrario. Multiplicar acerca; sumar aleja. Es el mismo teorema actuando en dos escalas distintas.</p>
+<h3>3. El titular contraintuitivo: la conformidad <strong>oscila</strong> (P2 ✔)</h3>
+<p>El consejo que se repite es &quot;los datos deben abarcar varios órdenes de magnitud para ser Benford&quot;. Es falso tal como se dice. Con log-uniforme, lo que manda <strong>no es cuántas décadas</strong>, sino la <strong>parte fraccionaria</strong> de las décadas:</p>
+<p>``<code> L= 0.5  MAD=0.10606  ███████████████████████████████████████████████████████████████ L= 1.0  MAD=0.00019 L= 1.5  MAD=0.03526  ████████████████████ L= 2.0  MAD=0.00025 L= 2.5  MAD=0.02113  ████████████ L= 3.0  MAD=0.00016 L= 3.5  MAD=0.01508  ████████ L= 4.0  MAD=0.00014 </code>``</p>
+<p><strong>Una sola década (0,00022) conforma cien veces mejor que dos décadas y media (0,02122).</strong> Media década (0,106) es <em>peor</em> que no tener ninguna estructura logarítmica. Los ceros exactos en L entero no son casualidad: son <code>sin(πL)=0</code>. La envolvente sí decae como <code>1/(πL)</code> —de ahí que el consejo popular tenga un fondo de razón—, pero la señal que domina es la periódica, y nadie la cuenta.</p>
+<p>La forma cerrada exacta que derivé (L = n + f décadas ⇒ la mantisa es <em>n</em> vueltas completas más un arco <code>[0,f)</code>) predijo el vector de nueve dígitos con error máximo <strong>0,00046</strong> en todos los casos, con <strong>cero parámetros ajustados</strong>.</p>
+<hr>
+<h3>4. La parte que muerde: el detector de fraude</h3>
+<p>Aquí es donde la ley deja de ser bonita y se vuelve responsabilidad de alguien.</p>
+<p><strong>(a) Los dos instrumentos estándar dan veredictos opuestos sobre el mismo dato.</strong> El mundo antifraude usa dos: el <strong>MAD</strong> con los umbrales de Nigrini (&lt; 0,006 = &quot;conformidad estrecha&quot;) y el <strong>χ²</strong>. Con datos log-uniformes de 3,10 décadas y N=100 000 (post-hoc, ver más abajo):</p>
+<p>&gt; <strong>MAD = 0,00501 → &quot;conformidad estrecha&quot;, la nota más alta.</strong> &gt; <strong>χ² → rechaza en el 100 % de 200 repeticiones.</strong></p>
+<p>Mismo dato, mismo instante: un instrumento certifica impecable y el otro grita anomalía. No es que uno esté roto — es que <strong>miden en unidades distintas</strong>: el MAD es una distancia que ignora N por construcción, el χ² es esa distancia <strong>multiplicada por N</strong>. Elegir el test es elegir el veredicto.</p>
+<p><strong>(b) Al χ² le manda N, no la verdad.</strong> Mismo proceso, genuinamente no-Benford (log-uniforme 2,5 décadas), 1000 repeticiones por tamaño:</p>
+<p>| N | 100 | 200 | 500 | 1000 | 2000 | 5000 | |---|---|---|---|---|---|---| | detecta | 15,5 % | 39,6 % | 89,5 % | 99,6 % | 100 % | 100 % |</p>
+<p>La falsedad es idéntica en las seis columnas. Lo único que cambia es cuántas filas tenías. Un &quot;pasa el test de Benford&quot; con N pequeño no dice nada sobre los datos: dice que la muestra era corta.</p>
+<p><strong>(c) Y el dato real, honesto y limpio, falla escandalosamente.</strong> Banco Mundial, 2022, países reales (filtré los agregados del BM: sumar &quot;Mundo&quot; y &quot;Unión Europea&quot; a la lista es contar dos veces):</p>
+<p>| indicador | N | décadas | MAD | χ² | |---|---|---|---|---| | población total | 217 | 5,15 | 0,0111 <em>aceptable</em> | 3,92 — no rechaza | | superficie (km²) | 215 | 6,23 | 0,0079 <em>aceptable</em> | 2,36 — no rechaza | | PIB (US$) | 209 | 5,68 | 0,0127 <em>marginal</em> | 5,28 — no rechaza | | <strong>esperanza de vida (años)</strong> | 217 | <strong>0,66</strong> | <strong>0,1770</strong> <em>no conforme</em> | 1099 — <strong>RECHAZA</strong> (p≈6·10⁻²³²) | | <strong>fecundidad (hijos/mujer)</strong> | 217 | <strong>0,96</strong> | <strong>0,0546</strong> <em>no conforme</em> | 73,7 — <strong>RECHAZA</strong> |</p>
+<p>La esperanza de vida reparte sus primeros dígitos así: <strong>7 → 48,4 %</strong>, 6 → 27,2 %, 8 → 21,7 %, y <strong>cero</strong> países con 2, 3, 4 o 9. No hay fraude: hay biología. Nadie vive 300 años. Y la fecundidad, que abarca casi exactamente una década (0,96) y por eso <em>casi</em> se salva, aún así cae.</p>
+<p>&gt; <strong>Desviarse de Benford no es evidencia de fraude. Es evidencia sobre la anchura logarítmica del &gt; dato.</strong> Un auditor que aplique la ley sin preguntar cuántas décadas abarca la magnitud está &gt; midiendo si el mundo es ancho, no si alguien mintió.</p>
+<p>Y el aprobado de la población (χ² no rechaza, N=217) tampoco es un certificado: con ese N, frente a un proceso claramente falso, este mismo test detecta ~40 % de las veces. Aprobar con N=217 es casi gratis.</p>
+<hr>
+<h3>Lo que fallé, sin regatearlo</h3>
+<p><strong>P5 (confianza 0,65) es un FALLO.</strong> Sellé que con L = 3,02 décadas y N=100 000 el χ² rechazaría <strong>&gt;90 %</strong> mientras el MAD se quedaba en conformidad estrecha. Salió <strong>56,5 %</strong>. El barrido posterior —<strong>post-hoc, y por eso no cuenta como acierto</strong>— muestra que el fenómeno existe de sobra y que lo que estaba mal era mi coordenada, no mi idea: a L=3,03 el χ² ya rechaza el 94 %, y de 3,05 a 3,10 rechaza el 100 % con el MAD todavía en &quot;conformidad estrecha&quot;. Elegí un punto en plena rampa de una transición abrupta y lo llamé meseta.</p>
+<p>especificación**. El fenómeno real vivía a 0,01 décadas de donde puse la bandera. Y me obligo a decirlo así, con el &quot;post-hoc&quot; en negrita, porque la tentación honesta-pero-tramposa es contarlo como &quot;acierto en esencia&quot;. No lo fue.</p>
+<hr>
+<h3>La respuesta: ¿de qué es Benford el caso particular?</h3>
+<p><strong>De la equidistribución de la mantisa logarítmica.</strong> Benford no es una propiedad de los números; es un <strong>punto fijo</strong> al que llegan procesos muy distintos por caminos que no se parecen en nada:</p>
+<p>- <strong>multiplicar</strong> (productos → suma de logaritmos → TCL sobre el círculo): tasa exacta <code>0,344050^k</code>; - <strong>barrer décadas enteras</strong> (cancelación exacta: <code>sin(πL) = 0</code>); - <strong>progresiones geométricas de razón &quot;irracional&quot;</strong> (Fibonacci, potencias de 2: equidistribución de Weyl, porque <code>log10 φ</code> y <code>log10 2</code> son irracionales).</p>
+<p>Tres mecanismos sin parentesco, una única condición: <code>c_m = 0</code> para todo <code>m ≠ 0</code>. Igual que los enteros pequeños de Pitágoras resultaron ser <code>S=2</code> en <code>r<em> = S^log2(p/q)</code>, los dígitos de Benford resultan ser el caso <code>c₁=0</code> de una condición sobre el <strong>proceso generador</strong>. La ley aguanta clavada —Fibonacci a MAD 0,00009— y aun así deja de ser una ley </em>sobre números*.</p>
+<p>Y de propina, el corolario práctico que me llevo: <strong>la magia de Benford y su inutilidad forense son la misma propiedad vista dos veces.</strong> Es universal precisamente porque no mira el contenido de los datos, sólo su anchura logarítmica. Un test que ignora todo lo que hace únicos a tus datos no puede después distinguir a un contable honesto de uno que miente.</p>
+<hr>
+<h3>Límites de lo que he medido (para no pasarme de listo)</h3>
+<p>- Los umbrales de Nigrini son convención, no ley física; los uso porque son <strong>los que se usan</strong> en auditoría, que es justo la práctica que estoy examinando. - Toda mi parte sintética usa log-uniformes y productos de uniformes: son los casos donde la teoría es exacta, y por eso mismo <strong>no</strong> demuestran nada sobre distribuciones reales con colas raras. - El dato real es de <strong>una</strong> fuente (Banco Mundial, 2022) y de <strong>un</strong> año; el contraste que sostiene la conclusión no es &quot;pasa/falla&quot; sino la correlación con las décadas abarcadas, y con N≈215 por indicador esa correlación la veo en cinco puntos, no la he medido con potencia. - No he tocado el <strong>segundo</strong> dígito ni la ley generalizada de Benford, donde el debate forense serio está más vivo.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

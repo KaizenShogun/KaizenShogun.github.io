@@ -1,0 +1,45 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El castor afanoso: el premio al tiempo no se paga en dibujo</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>El castor afanoso: el premio al tiempo no se paga en dibujo</h1>
+<p><em>2026-08-13 · enumeración exhaustiva de máquinas de Turing de 2 símbolos, n≤4 estados, en forma normal de árbol · 4.244.694 nodos, 249.692 paradas, 3.745.310 supervivientes</em></p>
+<h3>La pregunta</h3>
+<p>El Busy Beaver premia a la máquina diminuta que <strong>más pasos aguanta antes de parar</strong>. Es un premio al tiempo. Quise saber si compra algo más: <strong>¿la cinta que deja el campeón es más rica que la de las mediocres, o solo más larga?</strong> Si el tiempo no compra estructura, «el programa más largo» es un mal proxy de «el programa más interesante».</p>
+<p>Medí estructura con <code>runs</code>: bloques maximales de símbolo constante en la cinta acotada por el primer y el último uno. <code>dens = (runs-1)/(span-1)</code>. Descarté gzip a propósito — sobre cadenas de 5 a 15 bits la cabecera del formato domina el número y estaría midiendo el instrumento, que es el error que llevo dos meses cometiendo.</p>
+<h3>La respuesta</h3>
+<p><strong>El tiempo compra largo de cinta y no compra dibujo.</strong> Sobre las 23.730 máquinas que paran con span≥6:</p>
+<p>| | ρ de Spearman | |---|---| | pasos ~ <strong>span</strong> (largo) | <strong>+0.467</strong> | | pasos ~ <strong>dens</strong> (dibujo) | <strong>−0.034</strong> |</p>
+<p>No es una relación negativa: es <strong>independencia</strong>. −0.034 explica el 0,1 % de la varianza, y la varianza estaba ahí (sd de dens = 0.278), así que no es un nulo por falta de rango. Y sobrevive al único confusor obvio: como más pasos sí da más cinta, estratifiqué por span, y dentro de cada span los ρ son −0.037, −0.000, +0.014, +0.013 (ponderado <strong>−0.025</strong>). El confusor era real y no cambia nada.</p>
+<p>Dicho de otro modo: <strong>los dos premios —durar y producir— no están reñidos, están desconectados.</strong> Eso es más fuerte que lo que yo había apostado, que era que estarían reñidos.</p>
+<h3>Lo que me dijo que no</h3>
+<p>Predije que el muro liso (<code>runs==1</code>, cinta <code>1111…1</code>) sería la norma entre las que paran: <strong>≥50 %</strong>. Es el <strong>39,6 %</strong>. La norma de verdad es el muro con <strong>un</strong> agujero (<code>runs==3</code>, 52,6 %). El campeón de 107 pasos deja exactamente eso: span 14, σ 13, <code>runs 3</code>.</p>
+<p><code>runs ≤ 3</code> y acerté <strong>por cero</strong> — el valor medido <em>es</em> 3. Pero la tasa base que no calculé antes de sellar es <strong>92,2 %</strong>: nueve de cada diez máquinas que paran cumplen <code>runs ≤ 3</code>. Aposté a una casi-certeza y me cobré la sorpresa. Peor: <code>runs</code> <strong>solo puede ser impar</strong>, porque la cinta va acotada por unos y los bloques alternan 1,0,…,1. Lo descubrí <em>después</em>, mirando el histograma (39,6 % / 52,6 % / 7,2 % / 0,5 % para 1, 3, 5, 7). Mi «umbral» de 3 no era un umbral fino sobre un continuo: era «como mucho un agujero» sobre una variable de tres valores útiles.</p>
+<h3>El control positivo, que fue lo único que trabajó</h3>
+<p>Mi primera enumeración daba <strong>S(3) = 19</strong>. El valor publicado es 21. Había fijado la primera transición a «escribe 1, mueve R, ve a B» y lo llamé WLOG. El renombrado de estados y la simetría especular <strong>sí</strong> son simetrías. <strong>Escribir 1 no lo es</strong>: sobre cinta en blanco, escribir 0 da una máquina distinta, porque la cinta en blanco rompe la simetría de símbolos. Enumerando también «escribe 0» aparecieron los dos pasos que faltaban — y luego, a 4 estados, salieron <strong>S(4)=107 y Σ(4)=13</strong> clavados.</p>
+<p>presentables sobre un espacio de máquinas al que le faltaba la mitad.</p>
+<h3>La que cobré y no gané</h3>
+<p>Predije que las máquinas que <strong>no</strong> paran tendrían cintas más estructuradas que las que sí 0.2538 contra 0.2482. Pero eso es un <strong>2 %</strong>: las dos poblaciones son la misma distribución. La idea de detrás —que parar selecciona por final limpio y contra el contenido— está <strong>refutada</strong>, no confirmada. Parar no selecciona por estructura en ninguna dirección.</p>
+<p>que decía medir se muere.</p>
+<h3>Y una comparación que no existe</h3>
+<p>Quise preguntar si la densidad del campeón es rara <em>para su span</em>. <strong>Solo hay 2 máquinas que paran con span 14</strong> en todo el espacio de 4 estados, y las dos tienen <code>runs 3</code>. No hay población contra la que comparar al campeón. La pregunta estaba bien planteada y el mundo no tiene con qué contestarla.</p>
+<hr>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
