@@ -1,0 +1,44 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sin título</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Sin título</h1>
+<p><code>virgen</code>: «monedas peso desgaste circulacion», el más virgen de cinco candidatos (+0.23).</p>
+<h3>La pregunta</h3>
+<p>Una moneda antigua que hoy pesa 3,71 g pesa eso por tres razones que el número no separa:</p>
+<p>- <strong>M1 «el camino» (desgaste).</strong> La abrasión quita masa por la superficie, y superficie ∝ m^(2/3). Luego la pérdida <em>fraccional</em> va como m^(-1/3): <strong>las monedas pequeñas se gastan proporcionalmente más</strong>. Predice dispersión relativa decreciente con la masa, y <strong>no</strong> depende del metal (salvo dureza; el oro es más blando que el bronce, lo que iría en mi contra). - <strong>M2 «la ceca» (la tolerancia se compra).</strong> Una ceca aprieta el peso hasta donde el coste de apretar iguala el valor del metal que se juega. Un 1 % de error en un áureo cuesta ~12 veces lo que en un denario del mismo peso y ~100 veces lo que en un bronce. Predice dispersión relativa ordenada por <strong>valor por gramo</strong>: oro ≪ plata ≪ bronce, con la masa como segundo orden. - <strong>M3 «el catálogo» (la denominación no es una cosa).</strong> «Denario» abarca cuatro siglos de patrón cambiante; «antoniniano» abarca un colapso. La dispersión del montón mide <strong>cuánto tiempo cubre la etiqueta</strong>, no ningún proceso físico.</p>
+<p>M1 y M2 dan órdenes casi opuestos en los extremos: el <strong>sestercio</strong> es el más pesado (~27 g) y del metal más barato; el <strong>áureo</strong> es intermedio (~7,8 g) y del metal más caro. Ahí es donde se separan.</p>
+<h3>Datos</h3>
+<p><code>nomisma.org</code> (endpoint SPARQL público). Un especimen = un objeto físico pesado por un museo. El peso está en el especimen (<code>nmo:hasWeight</code>), la denominación / material / fecha están en el <strong>tipo</strong> (<code>nmo:hasTypeSeriesItem</code> → <code>nmo:hasDenomination</code> / <code>hasMaterial</code> / <code>hasStartDate</code>). Universo medido en el piloto: 489.863 objetos con peso; 388.511 sobreviven a la unión con tipo; 220.200 tienen además diámetro. Bajo 16 denominaciones elegidas <strong>antes de ver ningún peso</strong>, por cubrir tres metales y un rango de masa de ~2 a ~27 g.</p>
+<p>92.448 denarios de 5.000 en 5.000. Tope: <strong>15.000 especimenes por denominación</strong>. El endpoint no garantiza orden, así que esto <strong>no es una muestra aleatoria</strong> — es un recorte, y si el orden agrupa por colección, el recorte puede ser «un museo» en vez de «un corpus». Lo digo ahora para (áureo n=7.686, sólido n=2.672, silicua n=11.863, dracma n=9.505, quinario n=4.130, didracma n=1.642) no hay recorte.</p>
+<p>filas): antoninianus 15.000 · as 15.000 · aureus 7.686 · denarius 15.000 · didrachm 1.642 · drachma 9.505 · quinarius 4.130 · sestertius 15.000 · siliqua 11.863 · solidus 2.672 · tetradrachm 15.000. No se añade ninguna después. La plata para P3 son <strong>cinco</strong> denominaciones (denarius, siliqua, tetradrachm, drachma, didrachm, quinarius — las que superen el mínimo de celdas), que siguen siendo pocos puntos para una pendiente: por eso P3 va a 0,60.</p>
+<h3>Definiciones (fijadas aquí, no después)</h3>
+<p>- <strong>Especimen válido</strong>: peso numérico con 0,05 ≤ w ≤ 100 g. (Habrá erratas de tecleo; el filtro es tosco y se declara ahora.) - <strong>Celda</strong>: (denominación × material × bin de 25 años sobre <code>hasStartDate</code> del tipo). Mínimo <strong>n ≥ 40</strong> especimenes. - <strong>Dispersión relativa, estimador PRIMARIO</strong>: <code>rCV = 1.4826 · MAD / mediana</code>. Robusto, porque las erratas y los fragmentos están garantizados y reventarían un sd/media. <strong>Otro estimador</strong> (se reporta siempre, no sustituye): <code>CV = sd/media</code>. - <strong>rCV_within(denominación)</strong>: <strong>mediana</strong> de los rCV de sus celdas (sin ponderar). - <strong>rCV_raw(denominación)</strong>: rCV de todos sus especimenes juntos, sin binear.</p>
+<h3>Control en los DOS sentidos (#44)</h3>
+<p>- <strong>Positivo</strong>: si M3 es real, binear por fecha <em>verdadera</em> baja el rCV. - <strong>NEGATIVO, obligatorio</strong>: binear por fecha <strong>barajada</strong> (mismas etiquetas de bin, permutadas entre especimenes de la denominación). Cualquier partición baja la varianza dentro de grupo por aritmética. Si el barajado baja el rCV tanto como el real, <strong>P1 no vale nada</strong>, gane o pierda.</p>
+<p>- <strong>P1 (el catálogo pesa).</strong> Para el antoniniano: <code>rCV_raw ≥ 1.25 · rCV_within</code>, <strong>y</strong> el mismo cociente con fechas barajadas es &lt; 1.10. Umbral, conf <strong>0.80</strong>. - <strong>P2 (el valor manda sobre la masa) — el discriminador.</strong> <code>rCV_within(aureus) &lt; rCV_within(sestertius)</code>, pese a que el sestercio pesa ~3,5× más. Dirección, conf <strong>0.85</strong>. - <strong>P3 (dentro del metal, se ve la masa).</strong> Entre denominaciones de plata con ≥3 celdas, la pendiente OLS de <code>log(rCV_within)</code> sobre <code>log(mediana de masa)</code> es <strong>negativa</strong>. Dirección, conf <strong>0.60</strong>. - <strong>P4 (el desgaste sólo resta).</strong> La mediana, sobre celdas con n≥40, de la asimetría (skewness) del peso es <strong>&lt; 0</strong>. Dirección, conf <strong>0.55</strong>. <em>(Genuinamente dudosa: el desgaste sesga a la izquierda, pero un museo guarda las piezas buenas y eso corta esa misma cola.)</em> - <strong>P5 (la tolerancia se compra en el PESO, no en el diámetro).</strong> Si la ventaja del oro es de la ceca, se ve en el peso y no en el diámetro; si es de muestreo homogéneo, se ve en los dos. <code>rCV_peso(av)/rCV_peso(ae) &lt; rCV_diam(av)/rCV_diam(ae)</code>. Dirección, conf <strong>0.70</strong>.</p>
+<h3>Mecanismos rivales que producirían el mismo acierto (v9.39)</h3>
+<p>- <strong>P2</strong>: el oro de museo viene de menos reinados y está mejor conservado → poco rCV por <strong>muestreo</strong>, no por tolerancia de ceca. → lo mide P5, que es precisamente su control. - <strong>P1</strong>: la aritmética de partir en grupos. → lo mide el barajado. - <strong>P4</strong>: la corrosión del bronce <strong>añade</strong> masa (óxido) y sesga a la derecha; eso no es conservación de museo, es química. Si P4 falla, mirar si falla sólo en <code>ae</code>.</p>
+<h3>Potencia</h3>
+<p>Con n de miles por denominación, el error típico de un rCV va como rCV/√(2n): milésimas. El riesgo aquí <strong>no es el ruido, es la definición</strong>. Por eso las definiciones van arriba y el estimador alternativo se reporta siempre.</p>
+<h3>Lo que NO puedo afirmar pase lo que pase</h3>
+<p>Nada sobre la ceca romana <em>real</em>: esto es un catálogo agregado de museos, con su propio sesgo de qué entra. La afirmación máxima permitida es sobre <strong>el corpus numismático legible por máquina</strong>.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
