@@ -1,0 +1,41 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sin título</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Sin título</h1>
+<h3>Qué pregunto</h3>
+<p>La fórmula de Sabine (1895) dice cuánto tarda una sala en olvidar:</p>
+<p>T60 = 0.161 · V / A ,   A = Σ Sᵢ·αᵢ</p>
+<p>No lleva forma (sólo el volumen) ni mapa (sólo la <strong>suma</strong> de la absorción). Dos salas con otra un pasillo, y aunque una reparta la absorción por las seis caras y la otra la amontone en una. Quiero ver dónde se rompe eso y <strong>de qué tamaño</strong> es la rotura.</p>
+<h3>Instrumento</h3>
+<p>reflexión especular, absorción declarada <strong>por pared</strong>. Es la solución exacta de la acústica geométrica en un shoebox: no promedia direcciones, calcula cada camino. Precisamente por eso puede contestar lo que Sabine no: Sabine <em>asume</em> campo difuso, la fuente imagen no.</p>
+<p>recta de mínimos cuadrados entre −5 y −25 dB (T20) y entre −5 y −35 dB (T30), extrapolada a 60 dB. <code>fs</code>=16 kHz, <code>c</code>=343 m/s, 2,5 s de cola simulada.</p>
+<p><strong>Límite conocido y declarado:</strong> un shoebox especular es el caso <em>menos</em> difusor posible. Una sala real con muebles dispersa y se acerca más a Sabine. Todo lo que mida aquí es una <strong>cota superior</strong> del error de Sabine, no el error típico de una sala de verdad.</p>
+<h3>Casos (V = 100 m³ y A = 20 sabins en A, B, C, D → Sabine dice 0,805 s en los cuatro)</h3>
+<p>| | geometría | absorción | |---|---|---| | A | cubo 4,64³ | α = 0,155 en las 6 caras | | B | pasillo 20 × 2,5 × 2 | α = 0,105 en las 6 caras | | C | cubo 4,64³ | α = 0,929 en <strong>una</strong> pared, 0 en las otras cinco | | D | cubo 4,64³ | α = 0,464 en <strong>dos paredes opuestas</strong>, 0 en las otras cuatro | | E | cubo 4,64³ | barrido α uniforme ∈ {0,05 … 0,95} |</p>
+<p>- <strong>P1</strong> (0,72) — <em>La forma importa aunque la fórmula no la mire.</em> En B, T30 &gt; 1,25 × Sabine. Mecanismo: el modo axial largo sólo choca con las dos paredes de los extremos (5 m² cada una de 190 m² totales); su camino libre medio es enorme y decae despacio. - <strong>P2</strong> (0,80) — <em>Amontonar no es repartir, y el decaimiento deja de ser una recta.</em> En C, T30 ≥ 1,5 × T20. Mecanismo: la energía que va paralela a la pared absorbente no la toca nunca; hay dos poblaciones de rayos con vidas distintas y su suma no es una exponencial. - <strong>P3</strong> (0,60) — <em>Ni siquiera el caso amable es difuso.</em> En A (el mejor caso posible para Sabine: cubo, absorción repartida), |T30 − Sabine| / Sabine &gt; 0,15. - <strong>P4</strong> (0,85) — <em>El límite absurdo.</em> En E con α = 0,95, Sabine predice 0,124 s para una sala que casi no refleja; Eyring predice 0,028 s. El T20 medido estará más cerca de Eyring que de Sabine.</p>
+<h3>Qué contaría como sorpresa</h3>
+<p>Que C decaiga como una recta. Sería decir que la difusión la fabrica la geometría del cubo sola, sin ayuda de la distribución de absorción, y eso me obligaría a reescribir el mecanismo, no el número.</p>
+<h3>Otro estimador que descarté</h3>
+<p>Podría medir el decaimiento con <strong>regresión sobre la envolvente de Hilbert</strong> en vez de la integración de Schroeder. Sello Schroeder porque es el estándar (ISO 3382) y porque la integración hacia atrás elimina el ruido de la fluctuación modal que la envolvente sí tiene; en el caso C, donde espero <strong>dos</strong> pendientes, la envolvente cruda me daría una nube y no una curva. Contrapartida conocida y aceptada: Schroeder de una RIR <strong>truncada</strong> dobla la cola hacia abajo, así que además de T20/T30 registro <strong>energía en bloques de 50 ms</strong>, que no depende del truncado, y es lo que miro para juzgar la <em>forma</em> del decaimiento.</p>
+<h3>Unidades</h3>
+<p>T20/T30/Sabine/Eyring en <strong>segundos</strong>. α es absorción de <strong>energía</strong> (el coeficiente de reflexión en presión es √(1−α); confundirlos es un factor 2 en dB). A en m² sabin. Las comparaciones son razones adimensionales, así que no dependen de fs ni de la escala de h.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

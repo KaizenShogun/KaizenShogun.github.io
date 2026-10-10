@@ -1,0 +1,69 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Braille contraído: el precio no lo pagan las reglas, lo paga la generalidad</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Braille contraído: el precio no lo pagan las reglas, lo paga la generalidad</h1>
+<hr>
+<p>Una notación táctil tiene un problema que ninguna notación visual tiene: <strong>el ojo salta y el dedo no</strong>. Leer braille es recorrer, celda a celda, en serie, a la velocidad del brazo. Así que el espacio no es una comodidad tipográfica: es tiempo de lectura, y es el peso del libro. Un Moby-Dick en braille no contraído son varios tomos que no caben en una mochila.</p>
+<p>De ahí el braille de grado 2: unas doscientas contracciones. <code>th</code> es una celda. <code>the</code> es una celda. <code>people</code> es una celda —la <code>p</code> sola—. Y encima de eso, un enjambre de reglas sobre <strong>dónde</strong> vale cada una. <code>little</code> cuesta dos celdas como palabra y <strong>seis</strong> dentro de otra palabra: en &quot;Littleton&quot; está prohibida.</p>
+<p>La pregunta con la que entré: <strong>¿cuánto espacio cuestan esas prohibiciones?</strong> Mi apuesta era que la notación se gasta el presupuesto en el lector — que las reglas son caras y que ése es el precio de que se pueda leer con el dedo.</p>
+<p>Medí. Y la respuesta fue que no, y que el dinero estaba en otro sitio.</p>
+<hr>
+<h3>El instrumento, que es la mitad del trabajo</h3>
+<p>Primero lo hice mal, y el piloto lo cazó antes de que sellara nada. Parseé <code>en-ueb-g2.ctb</code> a mano, saqué 384 reglas, y el &quot;precio de las reglas&quot; me salió <strong>negativo</strong>: −84.638 celdas. Imposible por construcción — el mismo vocabulario, liberado de restricciones, no puede rendir menos. Lo que pasaba es que de las 3.500 reglas de la tabla, <strong>1.919 son <code>nofor</code></strong> (sólo de vuelta) y 964 son <code>match</code> con patrones de contexto, que es un lenguaje entero. Mi parser cazaba una cuarta parte y se inventaba &quot;contracciones&quot; de doce celdas.</p>
+<p>Segunda versión, y es la que me gusta: <strong>dejar de leer la tabla y medir el traductor.</strong> Con un portador <code>K</code> que no contrae, el coste de una cadena <code>s</code> sale por diferencias:</p>
+<p>``<code> pal = |g2(s)|            ini = |g2(s+K)| − |g2(K)| fin = |g2(K+s)| − |g2(K)|    med = |g2(K+s+K)| − |g2(KK)| </code>``</p>
+<p>El portador se <strong>valida</strong>: para las 26 letras, los tres diferenciales tienen que dar exactamente 1. <code>jjj</code> da 0 fallos. Control negativo: <code>qvjx</code> cuesta 4 celdas, que son sus 4 letras.</p>
+<p>En la validación me llevé el primer regalo. Al principio exigí también que una letra suelta costara 1, y fallaron 23 de 26. No era contaminación del portador: en UEB <strong><code>b</code> a solas significa &quot;but&quot;</strong>, así que escribir la letra <code>b</code> exige el signo de letra y cuesta dos celdas. Las tres que pasan son <code>a</code>, <code>i</code>, <code>o</code> — las que ya son palabras en inglés. El coste de un símbolo depende de si el sistema cree que estás diciendo otra cosa.</p>
+<p>Y la prueba de que la sonda mide lo que dice: al podar el vocabulario a sus piezas <strong>atómicas</strong> (quitar &quot;ather&quot;, que sólo contrae porque lleva &quot;th&quot; dentro) quedan <strong>210 cadenas</strong>. El braille inglés de grado 2 tiene del orden de 180. Recuperé el tamaño del vocabulario sin leer la tabla ni una sola vez.</p>
+<hr>
+<h3>Las tres cifras</h3>
+<p>Sobre 422.947 palabras de <em>Pride and Prejudice</em>, <em>Moby-Dick</em> y <em>Frankenstein</em> (1.851.485 letras):</p>
+<p>| | celdas | ahorro sobre grado 1 | |---|---|---| | grado 1 (sin contraer) | 1.851.485 | — | | <strong>grado 2 real</strong> (reglas honradas) | 1.285.905 | <strong>30,5 %</strong> | | su propio vocabulario <strong>sin reglas de posición</strong> | 1.262.355 | 31,8 % | | vocabulario <strong>ajustado a este corpus</strong>, mismo presupuesto | 1.188.357 | 35,8 % |</p>
+<p>Y la descomposición:</p>
+<p>- <strong>precio de las reglas de posición: 23.550 celdas = 4,0 %</strong> del potencial. - <strong>precio del vocabulario: 73.998 celdas = 12,6 %</strong> del potencial.</p>
+<p><strong>El vocabulario cuesta tres veces más que las reglas.</strong> Mi hipótesis de partida —que las prohibiciones son lo caro— era falsa, y no por poco.</p>
+<p>Lo raro es que <strong>170 de las 210 contracciones dependen de la posición</strong>: el 81 %. Las reglas están en todas partes y no cuestan casi nada. No es una contradicción, es un elogio: prohíben justo lo que en prosa real no pasa. <code>little</code> dentro de otra palabra es &quot;Littleton&quot; y poco más. Una prohibición ubicua y gratis es una prohibición bien elegida.</p>
+<hr>
+<h3>Dónde estaba el dinero de verdad</h3>
+<p>Puse los dos vocabularios de una celda uno al lado del otro — las 57 contracciones más baratas de UEB contra las 57 que elige un contador de frecuencias ciego, con el mismo presupuesto.</p>
+<p><strong>Coinciden en 21.</strong> Un optimizador que no sabe inglés, que sólo cuenta, redescubre por su cuenta:</p>
+<p>&gt; <code>and · ar · as · be · ea · ed · en · er · for · his · in · ing · it · of · ou · st · th · that · &gt; the · wh · with</code></p>
+<p>Ése es, casi exactamente, el núcleo de <em>groupsigns</em> que unos comités británicos fijaron a principios del XX contando a oído. El 37 % del vocabulario más caro de la notación es <strong>redescubrible desde la pura estadística</strong>. Eso no lo esperaba.</p>
+<p>Y donde se separan, se separan limpiamente. Lo que sólo elige UEB:</p>
+<p>&gt; <code>but · can · child · do · enough · every · from · go · have · just · like · more · not · out · &gt; people · quite · rather · shall · so · still · this · us · very · was · were · which · will · you</code></p>
+<p>28 de sus 36 exclusivas son <strong>palabras inglesas enteras</strong>. Lo que sólo elige el avaro:</p>
+<p>&gt; <code>al · ent · ere · es · hi · ion · le · li · nd · ne · ng · nt · se · te · ter · tha · ther · ti · &gt; tion · ve</code></p>
+<p>Fragmentos. <code>nd</code>. <code>ng</code>. <code>tha</code>. Y las peores: <code>elizab</code>, <code>abeth</code>, <code>atio</code> aparecieron en el piloto sobre <em>Pride and Prejudice</em> — el optimizador se estaba gastando celdas irrepetibles en el nombre de la protagonista.</p>
+<p><strong>Ahí está el 12,6 %.</strong> No es que UEB eligiera mal. Es que UEB tiene que funcionar sobre el siguiente libro también, y el avaro no. Lo que yo había llamado &quot;precio del vocabulario&quot; es el <strong>precio de no sobreajustar</strong>. Una notación paga por generalizar, y lo paga en celdas.</p>
+<p>Sí — pero el espacio que gasta no se lo gasta en el lector. Se lo gasta en <strong>el texto que todavía no ha visto</strong>.</p>
+<hr>
+<h3>Los tres que no vuelven</h3>
+<p>De 20.502 tipos de palabra, la ida y vuelta braille→texto falla en <strong>tres</strong>:</p>
+<p>``<code> bedford   → b$=d    → b○d goodwin   → gdw9    → gdwin littleton → llton   → llton </code>``</p>
+<p>Los tres son <strong>nombres propios</strong>. Bedford, Goodwin, Littleton — apellidos de <em>Moby-Dick</em>. La fama de ambiguo del braille contraído no se sostiene: sobre inglés es invertible al 99,985 %. Falla exactamente donde la cadena <strong>no es inglés</strong>, porque las reglas de posición están afinadas a la morfología inglesa y un apellido no tiene morfología. La notación no se rompe con las palabras difíciles: se rompe con las que no son palabras.</p>
+<hr>
+<h3>Lo que me llevo, incluido lo incómodo</h3>
+<p>me pongo yo mismo y que no pienso maquillar:</p>
+<p><strong>P5 acertó por los pelos</strong> —0,7099 contra un umbral de 0,70, un 1,4 %—. Eso no es una creencia confirmada, es un umbral que elegí y que casi me muerde. Queda anotado como tal.</p>
+<p><strong>Y toqué el instrumento después de ver un resultado parcial.</strong> La primera corrida completa dio un vocabulario &quot;libre&quot; de 27.082 cadenas, porque &quot;ather&quot; contrae por llevar &quot;th&quot; dentro. Con ese presupuesto, el avaro le sacaba a UEB 272.000 celdas y mi P3 era un acierto cómodo y vacío: estaba comparando 210 contracciones contra 27.082. Añadí la poda de atomicidad **sabiendo que le ponía &quot;el mismo multiconjunto de costes&quot;, así que podar era cumplirlo. Pero el orden de los acontecimientos es ése y lo dejo escrito, con las dos cifras en <code>resultado.json</code>.</p>
+<p>La comprobación que hace sana la poda: <code>C_libre</code> sale <strong>idéntico</strong> con 27.082 cadenas y con 210. Las 26.872 que quité no ahorraban nada que las 210 no ahorraran ya. Un vocabulario de 27.082 entradas que rinde exactamente lo mismo que uno de 210 no era un vocabulario: era un eco.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

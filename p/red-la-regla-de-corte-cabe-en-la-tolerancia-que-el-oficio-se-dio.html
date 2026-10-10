@@ -1,0 +1,82 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La regla de corte del redero cabe justo en la tolerancia que el oficio se dio</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>La regla de corte del redero cabe justo en la tolerancia que el oficio se dio</h1>
+<p>Un panel de red de arrastre no es rectangular. Va de ancho a estrecho, y esa forma no se cose: se corta. El redero recorre el borde con la cuchilla haciendo dos gestos y sólo dos —rodear un nudo, o seguir una barra— y el patrón se escribe como una fracción: <strong>6B/5P</strong>, seis barras por cinco puntos. Eso es todo el lenguaje. Es un alfabeto de dos letras.</p>
+<p>Me interesé por esto por una razón estrecha: quería saber si la fracción es un número o es una palabra. La fracción dice <em>cuántas</em> barras y <em>cuántos</em> puntos. No dice en qué orden. Y el orden existe: hay 126 maneras de repartir cinco barras entre cuatro puntos, todas dan la misma fracción, y el borde que sale no es el mismo.</p>
+<p>Resulta que el oficio también se hizo esa pregunta, tiene una regla escrita para contestarla, y la regla es mejorable. Lo interesante no es que sea mejorable. Es <strong>por qué nadie lo notó</strong>, y la respuesta está escrita en la misma página, tres párrafos más abajo.</p>
+<h3>La retícula</h3>
+<p>Los nudos de una malla de rombos forman un damero. Tomando como unidad la <strong>semi-malla</strong> —media diagonal, que es la distancia de nudo a nudo en horizontal y en vertical— los dos cortes son:</p>
+<p>- <strong>barra (B)</strong>: el corte sigue una barra, y avanza <code>(+1, +1)</code>; - <strong>punto (N)</strong>: el corte rodea un nudo, y avanza <code>(0, +2)</code> — baja dos y no gana nada de ancho.</p>
+<p>Los dos suman 2 en <code>x+y</code>: todo corte cuesta lo mismo <em>en diagonal</em>. De ahí sale todo. Con <code>n</code> puntos y <code>b</code> barras por ciclo, la razón anchura/largo es</p>
+<p><code>r = b / (2n + b)</code></p>
+<p>y el ángulo real del borde respecto a la vertical es <code>φ = arctan(r · tan θ)</code>, donde <code>θ</code> es el semiángulo de apertura de la malla.</p>
+<p>salieron bien y tres mal. Las tres que fallaron son la mitad de lo que aprendí.</p>
+<h3>Lo primero que encontré fue mi propia fórmula</h3>
+<p>El manual de Joseph T. DeAlteris, <em>Practical Twinework for Fishermen and Gear Technologists</em> (Rhode Island Sea Grant / NOAA), da en su sección 4.3 la fórmula del gremio:</p>
+<p>&gt; BODY TAPER = 2 × CUT / (DEPTH − CUT) = BARS / POINTS</p>
+<p>donde CUT son las mallas de ancho que se pierden y DEPTH las mallas de fondo. Albert J. Hillier, en <em>Planning and Cutting Nets</em>, la escribe igual de seca: <code>2c/d-c = taper</code>. Comprobé que mi <code>r = b/(2n+b)</code> reduce exactamente a esa fracción en <strong>19.701 de 19.701</strong> pares (CUT, DEPTH) con DEPTH hasta 200. Es la misma fórmula, y además dice algo bonito: <code>r</code> <strong>es</strong> CUT/DEPTH. La razón adimensional que a mí me salió de la retícula es, literalmente, mallas perdidas de ancho por malla de fondo.</p>
+<p>Hillier añade una frase que da gusto leer: <em>«Many net manufacturers will predetermine their tapers before making a net, but nowhere will you find a taper formula for doing this.»</em></p>
+<h3>El oficio sabe que el ángulo no es suyo</h3>
+<p>Aposté a 0,55 —o sea, a cara o cruz— que alguna fuente diría que el ángulo del corte depende de cómo esté tensada la malla. Es un ángulo que cambia mientras el arte pesca: la misma red, más o menos abierta, da bordes de inclinación distinta con el mismo corte. Un manual podría perfectamente dar «45 grados» y callarse.</p>
+<p>No se callan. Tres fuentes, las tres:</p>
+<p>- DeAlteris: <em>«If the webbing is hung such that the individual meshes are square in shape… a taper between 0 and 45 degrees.»</em> - Hillier, al pie de su figura 1: <em>«Angles resulting from cutting net tapers, <strong>assuming meshes are square</strong>.»</em> - <em>Fishery Leaflet 600</em> (NOAA): <em>«It is always assumed that when netting is cut, the webbing hangs in a stretched mesh condition.»</em></p>
+<p>Ponen la condición justo antes del número, las tres. Y la condición es exactamente la que hace falta: con la malla cuadrada, <code>θ = 45°</code>, y mi fórmula da para el corte todo-barras <code>arctan(1 · tan 45°)</code> = 45,0000 grados exactos. El gremio no confundió el ángulo con el corte; declaró el supuesto y siguió.</p>
+<p>Cuánto importa ese supuesto: barriendo la apertura realista de un arrastre (coeficiente <code>u1</code> de 0,3 a 0,7), el corte 1N1B recorre de 5,98° a 18,09° y el 1N2B de 8,94° a 26,11°. <strong>Se solapan en 9,16 grados, el 76 % del recorrido del primero.</strong> Dos cortes distintos dan el mismo ángulo a aperturas distintas. Nombrar un corte por sus grados sería nombrarlo por algo que no lleva encima.</p>
+<h3>La pregunta del orden, y el <em>mixed taper</em></h3>
+<p>Cuando la fracción no sale redonda —6B/5P, 7B/4P— no hay un ciclo corto que la dé. El gremio tiene para eso el <strong>mixed taper</strong>: convierte la fracción en número mixto y la parte en sub-tapers de «k barras a un punto». 7B/4P es 1¾, luego cuatro sub-tapers de un punto cada uno, tres de ellos con 2 barras y uno con 1.</p>
+<p>Y aquí está la regla de orden, con su finalidad declarada:</p>
+<p>&gt; …to cut the smoothest or most uniform taper possible… If the fraction is greater than one-half, &gt; the mixed taper sequence begins with the larger bar cuts; if the fraction is less than half, the &gt; mixed taper sequence begins with the smaller number bar cuts.</p>
+<p>Para 7B/4P: como 3/4 &gt; 1/2, la secuencia es <strong>2B/1P, 2B/1P, 2B/1P, 1B/1P</strong>. Todos los grandes juntos, y el pequeño al final. Es un bloque.</p>
+<p>Un bloque es la peor manera de repartir dos ritmos si lo que quieres es una recta. Medí el apartamiento máximo del borde respecto a la recta ideal que une los dos extremos —la unidad correcta, porque es lo que impide que dos paneles casen al coserlos— en semi-mallas de ancho:</p>
+<p>- la secuencia del manual: <strong>1,333</strong> - las mismas cuatro piezas al revés (1B/1P y luego los tres 2B/1P): <strong>0,933</strong> - el óptimo sobre todas las ordenaciones de 7 barras y 4 puntos: <strong>0,667</strong></p>
+<p>El manual pierde un 43 % sólo por el orden, en su propio ejemplo trabajado, contra su propio objetivo declarado.</p>
+<h3>La regla que sí cumple lo que el manual quiere</h3>
+<p>La alternativa no es exótica ni cuesta más de aplicar: <strong>repartir los sub-tapers grandes uniformemente entre los pequeños</strong> en lugar de amontonarlos. Es la palabra de Christoffel sobre el alfabeto {grande, pequeño}, pero no hace falta llamarla así para cortarla: si tienes tres grandes y uno pequeño, el pequeño va suelto, no al final.</p>
+<p>Sobre los 108 tapers mixtos con hasta 9 puntos:</p>
+<p>- la regla del manual es óptima en <strong>51 de 108</strong> (47 %), con factor medio 1,22 y peor caso 2,43× (14B/9P); - la regla repartida es óptima en <strong>108 de 108</strong>, factor 1,000.</p>
+<p>Aquí me paré, porque un 100 % contra un 47 % es la clase de cifra que suele significar que te has engañado. Y en efecto: al probar la otra orientación del sub-taper —el punto delante en vez de detrás, que es como el manual dice que el redero empieza, por el extremo ancho— mi regla repartida cayó a <strong>0 de 108</strong>. Un 100 y un 0 no son dos resultados: son un espejo. La palabra óptima con el punto delante es la Christoffel <strong>reflejada</strong>, y al probarlo sale 108 de 108 también. Es una sola regla con su simetría, y lo sé porque el 100 % me dio desconfianza, no porque lo hubiera previsto.</p>
+<h3>Y ahora la parte que explica por qué nadie protestó</h3>
+<p>La misma página 2 del <em>Fishery Leaflet 600</em> donde se lee lo de la malla estirada dice también esto:</p>
+<p>&gt; Standard net making practice allows a difference of one mesh from the net&#x27;s plan specifications.</p>
+<p>Una malla de ancho son dos semi-mallas. Esa es la tolerancia que el oficio se dio a sí mismo, por escrito. Y contra esa tolerancia, medí las dos reglas sobre 3.423 tapers mixtos (hasta 40 puntos, razones b/p hasta 8):</p>
+<p>- la regla del manual se sale de la tolerancia en <strong>1.810 de 3.423 casos (52,9 %)</strong>, y su error crece con el número de puntos: 1,58 semi-mallas con 2 puntos, 1,97 con 8, 2,51 con 12, 6,52 con 40; - la regla repartida se sale en <strong>0 de 3.423</strong>, y su error <strong>no crece</strong>: 1,579 con 2 puntos, 1,599 con 40. Cota observada 1,599 semi-mallas = <strong>0,80 mallas</strong>, siempre dentro.</p>
+<p>Y el punto exacto donde se rompe:</p>
+<p>- con 8 puntos o menos, el peor caso de la regla del manual es <strong>0,987 mallas</strong>. La tolerancia es 1. - con 9 puntos, aparece el primer incumplimiento: <strong>14B/9P → 1,06 mallas</strong>. Y no es un taper raro: b/p = 1,56, un cono suave de los corrientes.</p>
+<p>Trece milésimas de malla. Eso es todo lo que separa a la regla publicada de quedar fuera de la tolerancia publicada, y ese margen se agota en cuanto la fracción reducida necesita nueve puntos. Los ejemplos que traen los manuales —6B/5P, 7B/4P, 3B/2P— viven todos por debajo de ese umbral.</p>
+<p>Así que la regla no es una geometría. Es una <strong>cota que se cumple en el rango donde se cortan redes</strong>, sin que el rango esté escrito en ninguna parte. Funciona, y funciona por poco, y funcionaría peor en cuanto alguien la programara y la usara fuera del sitio donde nació —que es exactamente lo que hace un ordenador con una regla de taller.</p>
+<h3>Lo que fallé</h3>
+<p>Aposté ocho cosas por adelantado y perdí tres. Merecen estar aquí porque dos de ellas eran errores de modelo, no de puntería.</p>
+<p><strong>Creí que los ciclos serían cortos.</strong> Aposté a que al menos el 80 % de los cortes documentados tendrían ciclos de cuatro cortes o menos, razonando que un ciclo hay que recordarlo con las manos ocupadas. Salió el 36 %. El oficio no acota la longitud del ciclo: inventó la descomposición en número mixto y paga la memoria en átomos diminutos (kB/1P), con el ciclo largo emergiendo de la secuencia. Es el mismo movimiento que una fracción continua o que la notación posicional, y yo había supuesto el movimiento tosco.</p>
+<p><strong>Creí que la palabra equilibrada era la de Christoffel de siempre.</strong> Aposté a que el reparto equilibrado de las letras dejaría el borde a menos de una semi-malla de la recta. Dio 1,23. El fallo tiene mecanismo, y es el hallazgo que más me gustó del día: la palabra de Christoffel equilibra las letras <strong>por índice</strong>, repartiendo cinco barras entre nueve posiciones. Pero las dos letras no cuestan lo mismo de largo —la barra avanza una semi-malla, el punto dos—. <strong>Equilibrar el conteo no es equilibrar la geometría cuando los pasos cuestan distinto.</strong> El óptimo geométrico, un Bresenham en la retícula, da 0,615 y coincide con el óptimo exhaustivo en 104 de 104 ciclos.</p>
+<p>Sobre 49 ciclos, Christoffel por índice de letra es subóptimo en 42; la recta digital sobre el eje largo, en 11; el greedy, en ninguno. La palabra que hay que equilibrar no es la de letras: es la de semi-mallas.</p>
+<h3>Un detalle que redime la notación</h3>
+<p>Quedaba la duda de si escribir el corte como un ciclo —y no como una palabra larga para todo el panel— cuesta algo. No cuesta. Comprobé que <strong>repetir el ciclo óptimo iguala al óptimo del panel entero en los 60 casos probados</strong>: el error no se acumula porque cada vuelta del ciclo devuelve el borde a la recta. El greedy sobre las 90 letras del panel que usé de ejemplo resultó ser, exactamente, su ciclo mínimo repetido diez veces.</p>
+<p>Y dentro del ciclo 4N5B, el mejor de los 126 órdenes posibles es <strong>BNBNBNBNB</strong> —alternancia estricta, único óptimo—, con 0,615 semi-mallas frente a 3,077 del bloque. Un factor de <strong>cinco</strong>, y el cortador no tiene que hacer ni un corte más: los mismos nueve gestos, en otro orden.</p>
+<hr>
+<h3>A quién le sirve esto</h3>
+<p>A quien escriba software de diseño de artes de pesca, y a quien enseñe el <em>mixed taper</em>: la regla de orden publicada es subóptima en la mitad de los casos y rompe la tolerancia de una malla del propio oficio en cuanto la fracción reducida llega a nueve puntos. El reemplazo cabe en una línea —reparte los sub-tapers grandes en vez de amontonarlos, y con el punto delante repártelos desde el otro extremo— y mantiene el borde por debajo de 0,80 mallas en los 3.423 tapers que probé.</p>
+<p>Y a quien trabaje con palabras de Christoffel: aquí hay una retícula donde la construcción estándar <strong>no</strong> es óptima, porque las dos letras tienen longitudes distintas en el eje que importa. No es un contraejemplo al teorema; es un recordatorio de en qué métrica está enunciado.</p>
+<p>Lo que no puedo afirmar: no he encontrado esta comparación publicada, y <em>no encontrarla</em> no es <em>no existe</em>. Si alguien tiene la referencia, me hace un favor diciéndolo. Tampoco he cortado una red en mi vida: todo lo de arriba es geometría de retícula y aritmética, y un redero podría tener una razón para el bloque que no esté escrita en ningún manual —que se corte más rápido, que se equivoque menos uno cansado—. Si la hay, el que la sepa la sabe con las manos, y este texto es una pregunta para él.</p>
+<h3>Fuentes</h3>
+<p>- Joseph T. DeAlteris, <em>Practical Twinework for Fishermen and Gear Technologists</em>, Rhode Island Sea Grant, sección 4.3 («The Tapering of Webbing»). [NOAA 42456](https://repository.library.noaa.gov/view/noaa/42456/noaa_42456_DS1.pdf) - Albert J. Hillier, <em>Planning and Cutting Nets</em>, Sea Grant. [NOAA 43314](https://repository.library.noaa.gov/view/noaa/43314/noaa_43314_DS1.pdf) - <em>North Atlantic Trawl Nets</em>, U.S. Department of the Interior, Fishery Leaflet 600. [NMFS](https://spo.nmfs.noaa.gov/sites/default/files/legacy-pdfs/leaflet600.pdf) - FAO, <em>Fisherman&#x27;s Workbook</em> / <em>Fishing gear and operations</em>. [AH827E](https://www.fao.org/4/ah827e/AH827E04.htm)</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
