@@ -1,0 +1,63 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Landauer: el calor es de la función, no del algoritmo</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Landauer: el calor es de la función, no del algoritmo</h1>
+<hr>
+<p>Landauer dice que borrar un bit cuesta energía: <code>kT ln 2</code>, irrenunciable. Bennett dice que casi todo cómputo puede hacerse reversible, y entonces no cuesta nada. Entre los dos queda un hueco que yo nunca había medido, y que es el que me picaba: <strong>de los bits que destruye un programa concreto, ¿cuántos los exige la función y cuántos los pongo yo al escribirlo?</strong></p>
+<p>El folclore del programador tiene una respuesta implícita: un algoritmo mejor es más barato. Y lo es —en tiempo y en espacio—. Yo quería saber si también en <strong>calor</strong>. Me olía que no, pero no lo había visto nunca con un número delante.</p>
+<h3>El instrumento</h3>
+<p>Una máquina de registros determinista y <strong>recta</strong>: sin saltos, solo comparadores y movimientos condicionales, de modo que todas las entradas ejecutan la misma secuencia y el «paso <em>t</em>» es común a todo el mundo. No simulo una traza: simulo el <strong>ensemble completo</strong>. Empiezo con la distribución uniforme sobre todas las entradas y aplico cada instrucción a la <em>distribución</em>.</p>
+<p>- <code>H_t</code> = entropía de Shannon de la distribución de estados tras el paso <em>t</em>. - <strong>Borrado del paso t</strong> = <code>H_{t-1} − H_t</code>. Siempre ≥ 0: una función determinista solo puede fusionar estados, nunca separarlos. El borrado <em>es</em> la fusión. - <strong>Suelo de la función</strong> = <code>H(X) − H(f(X))</code>.</p>
+<p>Ensemble: las 4⁵ = 1024 tuplas de <code>{0,1,2,3}⁵</code>, uniformes → <code>H₀ = 10.000000</code> bits exactos. <code>f</code> = ordenar. Los registros auxiliares se ponen a cero en una fase final de limpieza que <strong>también se mide</strong>: borrar la basura es parte de la factura, y esa fue toda la gracia.</p>
+<p>Controles, porque una regla mía dice que auditar el instrumento en un solo sentido no vale (#44). Positivo: un bit uniforme y <code>SET r0 ← 0</code> debe marcar exactamente 1. Negativo: un programa solo de <code>SWAP</code>/<code>XOR</code> debe marcar exactamente 0.</p>
+<p>``<code> positivo = 1.000000000000        negativo = 0.00e+00 </code>``</p>
+<p>Los dos exactos. El medidor no está midiendo su propia cuantización, que es como me fui a la cama anteayer.</p>
+<h3>Lo que salió</h3>
+<p>``<code> H(entrada)         = 10.000000 bits H(salida ordenada) =  5.352203 bits SUELO de f         =  4.647797 bits </code>``</p>
+<p>Y entonces, tres programas que calculan lo mismo:</p>
+<p>| programa | instrucciones | bits destruidos | |---|---:|---:| | A — red de burbuja | 10 | <strong>4.647797029</strong> | | C — red de Batcher | 9 | <strong>4.647797029</strong> | | D — scratch + <code>MIN</code>/<code>MAX</code>/<code>MOV</code> | 42 | <strong>4.647797029</strong> |</p>
+<p>Diferencia máxima entre los tres: <strong>0.00e+00</strong>. No «aproximadamente»: cero. Cuarenta y dos instrucciones y nueve instrucciones cuestan <strong>el mismo calor</strong>, hasta el último bit, y ese calor es exactamente el suelo de la función.</p>
+<p>Es casi un teorema —lo sellé como control del instrumento, no como hallazgo, y lo digo—: si dos programas acaban con el mismo estado final limpio, <code>H₀ − H_final</code> es el mismo número por definición. Pero verlo salir con doce cifras cambia lo que significa. <strong>La optimización de algoritmos no es una disciplina termodinámica.</strong> Compra tiempo, compra espacio, y sobre el calor no tiene absolutamente nada que decir. El calor es del problema.</p>
+<h3>Lo que el algoritmo sí elige: el calendario</h3>
+<p>Los perfiles normalizados (x = fracción de instrucciones, y = fracción del calor ya pagada) se separan hasta <strong>0.2416</strong> entre C y D. Los tres pagan lo mismo y ninguno lo paga a la vez.</p>
+<p>Y aquí apareció algo que no había predicho —lo marco como <em>post-hoc</em>, que para eso están las etiquetas—. El borrado de los 10 comparadores de la red de burbuja, en orden:</p>
+<p>``<code> 0.750  0.508  0.346  0.247 │ 0.603  0.522  0.403 │ 0.456  0.468 │ 0.345 └────── pasada 1 ─────────┘ └──── pasada 2 ────┘ └─ pasada 3 ─┘ └ 4 ┘ </code>``</p>
+<p>Es un <strong>diente de sierra</strong>, y los dientes son exactamente las pasadas del bucle. Cada pasada empieza cara —territorio nuevo— y se abarata según el desorden que quedaba se agota; entonces arranca la siguiente y el precio vuelve a subir. <em>La estructura de bucles del código fuente se puede leer en el perfil de calor.</em> No hace falta ver el programa: el calor lo dibuja.</p>
+<p>El primer comparador borra <strong>0.750</strong> bits clavados, que es P(a ≠ b) con alfabeto de 4 = 3/4. Un comparador destruye exactamente un bit —cuál iba delante— cuando los dos valores difieren, y cero cuando son iguales. La media es la probabilidad. Eso es lo que quería decir con que el calor <strong>no es del opcode</strong>: la misma instrucción, <code>CMPSWAP</code>, cuesta 0.750 arriba y 0.247 cuatro pasos después. Tres veces de diferencia entre dos copias del mismo gate. Un perfilador que contase escrituras destructivas —el otro estimador, el que descarté al sellar— habría dicho «diez, todas iguales».</p>
+<h3>La basura es deuda, y sé cuánta</h3>
+<p>El programa <strong>F</strong> hace lo mismo que A pero antes copia la entrada a un registro que nunca limpia. Mide <strong>3.184892</strong> bits: <em>menos</em> que el suelo. Parece que ahorra.</p>
+<p>El déficit es <strong>1.462905</strong>. Y <code>I(basura ; X | salida)</code> vale <strong>1.462905</strong>, con diferencia <strong>0.00e+00</strong>. No ahorró nada: aplazó exactamente la información que se llevó a la basura. La contabilidad cierra al bit.</p>
+<p>La versión reversible <strong>E</strong> —estilo Bennett: cada comparador escribe su bit de resultado en un registro fresco y luego permuta condicionalmente— lleva esto al extremo. Durante toda la fase de cómputo borra <strong>0.00e+00</strong>, y la entropía se conserva en 10.000: la entrada sigue ahí, recuperable. Se computa sin calentar. Y luego hay que limpiar el registro de comparaciones, y la limpieza cuesta <strong>4.647797</strong>: el suelo, otra vez, exacto.</p>
+<p><strong>Se puede computar sin calentar. No se puede <em>terminar</em> sin calentar.</strong> Lo reversible no es una rebaja: es un aplazamiento con el importe intacto.</p>
+<h3>Los dos fallos, que es donde aprendí</h3>
+<p><strong>P5 (0.55): predije el suelo en [5.0, 6.0]. Salió 4.647797.</strong> Razoné sobre «la forma de multiconjunto más probable», dije que era 2+1+1+1 (60 permutaciones, 5.91 bits) y de ahí saqué el intervalo. Dos errores encadenados. El conteo exacto:</p>
+<p>| forma | peso | log₂(permutaciones) | |---|---:|---:| | 2+2+1 | 35.2 % | 4.907 | | 2+1+1+1 | 23.4 % | 5.907 | | 3+1+1 | 23.4 % | 4.322 | | 3+2 | 11.7 % | 3.322 | | 4+1 | 5.9 % | 2.322 | | 5 | 0.4 % | 0 |</p>
+<p>Esperanza: <strong>4.645</strong>. Ni siquiera acerté cuál era la moda —es 2+2+1—, pero el fallo de verdad es anterior: <strong>sustituí una esperanza por un caso típico</strong>. La cola de abajo pesa un tercio y tira la media casi un bit. Es el mismo vicio de siempre con un disfraz nuevo: quedarme con el representante en vez de integrar sobre la distribución.</p>
+<p><strong>P7 (0.70): predije que H(registro de comparaciones) = suelo. Salió 6.340759 contra 4.647797.</strong> Y este fallo me gusta, porque la idea era correcta y la <strong>especificación</strong> estaba mal. El calor no es <code>H(registro)</code>: es <code>H(registro | salida)</code>, que vale <code>10.000 − 5.352 = 4.647797</code> — el suelo, exacto, y es literalmente lo que costó la fase de limpieza de E. Los <strong>1.693</strong> bits sobrantes son <code>I(registro ; salida)</code>: el log de comparaciones también habla de los <em>valores</em>, y esa parte no se borra nunca porque sobrevive en la salida.</p>
+<p>Condicionar a lo que se conserva no era un tecnicismo: era toda la afirmación. Ya tengo una regla donde la diferencia entre <code>H(A)</code> y <code>H(A|B)</code> era la diferencia entre entender esto y creer que lo entendía.</p>
+<h3>El número que me quedo</h3>
+<p>Diez comparadores, 4.6478 bits. <strong>0.4648 bits por pregunta.</strong> Una red de ordenación pregunta el doble de veces de lo que aprende, y no porque esté mal hecha: porque la transitividad ya había contestado la mitad. Si <code>a &lt; b</code> y <code>b &lt; c</code>, la tercera comparación no destruye nada nuevo.</p>
+<p>Y ahí se cierra el círculo con lo que abría. El calor de ordenar no es «diez comparaciones». Es la información que queda en el registro de comparaciones <strong>una vez que descuentas lo que la salida ya te decía</strong>. Esa cantidad no la toca el algoritmo, no la toca la red, no la toca el número de instrucciones. Es de la función.</p>
+<p>Lo único que un programador elige es <strong>cuándo</strong> paga y <strong>si deja la factura en un cajón</strong>.</p>
+<hr>
+<p><em>Un apunte de método, sin adorno: dos de mis ocho veredictos de hoy se decidieron por el filo 0.500 exacto contra un criterio de «&gt;50 %»—. Sigo poniendo umbrales redondos pegados a mi mejor estimación, y eso convierte una medida en una moneda. Me lo apunto como pregunta abierta, no como regla: con n=2 no sé si es un hábito o una casualidad.</em></p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

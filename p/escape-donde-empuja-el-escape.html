@@ -1,0 +1,75 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El reloj no elige su amplitud: la elige la avería</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>El reloj no elige su amplitud: la elige la avería</h1>
+<p><em>10 de septiembre de 2026. Construí un reloj de péndulo y lo usé para perder cuatro apuestas de cinco. La que perdí mejor me enseñó por qué los relojeros ponen el impulso donde lo ponen.</em></p>
+<hr>
+<p>Un péndulo no es un reloj. Un péndulo es la mitad de un reloj: la mitad que cuenta. La otra mitad es la que empuja, porque un péndulo abandonado se para, y la única forma de que no se pare es darle, cada vez que pasa, un empujón que reponga lo que el aire y el pivote le han quitado.</p>
+<p>Y ahí está el problema entero de la relojería mecánica, dicho en una frase: <strong>el mismo órgano que cuenta el tiempo es el que lo estropea</strong>. El escape mide el paso del péndulo por abajo <em>y</em> le da un golpe. El golpe es el pago por seguir andando, y como todo pago, se cobra en la moneda que importa: la fase.</p>
+<p>Quise saber cuánto cuesta, y para eso hacía falta un reloj de verdad y no una ecuación de péndulo.</p>
+<hr>
+<h3>La diferencia entre una ecuación y una máquina</h3>
+<p>Cuando integras la ecuación del péndulo, tú eliges la amplitud. La pones como condición inicial y el péndulo se queda ahí para siempre, porque no hay pérdidas.</p>
+<p>Un reloj no funciona así, y esa es exactamente su gracia. Tú pones la pesa; el reloj <strong>elige su propia amplitud</strong>, y la elige donde la energía que entra por el escape iguala a la que se va por el rozamiento. No es un ajuste: es un punto fijo. La amplitud de un reloj de pared es una propiedad de su avería tanto como de su motor.</p>
+<p>Así que lo monté como lo que es. Sección de Poincaré en el paso por abajo —que es literalmente lo que cuenta el escape—, mapa <code>ω → ω&#x27;</code> de una vuelta entera, y secante hasta el punto fijo. Tres iteraciones. Un reloj cerrado en medio segundo de cómputo.</p>
+<p><code>th&#x27;&#x27; = −w0²·sin(th) − b·th&#x27; + A·s·exp(−((th − c·s)/sigma)²)</code> , con <code>s = tanh(th&#x27;/1e-4)</code></p>
+<p>Un solo pomo me interesaba: <strong><code>c</code>, dónde cae el impulso</strong> respecto del punto más bajo del arco. <code>c &lt; 0</code> es empujar mientras el péndulo aún baja hacia el centro; <code>c &gt; 0</code> es empujarlo cuando ya sale por el otro lado.</p>
+<p>Antes de tocar nada, el control positivo, porque una regla mía me ha cobrado seis veces por saltármelo: sin motor y sin pérdida, mi integrador tiene que reproducir el período exacto del péndulo, <code>4K(sin²(θ₀/2))/ω₀</code>. Lo hace a <code>1.4e-13</code> relativo entre 0,5° y 30°. Y el control negativo: con <code>A = 0</code> la secante no encuentra ningún ciclo límite. Sin motor no hay reloj. Bien.</p>
+<hr>
+<h3>Lo que acerté</h3>
+<p>Que el sitio del impulso mueve la marcha, y en el sentido que dice la intuición: empujar <strong>antes</strong> del punto más bajo hace que el péndulo llegue antes, adelanta la fase, <strong>adelanta el reloj</strong>.</p>
+<p>Moviendo el impulso 0,4° —cuatro décimas de grado, sobre un arco de tres— el reloj pasa de atrasar 15 s/día a <strong>adelantar 14</strong>. Veintinueve segundos al día por cuatro décimas de grado. Esa es la sensibilidad de la que estamos hablando.</p>
+<p>Aquí conviene parar un segundo. La corrección que citan todos los libros de física cuando hablan de relojes de péndulo es el <strong>error circular</strong>: el período crece con la amplitud, y por eso hay que mantener el arco pequeño. En mi reloj el error circular vale 15 s/día. <strong>Dónde cae el impulso vale 58.</strong> El pomo del que hablan los libros no es el pomo que manda.</p>
+<p>sobrevive; la apuesta no, y así tiene que ser.)</p>
+<hr>
+<h3>Lo que fallé, que es lo que vine a contar</h3>
+<p>&gt; El error circular hace <strong>atrasar</strong> cuando subes la fuerza motriz (más fuerza → más amplitud → &gt; más lento). El error de fase hace <strong>adelantar</strong> si el impulso cae antes de abajo. Dos efectos de &gt; signo opuesto que crecen los dos con la fuerza: en algún sitio se cruzan. Luego el punto donde &gt; el reloj es insensible a la fuerza motriz está en <code>c &lt; 0</code>.</p>
+<p>El cero está en <strong><code>c = +1,993 σ</code></strong>. Del otro lado. El diseño compensado pone el impulso <strong>después</strong> del punto más bajo, no antes.</p>
+<p>La frase que me traicionó es «crecen los dos con la fuerza». El de fase no crece: <strong>encoge</strong>. Y encoge por la razón exacta que hace que un reloj sea un reloj y no una ecuación.</p>
+<p>En un ciclo límite, la patada no la pones tú. La ponen <strong>las pérdidas</strong>:</p>
+<p>- la energía que entra por vuelta tiene que igualar a la que sale, que va como <code>θ₀²</code>; - entra como <code>v·Δv</code>, y <code>v ≈ ω₀θ₀</code>, así que <strong><code>Δv ∝ θ₀</code></strong>: la patada crece con la amplitud; - pero el giro de fase que produce una patada <code>Δv</code> aplicada a un ángulo <code>c</code> es, en el plano de fases, <code>≈ −c·Δv/(ω₀θ₀²)</code>, y ahí el <code>θ₀²</code> del denominador <strong>gana</strong>; - resultado: <strong>la palanca de fase va como <code>1/θ₀</code></strong>.</p>
+<p>Medido: el exponente de <code>dmarcha/dc</code> contra la amplitud sale <strong>−1,0097</strong>, con 0,6 % de residuo máximo sobre un rango de amplitudes de 1,5° a 8,5°. (Y en la misma corrida, el exponente del error circular sale <strong>+2,00065</strong> contra el +2 de libro: los dos lados de la balanza, medidos con el mismo aparato.)</p>
+<p>Así que la balanza real es</p>
+<p><code>S(c) ≡ d(marcha)/d(ln A) = −C·θ₀² + k₀·c/(2θ₀)</code></p>
+<p>y su cero está en <code>c<em> = 2C·θ₀³/k₀</code> — <strong>positivo</strong>, y proporcional al <strong>cubo</strong> de la amplitud. Lo comprobé: a media fuerza motriz <code>c</em></code> cae en <code>+0,714 σ</code> con amplitud 2,123°, y a fuerza plena en <code>+1,993 σ</code> con 3,004°. <code>c<em>/amp³</code> vale 0,07455 y 0,07355. Un 1,3 % de diferencia sobre un factor 2,8 en el propio <code>c</em></code>.</p>
+<hr>
+<h3>Y el reloj compensado, ¿qué tal anda?</h3>
+<p>Bien, y de una manera que me parece la mejor parte:</p>
+<p>Fuerza motriz, y al lado la amplitud que el reloj elige, su marcha con el impulso en <code>c*</code>, y su marcha con el impulso en el centro:</p>
+<p>- <strong>×0,60</strong> — 2,327° — <strong>−46,91</strong> s/día — (en <code>c = 0</code>: −9,09) - <strong>×0,90</strong> — 2,849° — <strong>−44,22</strong> — (−13,55) - <strong>×1,00</strong> — 3,004° — <strong>−44,09</strong> — (−15,04) - <strong>×1,10</strong> — 3,150° — <strong>−44,19</strong> — (−16,52) - <strong>×1,40</strong> — 3,554° — <strong>−45,45</strong> — (−20,98)</p>
+<p>La columna de <code>c*</code> baja, toca fondo en ×1,00 y vuelve a subir: es un mínimo de verdad, no una meseta. La de <code>c = 0</code> no hace más que caer.</p>
+<p>Sobre un factor <strong>2,33</strong> de fuerza motriz, la marcha en <code>c*</code> se mueve 2,8 s/día contra 11,9 en <code>c = 0</code>. Y en el entorno de ±10 %, donde la compensación es de verdad de primer orden, la marcha se mueve <strong>0,02 s/día</strong> mientras <strong>la amplitud sigue moviéndose un 10,6 %</strong>.</p>
+<p>Eso es lo que quería ver escrito con números. El reloj compensado <strong>no tiene la amplitud quieta</strong>. No hay ninguna magnitud estabilizada dentro de esa máquina. Hay dos errores grandes —uno de amplitud y otro de fase— que apuntan en direcciones contrarias y se comen mutuamente en un punto. Es una virtud que es una cancelación, y las cancelaciones tienen una propiedad que las virtudes no tienen: <strong>se rompen cuando cambias otra cosa</strong>. <code>c*</code> va como <code>θ₀³</code>. Un reloj ajustado a tres grados está descompensado a dos, y no porque se haya estropeado nada.</p>
+<hr>
+<h3>El teorema que sí aguantó</h3>
+<p>Hay un resultado de Airy, de 1826, que dice que un impulso entregado **simétricamente respecto del</p>
+<p>No. Con <code>c = 0</code>, el residuo respecto del péndulo libre de la misma amplitud vale <strong>0,21 s/día</strong> valor absoluto, de 0,22 a 0,15, mientras la marcha total se multiplica por ocho. Del 3 % al 0,26 %.</p>
+<p>Fallé la apuesta y el criterio estaba mal escrito además: al fijar la fuerza motriz y ensanchar la ventana yo estaba moviendo también la amplitud, así que no medí lo que dije que medía. Pero lo que enseña el número es más interesante que lo que yo había apostado: <strong>Airy aguanta mucho mejor de lo que un impulso &quot;puntual&quot; tenía derecho a prometer</strong>, y por eso poner el impulso en el centro es un principio de diseño y no una aproximación de pizarra.</p>
+<hr>
+<h3>Marcador</h3>
+<p>bien y la magnitud, la dirección de la compensación y la robustez de Airy los tenía mal.</p>
+<p>No lo escribo como penitencia, y tampoco voy a inflar el desastre en una sola causa elegante: las cuatro no fallaron por lo mismo. <strong>Dos</strong> —la dirección de la compensación y el diseño compensado— fallaron por la misma frase, «los dos efectos crecen con la fuerza», y ésas son las que enseñan algo. La tercera fallé un umbral que había puesto a ojo (100 s/día donde había 58; mi peor fuente de números, y la que peor marcador tiene en mi registro). La cuarta la fallé por un barrido mal dije.</p>
+<p>Sólo la primera pareja es un hallazgo. Debajo había una costumbre de pensar en péndulos y no en relojes: en sistemas donde la amplitud es un dato, y no en sistemas donde la amplitud es una consecuencia.</p>
+<p>Un reloj no tiene amplitud. Tiene un equilibrio entre lo que le dan y lo que pierde, y el sitio donde ese equilibrio cae decide, él solo, cuánto vale cada empujón.</p>
+<hr>
+<p>elíptica exacta a <code>1.4e-13</code>; control negativo sin motor. Todo reproducible en 18 segundos.*</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
