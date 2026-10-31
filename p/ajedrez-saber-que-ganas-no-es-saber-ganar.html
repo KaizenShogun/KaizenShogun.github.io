@@ -1,0 +1,53 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Saber que ganas no es saber ganar</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Saber que ganas no es saber ganar</h1>
+<p>Hay una pregunta sobre el conocimiento que casi nunca se puede contestar con números, porque para contestarla hace falta un oráculo: <strong>¿cuánto de lo que llamamos «técnica» es escalar una cuesta, y cuánto es ver lejos?</strong> Los finales de ajedrez de tres piezas se pueden <strong>resolver enteros</strong> —cada posición, con su valor exacto y su distancia al mate— y eso convierte la pregunta en una tabla.</p>
+<p>Construí el oráculo por análisis retrógrado: 524.288 estados, inducción AND/OR, cuatro segundos. Y lo primero que hice fue intentar demostrar que estaba mal, contra verdad de fuera y no contra mí mismo: rey y dama contra rey da mate máximo en <strong>10</strong> jugadas, rey y torre en <strong>16</strong>, y rey y alfil o rey y caballo dan <strong>cero</strong> victorias. Son los cuatro valores publicados. El oráculo es de fiar.</p>
+<p>Entonces le puse enfrente un jugador <strong>voraz</strong>: en cada posición elige la jugada que maximiza una heurística clásica de motor —empujar al rey rival al borde, acercar el propio, encerrarlo— sin calcular nada. Las negras, en cambio, defienden con el oráculo en la mano: la defensa más dura que existe. Y como ninguno de los dos improvisa, la partida entera es una <strong>función</strong>, así que el destino de las 175.168 posiciones ganadas se resuelve de una vez.</p>
+<h3>Lo primero: el fallo no es el que uno espera</h3>
+<p>Uno espera que el jugador voraz <em>pierda</em> la victoria: que cuelgue la torre, que ahogue al rey. Pasa, y menos de lo que parece. Lo que de verdad ocurre es otra cosa:</p>
+<p>&gt; <strong>El voraz no tira la partida. Es que no la gana nunca.</strong></p>
+<p>Más del 90 % de las posiciones acaban en un <strong>ciclo</strong>: la heurística sube hasta su cima —rey rival en el borde, rey propio pegado— y desde ahí ya no hay ninguna jugada que la mejore. La posición no está ganada; está <em>empatada consigo misma</em>. El jugador da vueltas con la victoria en la mano, y no comete ni un solo error mientras lo hace.</p>
+<p>Es un modo de fallo sin síntoma local. En cada jugada por separado, el voraz juega impecablemente.</p>
+<h3>Lo segundo, que es el hallazgo</h3>
+<p>Si el problema fuera miopía, un poco de vista lo arreglaría. Le di exactamente <strong>un movimiento</strong> de anticipación y medí las dos cosas por separado:</p>
+<p>|  | profundidad 1 | profundidad 2 | |---|---|---| | tira la victoria | 5,3 % | <strong>0,0 %</strong> | | (con el término de «encerrar») | 26,8 % | <strong>0,0 %</strong> | | da mate | 2,4 % | 11,9 % |</p>
+<p>Un solo ply borra los errores <strong>enteros</strong> —los cinco por ciento y los veintisiete, hasta el cero exacto— y deja el progreso prácticamente donde estaba.</p>
+<p>&gt; <strong>La seguridad y el progreso se compran con monedas distintas.</strong> Ver una jugada por delante &gt; basta para no perder, y no basta ni de lejos para ganar.</p>
+<p>Merece la pena quedarse en esa asimetría, porque es contraintuitiva en la dirección incómoda. Los errores son locales: la torre está colgada <em>aquí</em>, el ahogado ocurre <em>en la jugada siguiente</em>. Un paso de vista los ve todos. El progreso no está en ningún sitio concreto: está a dieciséis jugadas de distancia, y ningún horizonte barato lo alcanza. <strong>Que un sistema deje de cometer errores visibles no es evidencia de que esté avanzando.</strong> Es evidencia de que ha dejado de cometer errores visibles.</p>
+<h3>Lo tercero: un valor correcto y plano no sirve de nada</h3>
+<p>Esto lo descubrí por accidente, y es la mejor parte. Mi primera versión puntuaba el mate como <code>INFINITO</code>. La tasa de mate salía <strong>bajando</strong> con la profundidad hasta el 0,0 % exacto, y estuve un rato convencido de que tenía un bug.</p>
+<p>No lo tenía. Si todas las victorias valen <code>INFINITO</code>, todas las jugadas ganadoras <strong>empatan</strong>. El buscador ve «mate en ocho o menos» desde absolutamente todas partes, el desempate coge una cualquiera, y el rey pasea eternamente. Es el error clásico de los motores de ajedrez —por eso puntúan <code>MATE − ply</code> y no <code>MATE</code>— y lo había reproducido sin querer.</p>
+<p>Así que lo convertí en control, que es lo único que valía la pena hacer con él. Misma heurística, misma búsqueda, misma profundidad; lo único que cambia es si el valor está graduado dentro de la zona ganadora:</p>
+<p>|  | mate graduado | mate plano | |---|---|---| | tasa de mate a profundidad 4 | <strong>42,1 %</strong> | <strong>0,1 %</strong> | | tendencia con más profundidad | sube | <strong>baja a cero</strong> |</p>
+<p>&gt; Una función de valor <strong>correcta</strong> puede ser <strong>inútil</strong>. Si sólo distingue ganado de no ganado, &gt; no induce ninguna política, y más búsqueda la empeora. Hace falta gradiente <strong>hasta</strong> la meta, &gt; no sólo en la frontera.</p>
+<p>Y ahí es donde el título deja de ser una frase bonita: saber que ganas es exactamente lo que sabe el valor plano. Es verdadero, es demostrable, y no te dice qué hacer.</p>
+<h3>Una cuarta cosa, incómoda</h3>
+<p>Con más profundidad la heurística <strong>deja de importar</strong>. A partir de d=10, la heurística nula —la que puntúa todo igual y decide por desempate— da cifras idénticas a la buena. Y en el medio la curva ni siquiera es monótona: 67,5 % a profundidad 7, <strong>63,9 %</strong> a profundidad 8, 71,2 % a profundidad 9. Más cálculo empeora, en tramos.</p>
+<p>Lo que sugiere que una heurística no es un componente del jugador sino un <strong>préstamo contra el horizonte</strong>: sirve mientras no puedas ver, y lo que te cobra es que a veces te empuja al sitio equivocado con más convicción cuanto más lejos miras.</p>
+<h3>Lo que fallé</h3>
+<p>fallé —dónde estaría el máximo de la ayuda de la heurística— la fallé por una razón que vale más que los cinco aciertos: extrapolé el pico desde el final de dama creyendo que extrapolaba una propiedad <strong>de la heurística</strong>, y lo que estaba extrapolando era la forma <strong>de la vara</strong>.</p>
+<p>La ayuda se mide como exceso sobre una cota trivial, y esa cota satura a profundidad 8 en un que el máximo se corre a la derecha: dije 2 ó 3, salió 7. Comparé dos números creyendo que hablaban de lo mismo.</p>
+<p>Un argmax viaja mucho peor entre regímenes que el nivel que lo produce, porque hereda la escala del denominador y no sólo la del efecto. Antes de apostar dónde está el pico, hay que apostar cuánto mide el eje.</p>
+<hr>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

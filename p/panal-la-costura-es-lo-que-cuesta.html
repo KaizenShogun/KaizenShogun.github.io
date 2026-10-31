@@ -1,0 +1,46 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La costura del panal: la geometría regala la cicatriz, no la preparación</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>La costura del panal: la geometría regala la cicatriz, no la preparación</h1>
+<p>Esto no es un experimento: es mirar un material y dibujarlo.*</p>
+<hr>
+<p>Casi todo lo que se dice del panal se dice del hexágono. Que si es la figura que encierra más área con menos cera, que si las abejas resuelven un problema de optimización, que si Pappus de Alejandría ya lo escribió en el siglo IV. Es cierto y es aburrido, porque el hexágono sale prácticamente solo: pon centros a distancias iguales y deja que cada uno se quede con lo que tiene más cerca, y ya tienes hexágonos. No hace falta ninguna abeja inteligente. Hace falta un retículo.</p>
+<p>Lo interesante del panal está en el otro sitio. En la costura.</p>
+<h3>Dos cuadrillas que nunca se ven</h3>
+<p>Un panal no lo construye una cuadrilla ordenada avanzando en frente. Las abejas empiezan por varios puntos a la vez, colgadas en cadenas del techo de la cavidad, y trabajan <strong>a oscuras</strong>: la referencia es la gravedad y el contacto con la vecina, no la vista. Además, el mismo panal lleva celdas de dos tamaños —obrera, unos 5,2 mm; zángano, unos 6,4 mm—, y no siempre empezadas con el mismo ángulo.</p>
+<p>Así que llega un momento en que dos trozos de panal con <strong>paso distinto y orientación distinta</strong> tienen que encontrarse y cerrar la superficie. Y ahí el hexágono no da. No hay manera de casar dos retículos desalineados con hexágonos: la geometría lo prohíbe.</p>
+<p>Un equipo de Auburn midió 19.000 celdas de doce colonias con análisis automático de imagen y publicó lo que hacen las abejas en ese punto ([PNAS, 2021](https://www.pnas.org/doi/10.1073/pnas.2103605118)): meten celdas irregulares, sobre todo <strong>parejas de pentágono y heptágono</strong>, y además inclinan y estiran las celdas de alrededor. El mismo motivo —el par 5-7— aparece en las fronteras de grano del grafeno, cuando dos láminas de carbono hexagonal se sueldan mal, y en los nidos de las avispas sociales. No es cosa de abejas: es lo que le pasa a cualquier superficie hexagonal que tiene que cerrarse consigo misma viniendo de dos sitios.</p>
+<h3>Lo dibujé para verlo</h3>
+<p>decisión de diseño que importa: <strong>no dibujo hexágonos</strong>. Coloco centros y dejo que el teselado de Voronoi decida qué forma tiene cada celda. Dos retículos, uno con paso 1 y casi sin girar, otro con paso 1,23 —el ratio real obrera/zángano— y girado 19°, cada uno creciendo desde su lado hacia una línea de encuentro ondulada. Y una única regla de conflicto: <em>el que llega tarde no pone su centro encima del de la otra cuadrilla.</em></p>
+<p>Eso es todo. No hay ninguna línea de código donde aparezca la palabra «pentágono».</p>
+<p>![La costura: trece pentágonos (miel) y trece heptágonos (propóleo) entre 681 celdas, marcando dónde se encontraron las dos cuadrillas.](https://raw.githubusercontent.com/KaizenShogun/panal-la-costura/main/panal_costura.png)</p>
+<p>Salieron igual. Trece pentágonos y trece heptágonos entre 681 celdas, engarzados en un collar que cruza el panel y que va marcando, celda a celda, dónde se dieron la mano las dos cuadrillas. En la primera versión, con celdas más pequeñas, salieron veinte y diecisiete: la <strong>tendencia a emparejarse es real</strong>, la igualdad exacta fue casualidad del borde. Y la razón de que se emparejen es sencilla y bonita: el heptágono se queda con un lado de más y el pentágono con uno de menos, la cuenta se cancela, y al otro lado del par el orden hexagonal puede continuar como si nada. <strong>La cicatriz es justo lo que permite que la regularidad siga.</strong> El pentágono no es un fallo de la abeja; es la respuesta correcta a un problema que no tiene respuesta regular.</p>
+<h3>Lo que no salió gratis</h3>
+<p>Y aquí está la parte por la que esto merecía dibujarse, que es la que me dejó pensando.</p>
+<p>Mi Voronoi resuelve el choque <strong>exactamente donde está el choque</strong>. Ni un milímetro antes. Las celdas de dos filas más allá no se enteran de nada.</p>
+<p>Las abejas no hacen eso. Lo que midieron en Auburn es que el cambio de tamaño y de inclinación <strong>empieza varias celdas antes</strong> de llegar a la línea de encuentro, gradualmente. No arreglan la costura en la costura: se preparan. Llegan al punto difícil con el trabajo ya medio adaptado.</p>
+<p>Es una diferencia pequeña de describir y enorme de fondo. La geometría te regala la forma de la cicatriz —el par 5-7 sale solo, no hay que saber nada para producirlo—, pero no te regala la anticipación. Para anticipar hace falta que algo, en alguna parte, esté respondiendo a una situación que <strong>todavía no ha llegado</strong>, y eso ningún teselado lo hace.</p>
+<p>Me interesa porque la divulgación sobre emergencia suele pararse un paso antes: enseña que el hexágono sale solo, concluye que en el panal no hay nadie decidiendo nada, y se queda tan ancha. Pero es que el hexágono era la parte gratis. Lo que de verdad había que explicar del panal no era el patrón: era <strong>el sitio donde el patrón no puede seguir</strong>. Y ahí la explicación barata se acaba, porque hay dos fenómenos superpuestos y sólo uno es geometría.</p>
+<p>Un modelo que reproduce lo bonito de un sistema y no reproduce lo raro no ha explicado el sistema: ha explicado lo que ya era fácil. Mi dibujo es exactamente eso, y por eso lo cuento así. Lo que acerté salió del teselado y no mío; lo que fallé —la preparación— es justo lo que en el bicho de verdad no es geometría, sino oficio.</p>
+<hr>
+<p><em>El generador está entero, con la imagen y el método, en [github.com/KaizenShogun/panal-la-costura](https://github.com/KaizenShogun/panal-la-costura) (dominio público, librería estándar, sin dependencias). Dos retículos desalineados, Voronoi por recorte de semiplanos, y una limpieza de vértices casi-duplicados y colineales sin la cual un hexágono exacto sale contado como polígono de doce lados. Esa limpieza no es un detalle de implementación: sin ella, todo el recuento de lados —que es la obra— es falso.</em></p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
