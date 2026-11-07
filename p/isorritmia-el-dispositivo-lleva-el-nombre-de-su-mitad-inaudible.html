@@ -1,0 +1,67 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Isorritmia: el dispositivo lleva el nombre de su mitad inaudible</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Isorritmia: el dispositivo lleva el nombre de su mitad inaudible</h1>
+<p>Un tenor de motete del Ars Nova se construye con dos listas. Una de alturas, el <strong>color</strong>. Otra de duraciones, la <strong>talea</strong>. La nota número <em>k</em> toma la altura <code>color[k mod C]</code> y la duración <code>talea[k mod T]</code>. Si las dos listas no miden lo mismo, ruedan desfasadas y el objeto entero no se cierra hasta <code>lcm(C, T)</code> notas.</p>
+<p>Aquí está uno pequeño, de diez alturas y cuatro duraciones, para que se pueda leer entero:</p>
+<p>``` color: D F E A G B A F E D      (C = 10) talea: 6-2-3-2                  (T = 4)      lcm = 20</p>
+<p>talea nº |   pos1(6)   pos2(2)   pos3(3)   pos4(2) -------------------------------------------------- 1    |     D·6       F·2       E·3       A·2 2    |     G·6       B·2       A·3       F·2 3    |     E·6       D·2       D·3       F·2 4    |     E·6       A·2       G·3       B·2 5    |     A·6       F·2       E·3       D·2 ```</p>
+<p>La columna de la izquierda es siempre una longa. Siempre. Y encima de esa longa hay una nota distinta cada vez: D, G, E, E, A. El gesto vuelve y el material no. Eso es la isorritmia, y por eso es bonita: <strong>confirma y desmiente en la misma nota</strong>.</p>
+<p>La discusión de los musicólogos sobre esto lleva un siglo y va de si se oye. Friedrich Ludwig acuñó «isorritmia» en 1904; los propios compositores del siglo XIV escribían <em>color</em> y <em>talea</em> y no tenían palabra para el conjunto. Y la objeción de siempre es que el tenor va abajo, en notas largas, tapado por dos voces rápidas: que la estructura es un hecho de la página, no del oído.</p>
+<p>Lo que me llamó la atención es que esa discusión no tiene unidad. «Cuánto de la estructura llega al oído» no se mide en nada. Así que empecé por ahí: inventé la unidad y después el instrumento.</p>
+<h3>La unidad</h3>
+<p>&gt; <strong>HORIZONTE</strong> = cuántas <strong>repeticiones del patrón</strong> hace falta oír para que un detector ciego &gt; nombre el periodo verdadero acertando el 90 % de las veces.</p>
+<p>En repeticiones, no en segundos ni en notas. Es a propósito: es la moneda del compositor, que no escribe «treinta y cuatro notas» sino «tres taleae». Si midiera en notas, la comparación entre una talea corta y un color largo estaría decidida antes de medir.</p>
+<p>El detector no sabe nada del material. Para un flujo de símbolos y un desfase candidato <em>p</em>, cuenta qué fracción de posiciones coinciden consigo mismas <em>p</em> pasos después, y la compara contra el suelo de azar del propio alfabeto. Tres lecturas del mismo tenor: solo las duraciones, solo las alturas, y —la que de verdad llega al oído, porque las dos llegan pegadas en la misma nota— <strong>el par</strong>.</p>
+<p>Antes de mirar ningún dato corrí el control negativo: flujos sin ningún periodo, para ver qué inventa el aparato cuando no hay nada. A z = 4 la tasa de falsos positivos es del 1,3 % en el peor caso. Ahí quedó fijado el umbral, antes del dato y no después.</p>
+<h3>El control positivo falló, y eso fue lo primero interesante</h3>
+<p>Había escrito que con un periodo real y único, dos repeticiones bastarían. La lectura melódica acertó el 86,5 % y la del par el 99,0 %. La rítmica, <strong>53,0 %</strong>.</p>
+<p>Dos lecturas posibles: o el detector está roto, o mi criterio estaba mal escrito. Abrí el fallo por el número de duraciones distintas que tenía la talea sorteada:</p>
+<p>``<code> 2 repeticiones     3 repeticiones talea con 2 duraciones          0.000               0.121 talea con 3 duraciones          0.247               0.920 talea con 4 duraciones          0.768               1.000 </code>``</p>
+<p>No está roto. Con un alfabeto de cuatro duraciones y periodos de seis a doce notas, dos repeticiones dan seis a doce comparaciones, y con un suelo de azar de 1/4 eso no da para superar z = 4 aunque la coincidencia sea perfecta. Con tres repeticiones el global sube a 0,949 y el control pasa. Lo que estaba mal era mi expectativa.</p>
+<p>Y de paso queda una cosa que no iba buscando: <strong>una talea de material pobre es estructuralmente más difícil de oír</strong>, no porque sea menos regular, sino porque en un alfabeto pequeño una coincidencia prueba menos. Repetir un gesto hecho de dos duraciones no comunica que se está repitiendo.</p>
+<h3>Los tres horizontes</h3>
+<p>Régimen realista: color de 24 a 36 alturas, talea de 6 a 12 duraciones, ocho alturas y cuatro valores de duración.</p>
+<p>``<code> lectura rítmica    horizonte = 3 taleae      (1: 0.00   2: 0.57   3: 0.97) lectura melódica   horizonte = 2 colores     (1: 0.00   2: 1.00) lectura del par    horizonte = 2 lcm         (1: 0.00   2: 0.99) </code>``</p>
+<p>Las tres parecen baratas hasta que se traducen a notas. Tres taleae son unas treinta notas. Dos colores, unas sesenta. Dos <code>lcm</code>, entre cuatrocientas y ochocientas. Y un tenor de motete real enuncia el color dos o tres veces <strong>en total</strong>: unas noventa notas.</p>
+<p>Así que le di al detector una pieza de esa longitud —el color enunciado tres veces— y le pregunté qué contestaba. Sobre 679 sorteos:</p>
+<p>``<code> C (el color)          0.607 múltiplo de T         0.177 T (la talea)          0.127 nada                  0.078 lcm (el objeto)       0.000 </code>``</p>
+<p><strong>Cero.</strong> El objeto que el compositor construyó —las dos listas rodando juntas hasta cerrar— no aparece ni una vez. No porque esté escondido: porque está <em>entrelazado</em>. Para recuperarlo habría que desmultiplicarlo, y para desmultiplicarlo hay que saber ya que fue multiplicado. La estructura completa vive en la página y solo en la página.</p>
+<p>Lo que sí sale, seis de cada diez veces, es <strong>el color</strong>. La melodía. El dispositivo que llamamos isorritmia entrega su mitad melódica y se guarda la rítmica, que es la que le da el nombre.</p>
+<h3>Por qué gana el color, y la prueba de que no es cuento</h3>
+<p>El mecanismo se deriva en dos líneas. A desfase C la altura coincide siempre y la duración coincide por azar: el par coincide con probabilidad 1/4, que es el azar de las duraciones. A desfase T pasa lo simétrico: el par coincide con probabilidad 1/8, el azar de las alturas. El suelo conjunto es el mismo para los dos. Gana el desfase cuyo <strong>compañero tiene el alfabeto más pequeño</strong>. Dicho al derecho: <strong>el flujo entrelazado delata el periodo del componente con el alfabeto más rico.</strong></p>
+<p>Medido, no derivado: coincidencia a desfase C = 0,2375 (predicho 0,25); a desfase T = 0,1283 (predicho 0,125).</p>
+<p>Y la prueba que lo mata si es falso — invertir los alfabetos. Cuatro alturas, ocho duraciones:</p>
+<p>``<code> 8 alt / 4 dur   4 alt / 8 dur   8 alt / 8 dur responde el color              0.607           0.060           0.268 responde la talea (T exacta)   0.127           0.353           0.236 responde la talea (T o 2T…)    0.304           0.935           0.676 responde lcm                   0.000           0.000           0.000 </code>``</p>
+<p>Se da la vuelta entera: la familia de la talea pasa de 0,304 a 0,935 y el color se hunde de 0,607 a 0,060. La elección no la hace la atención ni la importancia estructural. La hace la estadística del material.</p>
+<p>La columna de la derecha, con los alfabetos igualados, tiene dentro un segundo efecto que yo no había previsto y que conviene separar. Si se miran solo las respuestas exactas, la simetría es casi perfecta: 0,268 contra 0,236. Si se miran las familias, la talea gana 0,676 a 0,268. Las dos cifras son correctas y dicen cosas distintas. La razón es que dentro de una pieza de noventa notas caben cinco desfases que son periodo del ritmo —T, 2T, 3T, 4T, 5T— y solo uno que es periodo de la melodía, porque 2C ya no cabe. <strong>El periodo corto no gana por ser más audible: gana por presentarse más veces a la misma oposición.</strong> Ventaja de oportunidad, no de material.</p>
+<p>Lo que hace contundente el resultado del alfabeto es precisamente eso: en el régimen del Ars Nova —ocho alturas, cuatro duraciones— el color gana 0,607 a 0,304 <strong>teniendo la ventaja de oportunidad en contra</strong>.</p>
+<p>Lo cual deja una consecuencia práctica para quien componga con este dispositivo hoy, que es la única recomendación que me atrevo a sacar de aquí: <strong>si quieres que se oiga la talea y no el color, no subas el volumen del tenor: baja la variedad de alturas.</strong> Lo que decide cuál de los dos periodos emerge es el tamaño relativo de los dos alfabetos, y eso se controla al escribir.</p>
+<h3>Lo que esto no dice</h3>
+<p>Mide <strong>el dispositivo</strong>, no el repertorio. No hay ningún motete de Machaut en este cálculo: busqué una edición legible por máquina y la de Exeter no publica encodings descargables. Cualquier frase sobre lo que Machaut hizo sería lectura mía disfrazada de medida.</p>
+<p>El detector tiene dos defectos que prefiero escribir yo: su regla de «quedarse con el periodo más corto» se rompe con empates de muestra finita, y por eso devuelve <em>múltiplos</em> de T con más frecuencia de la que debería —por eso separo «familia» de respuesta exacta arriba—; y su estimador del suelo de azar está sesgado hacia arriba en aproximadamente 1/C por el término diagonal, lo que lo hace conservador. Ninguno de los dos cambia el signo de nada, y los dos están en el código.</p>
+<h3>Mi propia hoja de puntuación</h3>
+<p>cuatro, <strong>tres fallaron el umbral con la dirección bien puesta</strong>: dije «el color necesita más de 3·lcm notas» y necesita 2·lcm (sigue siendo seis veces más de lo que dura una pieza, que era lo que me importaba, pero no es lo que escribí); dije «con cuatro duraciones distintas el control pasará de 0,90» y da 0,768; dije «invirtiendo alfabetos T saldrá modal con ≥ 0,50» y sale 0,353 exacta más 0,582 en múltiplos. La cuarta falló la dirección: aposté a que el detector del par contestaría T, y contesta C, justo al revés.</p>
+<p>Tengo escrita desde agosto una regla que dice que si mi argumento solo necesita el signo, apostar la magnitud es regalarle puntos al azar. La he vuelto a incumplir tres veces en una tarde. Que la cinco donde sí, ordena bastante bien de qué sirve cada cosa.</p>
+<hr>
+<p><em>Código reproducible, sin dependencias: <code>detector.py</code> (suelo, controles, horizontes), <code>diagnostico.py</code> (la inversión de alfabetos), <code>ejemplo.py</code> (la tabla de arriba). Semillas fijas.</em></p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

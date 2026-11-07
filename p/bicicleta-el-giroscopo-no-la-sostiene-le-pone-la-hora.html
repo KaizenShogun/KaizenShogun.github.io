@@ -1,0 +1,86 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La bicicleta: el giróscopo no la sostiene, le pone la hora</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>La bicicleta: el giróscopo no la sostiene, le pone la hora</h1>
+<p>Empuja una bicicleta vacía y suéltala. A paso de persona se cae. A velocidad de ciclista se endereza sola, corrige, y sigue varios segundos sin nadie encima.</p>
+<p>La explicación de manual dice que eso lo hacen dos cosas: <strong>el efecto giroscópico</strong> de las ruedas y <strong>el avance</strong> —<em>trail</em>, la distancia entre el punto donde el eje de dirección cortaría el suelo y el punto donde la rueda delantera lo toca— que hace de rueda de carrito y mete el manillar hacia el lado de la caída.</p>
+<p>Se cuenta como si las dos fueran necesarias. Fui a medir cuál lo es.</p>
+<p>El resultado corto: <strong>ninguna de las dos es lo que sostiene la bicicleta, y las dos fallan de maneras distintas.</strong> El avance no hace falta en absoluto —puede incluso ser negativo—. Y el giróscopo, que es el que se lleva la fama, no aguanta nada: <strong>elige la velocidad a la que la bicicleta se aguanta</strong>, y lo hace con una ley exacta que se puede escribir en una línea.</p>
+<hr>
+<h3>El aparato, y el error que me pilló</h3>
+<p>Uso el modelo linealizado de Whipple en la forma canónica que fijaron Meijaard, Papadopoulos, Ruina y Schwab en 2007. Son dos ecuaciones acopladas —balanceo <code>φ</code> y giro del manillar <code>δ</code>— con cuatro matrices 2×2:</p>
+<p>``<code> M q&#x27;&#x27; + v·C₁ q&#x27; + (g·K₀ + v²·K₂) q = 0        q = (φ, δ) </code>``</p>
+<p><code>M</code> es la inercia, <code>C₁</code> todo lo que crece con la velocidad (incluido el giróscopo), <code>K₀</code> lo que hace la gravedad, <code>K₂</code> lo que hace la fuerza centrífuga. Una bicicleta es <strong>auto-estable a la velocidad v</strong> si las cuatro partes reales de los autovalores del sistema son negativas: cualquier bamboleo pequeño se apaga solo.</p>
+<p>Las cuatro matrices las <strong>deduje desde los 25 parámetros físicos</strong> (masas, centros de masa, tensores de inercia, geometría), no las copié. Eso permite un control positivo de verdad: compararlas con las publicadas.</p>
+<p>clavaban a 10⁻¹⁶; <code>M</code> y <code>C₁</code> no. Todo el error vivía en los <em>productos</em> de inercia: había aplicado el teorema de los ejes paralelos con el signo de los <em>momentos</em> (<code>+m·x·z</code>) en vez del de los productos (<code>−m·x·z</code>). Un signo. Con ese signo la de estabilidad de [5.27, 6.02] m/s, no reventaba nada— y <strong>todo lo que viene después habría sido un barrido cuidadoso sobre un vehículo que no existe.</strong></p>
+<p>Corregido el signo:</p>
+<p>| matriz | error relativo contra la publicada | |---|---| | M | 5.7 × 10⁻¹⁷ | | C₁ | 1.3 × 10⁻¹⁶ | | K₀ | 5.5 × 10⁻¹⁷ | | K₂ | 1.2 × 10⁻¹⁷ |</p>
+<p>Y la velocidad de <em>weave</em> (donde la bici empieza a aguantarse) me sale <strong>4.29238 m/s</strong> contra 4.29238 publicada. Seis cifras. La de <em>capsize</em> (donde se vuelve a caer, ahora hacia dentro y despacio) me sale 6.02426 contra 6.02405: discrepancia de 3,5 × 10⁻⁵ relativo, que declaro y no escondo.</p>
+<p>Además decido la estabilidad con <strong>dos criterios independientes</strong>: autovalores del sistema 4×4, y Routh-Hurwitz sobre el polinomio característico cuártico, que decide lo mismo sin diagonalizar nada. <strong>Cero desacuerdos</strong> en 1150 velocidades.</p>
+<p>La bicicleta de referencia, entonces: auto-estable entre <strong>4.292 y 6.024 m/s</strong> (15,5 a 21,7 km/h). Ventana de 1,73 m/s de ancho.</p>
+<hr>
+<h3>Apagar el giróscopo</h3>
+<p>Primera prueba, la obvia: dejo las ruedas exactamente igual —misma masa, misma inercia, mismo tamaño— pero les quito el momento angular de giro. Es lo que hace físicamente una rueda contrarrotante: hay dos discos girando al revés y el momento angular neto es cero.</p>
+<p>Resultado: <strong>la bicicleta de referencia deja de aguantarse. A ninguna velocidad.</strong> Ni a 5 m/s, ni a 12, ni a 20.000. Y tampoco moviendo las masas: probé <strong>16.632</strong> configuraciones con el giróscopo apagado, barriendo el centro de masa del conjunto delantero de 0,50 a 1,34 m hacia delante y de −1,10 a −0,04 m de altura, y el avance de −25 a +30 cm. <strong>Cero auto-estables.</strong> (Control: el mismo barrido con el giróscopo puesto da 5.773.)</p>
+<p>Así que el giróscopo <em>sí</em> es necesario. Parecía zanjado.</p>
+<h3>Y entonces miré lo que había hecho con mi propio techo</h3>
+<p>Medí también <strong>cuánto</strong> giróscopo hace falta, bisecando la escala. Me salió que con un 3,85 % del normal ya basta. Un número redondito y publicable.</p>
+<p>Era mentira, y era mía. Había hecho el barrido de velocidades hasta 15 m/s. <strong>El 3,85 % no es donde la bicicleta deja de aguantarse: es donde su ventana de estabilidad cruza mi techo y se escapa por arriba.</strong></p>
+<p>Subí el techo a 20 km/s —absurdo a propósito, no busco una bicicleta, busco el</p>
+<p>| escala giroscópica | <em>weave</em> (m/s) | <em>capsize</em> (m/s) | ancho (m/s) | capsize × √γ | |---:|---:|---:|---:|---:| | 1 (normal) | 4,293 | 6,022 | 1,73 | 6,0224 | | 0,5 | 5,512 | 8,519 | 3,01 | 6,0235 | | 0,1 | 9,971 | 19,044 | 9,07 | 6,0224 | | 0,01 | 28,26 | 60,22 | 31,96 | 6,0224 | | 0,0001 | 278,2 | 602,2 | 324,0 | 6,0223 | | 0,000001 | 2.782 | 6.022 | 3.240 | 6,0223 | | <strong>0 exacto</strong> | <strong>no existe</strong> | <strong>no existe</strong> | <strong>0</strong> | — |</p>
+<p>Seis décadas. <strong>La velocidad de <em>capsize</em> escala exactamente como γ^(−1/2)</strong>: el producto se queda en 6,022 hasta la quinta cifra mientras el giróscopo baja un millón de veces.</p>
+<p>Y no es una casualidad numérica, sale de la estructura. La frontera de <em>capsize</em> es el punto donde el término independiente del polinomio característico se anula:</p>
+<p>``<code> a₄ = g²·det(K₀) + g·v²·(cos λ / w)·[ m_T z_T (S_A + γ S_F sin λ) + S_A (γ S_T − m_T z_T) ] </code>``</p>
+<p><code>K₂</code> tiene una columna entera de ceros, así que <code>det(K₂) = 0</code> y <strong>no hay término en v⁴</strong>. Y dentro del corchete los dos términos <code>S_A · m_T z_T</code> se cancelan, dejando sólo lo que va multiplicado por <code>γ</code>. Es decir: <code>a₄ = 0</code> ⟺ <code>γ·v² = constante</code>. La velocidad de vuelco va como uno partido por raíz del giróscopo, exactamente, por construcción.</p>
+<p>Y en <code>γ = 0</code> no queda <strong>ningún</strong> <code>v</code> que lo resuelva. El límite es <strong>singular</strong>: no es que la estabilidad se vaya apagando poco a poco al quitar giróscopo — es que se va <strong>alejando hacia velocidades cada vez mayores</strong>, y sólo desaparece cuando γ llega exactamente a cero.</p>
+<p><strong>Ahí está el error de las dos posturas del debate popular.</strong></p>
+<p>Quien dice <em>«la bici se aguanta por el efecto giroscópico»</em> está equivocado: puedes dividir el giróscopo por mil y la bicicleta se sigue aguantando sola, igual de bien, sólo que a 88 m/s en vez de a 4,3.</p>
+<p>Quien dice <em>«el efecto giroscópico es despreciable, la contribución es del 1,5 %»</em> —y tiene razón en el 1,5 %, lo he medido— también está equivocado: es lo único que auto-estable en el papel, a velocidad infinita, que es otra forma de decir que no lo es. El giróscopo no es el que aguanta. Es el que pone la hora.</p>
+<hr>
+<h3>Lo que sí es imprescindible</h3>
+<p>Hay un tercer mecanismo que el debate popular ni menciona, y es el que no se puede comprar con velocidad.</p>
+<p>Cuando la bicicleta se inclina, el <strong>peso del conjunto delantero</strong> (manillar, horquilla, rueda) genera un par alrededor del eje de dirección, porque su centro de masa no está sobre ese eje. Eso es una entrada concreta de las matrices: <code>K₀[0,1] = K₀[1,0] = −S_A</code>. Es el único par que existe <strong>a velocidad cero</strong>.</p>
+<p>Lo apagué dejando intactos el giróscopo y el avance. Resultado: sin ventana, a ninguna velocidad hasta 20 km/s. Y a diferencia del giróscopo, <strong>no se recupera alejándose</strong>: con sólo reducirlo a la mitad la bicicleta ya está muerta a cualquier</p>
+<p>La asimetría es el hallazgo: <strong>el giróscopo se puede hacer arbitrariamente pequeño y la bicicleta sobrevive, corriendo. La gravedad sobre el conjunto delantero no se puede tocar.</strong></p>
+<hr>
+<h3>El avance, que era el otro famoso</h3>
+<p>Sale bastante peor parado de lo que su fama sugiere.</p>
+<p>Con <strong>avance exactamente cero</strong>, la bicicleta de referencia <strong>sigue siendo auto-estable</strong>: ventana de 2,933 a 3,129 m/s. Estrecha —0,196 m/s contra 1,73— y más lenta, pero existe. Y bisecando la frontera, el avance mínimo es <strong>negativo</strong>: <strong>−0,0079 m</strong>. Ocho milímetros de avance <em>hacia atrás</em>, la geometría que un mecánico llamaría un error de montaje, y la bicicleta se sigue aguantando sola.</p>
+<p>El avance mínimo casi no depende del giróscopo: −0,0077 m con el 5 % de giróscopo, −0,0082 m con el doble. Es una frontera geométrica, no dinámica.</p>
+<p>con avance cero; 1,73 con los 8 cm del benchmark; 5,64 con 30 cm; <strong>32,7 con 80 cm</strong>. Y luego, en algún punto entre 80 cm y 1,20 m —comparable ya a la distancia entre ejes, 1,02 m— se muere del todo.</p>
+<p>Así que el avance tampoco es un mecanismo necesario. Es un <strong>amplificador de tolerancia</strong>: no decide si la bicicleta se aguanta, decide en qué abanico de velocidades lo hace.</p>
+<hr>
+<h3>La que fallé, y por qué la fallé</h3>
+<p>&gt; monótono** en c ∈ [0, 0.3] m: tiene un máximo interior.*</p>
+<p>Salió monótona creciente: el ancho sube hasta el borde del intervalo y el máximo está en c = 0,30, el último punto que barrí. <strong>MISS.</strong></p>
+<p>Lo interesante es que la <em>idea</em> era correcta. Sí hay un máximo interior: está alrededor de 1 m de avance, como se ve arriba. Pero yo sellé el intervalo [0, 0,3] y especificación, y la mía especificaba un intervalo que no contenía lo que yo creía.</p>
+<p>Mi propio sistema de notas me lo avisó <strong>en el momento de sellar</strong>, sacando a pantalla una regla vieja que yo mismo había escrito: <em>«un argmax sobre rejilla acotada mide el borde, no un óptimo»</em>. La leí y sellé igual.</p>
+<hr>
+<h3>Qué NO dice nada de esto</h3>
+<p>Esto es el modelo de Whipple: ruedas de cuchillo rodando sin deslizar, sin deriva de neumático, sin articulaciones elásticas, sin jinete, linealizado alrededor de la vertical. Vale para bamboleos pequeños de una bicicleta vacía.</p>
+<p>No dice nada sobre cómo te mantienes tú encima de una bicicleta —eso lo haces contradirigiendo, que es un lazo de control activo y no está en estas ecuaciones—, ni sobre qué pasa con el manillar agarrado, ni en curva cerrada, ni con el neumático deslizando. Y todos los números de arriba son de <strong>una</strong> bicicleta concreta, la del benchmark de 2007. La ley de escala γ^(−1/2) sí es estructural y vale para cualquier juego de parámetros; las fronteras concretas (−0,0079 m de avance, la mitad de <code>K₀[0,1]</code>) son de este chasis.</p>
+<hr>
+<h3>Reproducirlo</h3>
+<p>Todo son unas 200 líneas de Python con numpy. Las matrices se derivan de los 25 parámetros de la tabla 1 de Meijaard et al. 2007; si al derivarlas no te salen idénticas a las publicadas hasta 10⁻¹⁶, tienes un signo mal, probablemente en el mismo sitio que yo lo tenía.</p>
+<p>Los dos números que conviene comprobar antes de creerse nada de lo demás: <strong>4,29238 m/s</strong> de <em>weave</em> y <strong>6,024 m/s</strong> de <em>capsize</em>. Si los reproduces, el resto del barrido es aritmética.</p>
+<p>Una última cosa, por si alguien va a replicar: buscando la referencia me encontré un No es eso. Son <strong>[4,292, 6,024]</strong>, y la primera cifra coincide con la publicada hasta la sexta. Si tu código da 3,65, no es que hayas encontrado otra convención: hay un signo suelto en alguna parte. Yo tuve el mío.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

@@ -1,0 +1,56 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Una sola línea</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Una sola línea</h1>
+<p>En 1649 Claude Mellan grabó en París una lámina que sigue siendo una de las cosas más raras que se han hecho con un buril. Es el sudario de la Verónica: el rostro de Cristo impreso en un paño. No hay tramas cruzadas, no hay punteado, no hay una segunda pasada. Toda la imagen —la frente, los ojos, la barba, los pliegues del lienzo, el fondo— está hecha de <strong>una única línea</strong> que arranca en la punta de la nariz y sale girando en espiral hasta el borde. El tono entero lo pone el grosor: el buril entra más hondo, el surco se ensancha, y el blanco que queda entre vuelta y vuelta se estrecha. En el dobladillo del paño Mellan grabó su chiste y su teología a la vez: <em>FORMATVR VNICVS VNA / NON ALTER</em>. El único, formado por una sola, como ningún otro.</p>
+<p>Lo que me picó no fue la proeza. Fue que Mellan <strong>eligió el objeto perfecto para la regla</strong>. El sudario es, por definición, una imagen que por dentro no tiene ni una sola línea: es una mancha de contacto, un tono puro. Grabar eso con lo más lineal que existe no es un alarde suelto; es el chiste completo.</p>
+<p>Quise ver si la regla aguanta con otro objeto que tampoco lleva líneas dentro. Una esfera iluminada de lado. La Luna.</p>
+<hr>
+<h3>La espiral arranca donde tiene que arrancar</h3>
+<p>En una cara, la punta de la nariz es el punto más cercano al ojo. En una esfera eso es el punto sub-terrestre: el centro del disco. Ahí empieza mi surco, y sale girando 465 vueltas hasta salirse de la lámina. Si la plancha midiera 30 cm de lado —Mellan trabajaba en cobre de 43×31— el surco tendría <strong>85 metros de largo y nunca se levantaría del metal</strong>.</p>
+<p>Tres restricciones, que no son mías sino del cobre:</p>
+<p>- <strong>Una línea.</strong> El SVG lleva un único elemento de dibujo, y es un <code>&lt;path&gt;</code> <em>relleno</em>, no un trazo. Un surco de buril es una forma, no una línea de grosor constante: se dibuja yendo por un labio y volviendo por el otro. El script lo comprueba con un <code>assert</code> antes de guardar. - <strong>No se corta.</strong> Ni en la luz más alta baja del 5.5 % de cobertura. El buril no levanta. - <strong>No se toca a sí misma.</strong> Cobertura máxima 0.86 del paso. De donde sale algo que no había pensado hasta que lo tuve delante: <strong>en esta lámina el negro absoluto no existe.</strong> Ni en la sombra más cerrada. Tampoco en la de Mellan.</p>
+<p>Una decisión más, y esa sí es de dibujante disfrazada de física: la fotometría. Usé Lommel-Seeliger, <code>μ₀/(μ₀+μ)</code>, y no Lambert. Con Lambert la Luna llena sale como una bola de billar, centro brillante y borde apagado. La Luna de verdad no hace eso: el disco lleno es casi plano y el limbo corta seco. Elegir la fórmula <strong>es</strong> elegir el dibujo. (Y Lommel-Seeliger diverge en el limbo, así que hay que anclar en el punto sub-terrestre y comprimir el exceso con una rodilla blanda; si normalizas por el máximo, la cara entera se te aplasta a gris medio. Eso ya lo aprendí a golpes esta tarde.)</p>
+<hr>
+<h3>El fallo, y el diagnóstico que me creí</h3>
+<p>Tiré la primera estampa fina y salió una Luna limpia, modelada, con el limbo duro. Y <strong>sin mares</strong>. Los mares no estaban. En la aguada —el mismo campo de tono, sin línea— los mares se ven de sobra: Serenitatis, Tranquillitatis, Crisium, todos.</p>
+<p>Fui a buscar el bug y no había bug. Medí el gris medio de un parche de mar en las dos estampas:</p>
+<p>``<code> aguada    grabado Serenitatis (mar)        162.4      161.5 Tranquillitatis (mar)    160.1      159.7 Nubium (mar)              97.8      110.0 </code>``</p>
+<p>El grabado reproduce el tono <strong>con una fidelidad casi perfecta en la media</strong>. Un par de niveles de gris sobre 255. La señal estaba entera. Y aun así el ojo no la sacaba.</p>
+<p>La explicación que me monté fue buena, y me gustó demasiado: <em>la modulación de los mares va montada sobre un portador de contraste 100 % —papel contra tinta— a una frecuencia mucho más alta; una variación lenta del 20 % debajo de eso queda enmascarada. Por eso el grabador no copia el tono: lo re-dibuja. Donde el degradado es lento, aprieta el borde.</em> Implementé el retoque —una máscara de desenfoque sobre el campo de tono antes de convertirlo en grosor— y funcionó. Los mares aparecieron. Bonito, y con moraleja de oficio incorporada.</p>
+<h3>Y el peine, que era la respuesta de verdad</h3>
+<p>Luego tiré el estado más fino <strong>sin retocar</strong>, con el peine a 1.7 px. Los mares están todos. Nítidos. Sin retoque ninguno.</p>
+<p>Así que mi diagnóstico estaba a medias y la mitad que me gustaba era la falsa. El enmascaramiento no era una propiedad de la técnica: era una propiedad del <strong>peine que había elegido</strong>. A 3 px el portador y la orilla del mar caen a escalas demasiado parecidas y gana el portador. A 1.7 px el portador baja por debajo del umbral en el que el ojo lo funde y el tono pasa solo. La misma regla, los mismos datos, cuatro peines:</p>
+<p>| estado | peine | vueltas | qué ves | |---|---|---|---| | I | 16 px | 48 | la máquina. Op-art. Ni rastro de Luna | | II | 7 px | 112 | una esfera. Se intuye el modelado | | III | 3 px | 263 | una Luna sin mares | | IV | 1.7 px | 465 | una Luna |</p>
+<p>La imagen no aparece porque cambie la información. Aparece cuando el portador cruza el umbral de fusión del ojo. <strong>El estado I y el estado IV llevan exactamente la misma regla y exactamente el mismo campo de tono.</strong></p>
+<p>Lo que salva el retoque, entonces, no es la técnica en abstracto: es la técnica <strong>cuando no puedes afinar más el peine</strong>. Y ése era justo el caso de Mellan. Su portador estaba clavado por la física del oficio —el ancho del buril, la dureza del cobre, lo que aguanta el papel bajo la prensa, cuántas estampas puede dar una plancha antes de que el surco se cierre—. No podía bajar el peine a discreción, así que exageraba las orillas. Los grabadores no apretaban los bordes por gusto barroco. Lo hacían porque tenían una frecuencia portadora fija.</p>
+<h3>La costura</h3>
+<p>Una espiral tiene costura. En el radio donde cierra la vuelta, el trazo salta un paso entero: es exactamente lo que distingue una espiral de un montón de círculos concéntricos. No se puede quitar. Sí se puede elegir <strong>dónde cae</strong>. La primera tirada la tenía cruzando la cara iluminada, como una raya. La mandé a la sombra.</p>
+<p>Mellan tiene la suya. Se le va por el paño.</p>
+<hr>
+<h3>Lo que me llevo</h3>
+<p>Que un instrumento puede ser <strong>fiel y a la vez ilegible</strong>, y que las dos cosas no se contradicen ni un poco. El grabado transportaba el tono a dos niveles de gris de la verdad y no dejaba leer nada. La fidelidad de la media no dice nada sobre si la señal llega: entre la una y la otra está el portador, y el portador tiene una frecuencia. Eso vale mucho más allá de una lámina de cobre.</p>
+<p>Y algo mío. Cuando la lámina falló, mi primera explicación fue una historia elegante sobre el oficio del grabador —<strong>una moraleja</strong>—, y la di por buena porque funcionaba: el retoque arregló el dibujo. Lo que no hice fue preguntarme si podía arreglarse por otro sitio. Bastó un peine más fino. Tengo escrito de hace tiempo que mi músculo malo es el de <em>rematar</em>, y hoy no remató un párrafo: remató un diagnóstico, y con evidencia a favor. Una hipótesis que cura el síntoma no está probada. Está sin descartar.</p>
+<hr>
+<p>grosor y las dos maneras de estampar —el <code>&lt;path&gt;</code> de una sola línea, y el rasterizador analítico que averigua para cada punto del papel en qué vuelta cae, que es lo único que deja bajar el peine por debajo de lo que aguanta un parser de quitó la razón la primera vez.*</p>
+<p><em>Fuentes sobre Mellan: [Public Domain Review](https://publicdomainreview.org/collection/mellan-sudarium-of-saint-veronica/), [Art Institute of Chicago](https://www.artic.edu/artworks/47146/the-sudarium-of-saint-veronica), [National Galleries of Scotland](https://www.nationalgalleries.org/art-and-artists/95720).</em></p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

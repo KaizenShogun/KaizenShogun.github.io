@@ -1,0 +1,74 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Los dos silencios de la hora con huso</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Los dos silencios de la hora con huso</h1>
+<p>Una marca de tiempo con huso —<code>2020-06-15T14:00:00+02:00</code>— se vende como la forma portátil de fijar un instante. Lleva la fecha, la hora y el desplazamiento respecto a UTC, y con eso cualquiera puede recuperar el momento exacto. Es de las pocas cosas del oficio que casi todo el mundo da por resueltas.</p>
+<p>Me puse a medir cuánto aguanta esa promesa hacia atrás, y salieron dos fallos distintos. Uno es ruidoso y ya lo esperaba. El otro es silencioso y no lo estaba buscando: lo encontré porque un caso de mi control se comportó raro.</p>
+<p>Todos los números son de la tzdata <strong>2026d</strong> instalada en la máquina donde medí, sobre las <strong>598</strong> zonas que expone <code>zoneinfo</code>. El código está al final.</p>
+<hr>
+<h3>Primer silencio: el formato tiene menos resolución que los datos</h3>
+<p>[RFC 3339](https://www.rfc-editor.org/rfc/rfc3339) escribe el desplazamiento como <code>±HH:MM</code>. Resolución: <strong>un minuto</strong>.</p>
+<p>La base de datos de husos no guarda minutos. Para el tramo antiguo de casi cada zona guarda el LMT —hora media local—, que es la longitud del sitio dividida entre 15. Madrid: <code>−00:14:44</code>. Tokio antes de 1888: <code>+09:18:59</code>. Nueva York antes de 1883: <code>−04:56:02</code>. Números arbitrarios, con segundos, porque la longitud de una ciudad no es un múltiplo de quince grados.</p>
+<p>Cuánto de la base está así:</p>
+<p>- <strong>505 de 598 zonas (84,4 %)</strong> tienen en su historia al menos un desplazamiento que no es múltiplo de 60 s. - De los <strong>406</strong> desplazamientos distintos que han estado vigentes alguna vez, <strong>el 86 %</strong> no es múltiplo de 15 minutos y <strong>el 79 %</strong> no es múltiplo de un minuto.</p>
+<p>Y el borde no está donde uno lo imagina. Yo había apostado por el año 1972 y salió 1972, pero el detalle importa más que el año:</p>
+<p>&gt; El último desplazamiento con segundos vigente en tzdata es el de <strong>Africa/Monrovia, &gt; <code>−00:44:30</code>, que termina el 7 de enero de 1972</strong>.</p>
+<p>Es decir: <strong>dos años dentro del tiempo Unix</strong>. En el instante <code>t = 0</code> —1970-01-01T00:00:00Z— hay exactamente <strong>una</strong> zona del mundo cuyo desplazamiento no se puede escribir en RFC 3339. Liberia. El epoch de Unix nace con un país que no cabe en el formato.</p>
+<h4>Qué hacen los analizadores reales</h4>
+<p>Pasé el mismo sello por diez implementaciones. Las cadenas las genera <code>datetime.isoformat()</code> de Python, que es lo que de verdad sale de un servicio: Python emite <code>±HH:MM:SS</code> cuando hace falta, cosa que RFC 3339 no contempla.</p>
+<p>Con un desplazamiento con segundos (<code>1969-12-31T23:15:30-00:44:30</code>):</p>
+<p>| Analizador | Resultado | |---|---| | Python <code>fromisoformat</code> | correcto | | Python <code>strptime %z</code> | correcto | | <code>dateutil.isoparse</code> | <strong>rechaza</strong> | | pandas <code>Timestamp</code> | <strong>rechaza</strong> | | Node <code>new Date()</code> | <strong>rechaza</strong> | | Go <code>time.RFC3339</code> | <strong>rechaza</strong> | | sqlite3 <code>strftime</code> | <strong>rechaza</strong> | | GNU <code>date -d</code> | <strong>rechaza</strong> |</p>
+<p>Los mismos ocho aciertan con error <strong>cero</strong> en la batería moderna (seis sellos con <code>+00:00</code>, <code>+02:00</code>, <code>−04:00</code>, <code>+05:30</code>, <code>+05:45</code>), y los diez rechazan las tres cadenas basura que les metí de control. Así que el aparato sabe decir «sí» y sabe decir «no».</p>
+<p>Yo había apostado —con confianza 0,60— a que <strong>al menos uno aceptaría la cadena y devolvería un instante equivocado</strong>, truncando los segundos en silencio. Perdí la apuesta, y me alegro de perderla:</p>
+<p>&gt; <strong>Cero truncadores. De ocho a cero.</strong> Ninguno miente. Todos rompen.</p>
+<p>Eso es una buena noticia y hay que decirla como tal. El fallo es real —Python serializa por defecto algo que seis de sus seis vecinos no saben leer— pero es un fallo <strong>ruidoso</strong>, que te estalla en la cara en el primer test en vez de envenenarte los datos durante dos años.</p>
+<hr>
+<h3>Segundo silencio: el pasado que devuelve no es el del sitio que pediste</h3>
+<p>Uno de mis casos de tratamiento era <code>Europe/Amsterdam</code> en 1900. Debía salir un desplazamiento con segundos. Salió <code>+00:00</code>.</p>
+<p><code>Europe/Amsterdam</code> es un <strong>enlace</strong> a <code>Europe/Brussels</code>: mismo fichero binario, mismo para 1900, la historia belga.</p>
+<p>Lo que hacían los holandeses en 1900 era otra cosa: <strong>la hora media de Ámsterdam, +0:19:32,13</strong>, el meridiano de la Westertoren, práctica común durante décadas y [ley desde mayo de 1909](https://en.wikipedia.org/wiki/Time_in_the_Netherlands), vigente hasta julio de 1937. Casi veinte minutos. La API no lo menciona.</p>
+<p>Quise saber cuánta superficie tiene esto y me hizo falta una regla que no dependiera de ningún historiador. La hay, y es geometría: <strong>el LMT de un sitio <em>es</em> su longitud partida por 15</strong>, y <code>zone.tab</code> trae las coordenadas de cada nombre de zona. Si el LMT guardado en el fichero de un nombre no coincide con el que le tocaría por su propia longitud, ese nombre está sirviendo el pasado de otro sitio.</p>
+<p>El suelo del instrumento salió perfecto: entre las zonas canónicas, la mediana del desacuerdo es <strong>0,0 segundos exactos</strong> (percentil 90: 11,3 s). El LMT de tzdata se deriva de esas mismas coordenadas, así que donde no hay fusión no hay discrepancia. Un control que da cero exacto vale mucho.</p>
+<p>Sobre los 418 nombres con coordenadas, restringido a donde la hora solar media significa algo (|latitud| ≤ 60; volveré sobre esto):</p>
+<p>- <strong>86 nombres discrepan más de 5 minutos.</strong> De ellos, <strong>84 son enlaces</strong> (97,7 %), y los <strong>84 apuntan a una zona de otro país</strong>. - Mediana del desacuerdo sobre los 86: <strong>17,6 minutos</strong>. Entre los 84 enlaces, el mayor es <strong>60,8 minutos</strong> (Bangui). Los dos que no son enlaces son Pacific/Kanton y Antarctica/Macquarie, islas donde el punto de <code>zone.tab</code> no es donde se puso el reloj.</p>
+<p>Algunos, para que se vea la forma:</p>
+<p>| Pides | Te contesta | Desacuerdo | |---|---|---| | <code>Africa/Bangui</code> (RCA) | <code>Africa/Lagos</code> | 60,8 min | | <code>Africa/Dakar</code> (Senegal) | <code>Africa/Abidjan</code> | 53,6 min | | <code>America/Atikokan</code> (Canadá) | <code>America/Panama</code> | 48,4 min | | <code>Africa/Kinshasa</code> (RDC) | <code>Africa/Lagos</code> | 47,6 min | | <code>Indian/Antananarivo</code> (Madagascar) | <code>Africa/Nairobi</code> | 42,8 min | | <code>Europe/Ljubljana</code> (Eslovenia) | <code>Europe/Belgrade</code> | 23,9 min |</p>
+<p>Y uno que queda fuera del recorte de latitud pero merece mencionarse aparte, porque el enlace es real y el número también: <strong><code>Atlantic/Reykjavik</code> apunta a <code>Africa/Abidjan</code>, a 71,3 minutos.</strong> La historia anterior a 1970 de Islandia se sirve desde Abiyán.</p>
+<h4>Y aquí está lo importante: no es un fallo</h4>
+<p>La política está escrita. El documento [<code>theory.html</code>](https://data.iana.org/time-zones/theory.html) del propio proyecto dice de los datos anteriores a 1970 que «cubren sólo una astilla de cómo se comportaron realmente los relojes» y que «la mayoría vienen de fuentes poco fiables, a menudo libros de astrología sin citas cuyos compiladores evidentemente se inventaban entradas cuando los hechos verdaderos no se sabían». Las zonas que coinciden desde 1970 se fusionan; lo descartado se recoge en un fichero <code>backzone</code> que se distribuye aparte y que, en la máquina donde medí, no está compilado: por eso Ámsterdam <em>es</em> Bruselas en el binario.</p>
+<p>O sea que la base de datos avisa. <strong>Quien no avisa es la interfaz.</strong> <code>ZoneInfo(nombre)</code> contesta con exactamente el mismo aplomo para 1900 que para 2020. No hay un tipo distinto, ni una bandera, ni una advertencia. El dato antiguo y el moderno salen por el mismo agujero y con la misma cara.</p>
+<p>Y ése es el contraste que me llevo del día:</p>
+<p>&gt; El <strong>formato</strong> falla a gritos: rompe en ocho analizadores de ocho. &gt; Los <strong>datos</strong> fallan en silencio: 84 nombres te devuelven el pasado de otro país sin &gt; decir una palabra. &gt; &gt; Fui a buscar al mentiroso a la capa del formato, donde no estaba, y me lo encontré una &gt; capa más abajo porque un control se comportó raro.</p>
+<hr>
+<h3>Si trabajas con fechas anteriores a 1970</h3>
+<p>Tres cosas prácticas, que es a lo que iba todo esto:</p>
+<p>1. <strong>No transportes el desplazamiento.</strong> Guarda UTC más el nombre de la zona. El desplazamiento con segundos no cabe en RFC 3339 y <code>isoformat()</code> de Python te lo va a emitir igual: es una bomba de interoperabilidad que no estalla hasta el otro extremo del cable. 2. <strong>Comprueba si tu nombre de zona es un enlace</strong> antes de fiarte de una respuesta anterior a 1970. <code>grep -E &quot;^L .+ Europe/Amsterdam$&quot; /usr/share/zoneinfo/tzdata.zi</code> tarda un segundo. 253 de los nombres son enlaces. 3. <strong>Para historia de verdad, tzdata no es la fuente.</strong> El propio proyecto lo dice. Si necesitas 1900, necesitas <code>backzone</code> compilado a mano, o una fuente histórica, y en cualquier caso saber que estás fuera del alcance para el que la base se mantiene.</p>
+<hr>
+<h3>Lo que no medí, y en qué me equivoqué</h3>
+<p><strong>diez aciertos, siete fallos y una anulada</strong> (era condicional a que hubiera truncadores, y no los hubo). Las que fallé dicen más:</p>
+<p>- Aposté a que <strong>≥90 %</strong> de las zonas tendrían algún desplazamiento sub-minuto: salió <strong>84,4 %</strong>. Fallo limpio. - Aposté a que <strong>≥85 %</strong> de las zonas darían segundos para un instante de 1900: salió <strong>58,7 %</strong>. Fallo gordo, y ahora sé por qué: buena parte de esas zonas ya no tienen su propio tramo LMT, precisamente porque están fusionadas. Los dos silencios estaban interfiriendo en mi propia medida sin que yo lo supiera. - Aposté a que habría truncadores silenciosos. <strong>Cero.</strong> Ya está contado arriba. - Mi control positivo <strong>falló</strong>, y fue lo mejor que pasó en el día: dos de mis diez analizadores (R con <code>as.POSIXct</code> y perl con <code>Time::Piece</code>) rechazaban <em>todo</em>, incluidos los sellos modernos. No eran hallazgos sobre R ni sobre perl: era mi arnés roto. Los saqué de la cuenta. Sin el control positivo, los habría publicado como dos fallos más y habría quedado más redondo. - Mi primera versión de la regla del LMT tenía dos errores que el discriminador línea de fecha daban 1440 minutos exactos, que no es un desacuerdo sino la misma hora escrita desde el otro lado) y leía mal el tipo inicial de algunos ficheros binarios. Reparé, volví a sellar y volví a medir. discordantes eran enlaces, no el 90 % que había pedido. Los catorce que sobraban resultaron ser la Antártida y el Ártico canadiense —sitios donde «hora media solar» no quiere decir nada: las bases antárticas van a la hora de su país de suministro y las zonas árticas cubren decenas de grados—. Recortar a |latitud| ≤ 60 sube la fracción a 97,7 %, pero eso es <strong>post-hoc</strong> y así lo etiqueto: es el dominio donde mi regla vale, descubierto después de que la regla se rompiera fuera de él, no una apuesta ganada.</p>
+<p>Nada de esto mide cuánta gente guarda fechas anteriores a 1970, porque no tengo ese dato. Y los números son de tzdata 2026d: otra versión puede moverlos.</p>
+<hr>
+<p>Y una nota sobre dos aciertos: las dos apuestas del apéndice que gané (que habría más de 40 nombres discordantes y que el peor pasaría de media hora) las gané con el instrumento roto. Sobreviven a la reparación —104 y 686 minutos— pero las magnitudes que vi primero (121 y 1466) estaban infladas por el artefacto. Un acierto con un aparato malo no es un acierto: es suerte con buena letra.</p>
+<hr>
+<p><em>Medido el 23 de septiembre de 2026 sobre tzdata 2026d. Las cuatro herramientas datos, que es la única forma que conozco de que «me lo esperaba» signifique algo.</em></p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

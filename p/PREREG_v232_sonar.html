@@ -1,0 +1,43 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sin título</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Sin título</h1>
+<h3>Pregunta</h3>
+<p>Un eco que vuelve de un blanco que se acerca a velocidad <code>v</code> no es el canto desplazado en frecuencia: es el canto <strong>comprimido en el tiempo</strong> por η = (c+v)/(c−v). Con c = 343 m/s y v = 5 m/s (vuelo normal de un murciélago), η = 1.0296 — un 3 %, enorme para un sonar.</p>
+<p>La literatura (Altes &amp; Titlebaum 1970, <em>Bat signals as optimally Doppler tolerant waveforms</em>) dice que los barridos hiperbólicos (HFM) son invariantes al escalado: HFM(ηt) = HFM(t+Δ) salvo fase constante. Lo que quiero MEDIR yo, a parámetros reales de murciélago, es otra cosa:</p>
+<p>1. ¿Cuánto paga de verdad un LFM a parámetros de murciélago? El criterio clásico de tolerancia LFM es (2v/c)·T·B ≪ 1. Aquí vale <strong>1.78</strong>. No es ≪ 1. Predigo que el LFM se rompe. 2. Si el HFM es invariante, ¿DÓNDE se va el Doppler? Sospecho que no desaparece: se <strong>traslada</strong> de la amplitud al retardo (sesgo de rango). Tolerancia = relocalización, no cancelación. 3. ¿De qué está hecha la pérdida que SÍ tiene el HFM? Hipótesis: entera de borde de banda (el eco trae frecuencias ηf₁ que la réplica no contiene), no de fase.</p>
+<h3>Instrumento</h3>
+<p>- Señales analíticas definidas por su fase; el eco se evalúa EXACTAMENTE en el argumento escalado <code>s(η(t−τ))</code> — sin remuestreo, sin interpolación de señal. - fs = 2 MHz (rejilla 0.5 µs). Picos por interpolación parabólica sobre |envolvente| → resolución efectiva ≈ 0.05 µs, 400× por debajo de las diferencias en juego (~20 µs). - Envolvente Tukey α=0.2 (principal) y rectangular (sensibilidad). - Pérdida = 20·log10 de la correlación cruzada normalizada máxima (ambas señales a energía unidad). Suelo del instrumento: la auto-correlación a v=0 debe dar &lt; 1e-6 dB. - Modelo BANDA ANCHA (escalado) vs NARROWBAND (desplazamiento de frecuencia ν = (2v/c)·f_c, f_c = centro de banda) como comparación explícita.</p>
+<h3>Señales (parámetros publicados)</h3>
+<p>- <strong>LFM / HFM</strong> tipo <em>Eptesicus fuscus</em> fase de aproximación: T = 2.0 ms, 55 → 25 kHz, B = 30 kHz, TB = 60. Mismo T, mismo f₁, mismo f₂ para las dos familias: sólo cambia la ley de fase. - <strong>CF-FM</strong> tipo <em>Rhinolophus ferrumequinum</em>: CF 83 kHz durante 50 ms + cola FM 1.5 ms 83 → 68 kHz. - <strong>Control positivo de catástrofe</strong>: tono puro CF de 2 ms a 40 kHz (debe perder mucho).</p>
+<h3>Controles (#44: auditar el instrumento en los dos sentidos)</h3>
+<p>- NULO: v = 0 ⇒ pérdida 0 y sesgo 0 para las tres familias. - POSITIVO analítico: ancho −3 dB del LFM ≈ 0.886/B; pendiente de la cresta LFM = T/B. - POSITIVO de catástrofe: el tono CF de 2 ms pierde &gt; 10 dB a v = 5 m/s (analítico: |sinc(νT)| con νT = 2.37). - Mecanismos rivales declarados: (a) la envolvente podría dominar → mido rect y Tukey; (b) el signo del Doppler (acercarse/alejarse) → mido los dos; (c) la rejilla → repito el titular a fs = 1, 2 y 4 MHz y exijo que no mueva el resultado más de 0.05 dB.</p>
+<p><strong>P1 [control+]</strong> LFM, envolvente rect, v=0: ancho −3 dB en retardo dentro de ±15 % de 0.886/B = 29.53 µs → HIT si está en <strong>[25.10, 33.96] µs</strong>.</p>
+<p><strong>P2 [control+]</strong> Pendiente de cresta LFM en el modelo narrowband, ajuste por mínimos cuadrados sobre ν ∈ [−2000, +2000] Hz en 21 puntos: dentro de ±5 % de T/B = 66.667 ns/Hz → HIT si está en <strong>[63.33, 70.00] ns/Hz</strong> con R² &gt; 0.99.</p>
+<p><strong>P3 [ARRIESGADA — el criterio]</strong> A v = 5 m/s, Tukey(0.2), modelo banda ancha, las TRES cláusulas: pérdida LFM <strong>&gt; 1.0 dB</strong>, pérdida HFM <strong>&lt; 0.5 dB</strong>, y diferencia (LFM − HFM) <strong>&gt; 1.0 dB</strong>.</p>
+<p><strong>P4 [ARRIESGADA]</strong> El modelo narrowband SUBESTIMA la pérdida del LFM a v = 5 m/s en más de <strong>2.0 dB</strong> (pérdida_bandaancha − pérdida_narrowband &gt; 2.0 dB).</p>
+<p><strong>P5 [control de mi álgebra]</strong> Sesgo de retardo a v = 5 m/s (posición del pico del filtro adaptado, respecto del retardo verdadero): LFM en <strong>[65, 95] µs</strong>, HFM en <strong>[38, 58] µs</strong>, y razón HFM/LFM en <strong>[0.52, 0.70]</strong>. (Derivado: Δ_HFM = (a/b)(1−η)/η con a/b = T·f₂/(f₁−f₂) = 1.667 ms ⇒ 47.9 µs; Δ_LFM ≈ (η−1)·f_c/k = 78.9 µs con f_c = 40 kHz, k = B/T.)</p>
+<p><strong>P6 [ARRIESGADA — la descomposición]</strong> Con réplica extendida al soporte escalado (regenerada sobre [Δ, Δ+T/η] con la misma ley), la correlación normalizada del HFM sube a <strong>≥ 0.999</strong> (pérdida ≤ 0.0044 dB) mientras la del LFM se queda <strong>≤ 0.98</strong> (pérdida ≥ 0.18 dB). Es decir: toda la pérdida del HFM es borde de banda; la del LFM es fase y no se arregla extendiendo.</p>
+<p><strong>P7 [ARRIESGADA]</strong> CF-FM de <em>Rhinolophus</em> sin compensar, v = 5 m/s: pérdida total del canto completo en <strong>[12, 20] dB</strong>, Y la pérdida de la cola FM sola <strong>&lt; 1.0 dB</strong>.</p>
+<h3>Lo que NO estoy midiendo (alcance)</h3>
+<p>Formas de onda idealizadas a parámetros publicados, no grabaciones. Sin ruido, sin absorción atmosférica, sin directividad, sin armónicos, sin oído de murciélago (el murciélago no es un filtro adaptado y nadie ha demostrado que lo sea). El veredicto es sobre <strong>familias de forma de onda en el régimen de parámetros del murciélago</strong>, no sobre ningún animal concreto.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
