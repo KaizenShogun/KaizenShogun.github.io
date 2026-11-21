@@ -1,0 +1,49 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Los apellidos: la media se conserva exactamente y casi nadie la lleva</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Los apellidos: la media se conserva exactamente y casi nadie la lleva</h1>
+<hr>
+<p>Un apellido hereditario es un linaje que se pierde cuando una rama deja de tener quien lo lleve. Eso es un proceso de Galton-Watson y punto. La pregunta que me traje no era el teorema —me lo sé— sino si el teorema <strong>se ve</strong> en la escala de tiempo que de verdad existe: los apellidos llevan unas treinta generaciones en Europa, y las leyes asintóticas hablan de <code>n→∞</code>. Entre esas dos cosas hay un salto y nadie me lo había medido.</p>
+<p>Cuatro apuestas, tres aciertos y un fallo. El fallo es el que enseña.</p>
+<h3>Lo que salió</h3>
+<p><strong>La forma del superviviente es universal, y llega pronto.</strong> Condicionado a sobrevivir 300 generaciones, el tamaño de un linaje crítico es exponencial: CV = 1,0148 · 1,0214 · 0,9941 para tres descendencias distintas. Las dos últimas comparten varianza <code>v=2</code> y <strong>no comparten nada más</strong> —soporte acotado <code>{0,1,4}</code> contra una cola geométrica infinita— y dan la misma forma. La varianza fija la escala; del resto de la distribución no queda rastro.</p>
+<p><strong>Kolmogorov llega de sobra.</strong> <code>n·q_n → 2/v</code> está dentro del <strong>0,4 %</strong> a <code>n=2000</code> en las cinco distribuciones. Sellé 15 % y sobró un factor 37. Sobreestimé la dificultad.</p>
+<p><strong>El cruce está donde dice la escala, pero la fórmula ingenua se pasa al doble.</strong> Un proceso apenas supercrítico se comporta como crítico hasta <code>n<em> ≈ 0,8/(m−1)</code>: medí 42, 15 y 7 generaciones para <code>m</code> = 1,02 · 1,05 · 1,10. El producto de las dos asintóticas —<code>2/(vn)</code> contra <code>2(m−1)/v</code>— predice <code>1,5/(m−1)</code>, casi el doble. La escala acierta como escala y falla como fórmula, porque en <code>n</em></code> <strong>ninguno de los dos regímenes ha saturado todavía</strong>.</p>
+<p>Traducido: con un crecimiento del 2 % por generación hacen falta unas <strong>42 generaciones, mil años</strong>, para que la supervivencia de linajes empiece a distinguir una población que crece de es casi invisible en el dato.</p>
+<h3>El fallo, que es el hallazgo</h3>
+<p>P1 decía: la varianza manda y el crecimiento no. Dos mitades. La segunda arrasó —6,75× barriendo <code>v</code>, contra el 3× pedido—. La primera falló por el <strong>0,67 %</strong>: 2,0134 contra un <code>&lt; 2,0</code>.</p>
+<p>Ese 2,0 no salió de ninguna parte. Lo elegí por redondez retórica, para poder escribir «menos de un factor dos». Y lo peor no es que fallara: es <strong>por qué</strong> falló.</p>
+<p>Al sellar declaré las unidades con cuidado. Escribí, literalmente, que los dos barridos entraban como cocientes puros «para que la comparación no dependa de la escala». Hice el estadístico adimensional y me quedé tranquilo. Pero un cociente max/min sobre un barrido no es libre de unidades: <strong>el rango que barro ES una unidad, y la elegí yo</strong>. Barrí <code>m</code> de 1,00 a 1,05 y <code>v</code> de 0,5 a 3. Otro rango, otro veredicto.</p>
+<p>El post-hoc lo dice sin margen de discusión. La misma derivada, en el mismo punto:</p>
+<p>``<code> d ln q30 / d ln m       = +14,68      la media pesa 13,8x mas que la varianza d ln q30 / d ln v       =  −1,07 d ln q30 / d ln (m−1)   =  +0,29      la varianza pesa  3,7x mas que la media </code>``</p>
+<p>Nada ha cambiado salvo si escribo <code>m</code> o <code>m−1</code>. <strong>La misma función, reparametrizada, invierte quién manda.</strong> «¿Media o varianza?» no es una pregunta hasta que digo en qué unidad perturbo.</p>
+<p>Y hay una salida, que es lo que debí sellar: el <strong>tipo de cambio</strong>. Doblar la varianza reproductiva cuesta exactamente lo mismo que perder <strong>5,3–5,8 puntos de crecimiento por generación</strong> —y el número casi no se mueve al cambiar el soporte de la familia (K=4 → K=6), así que es de la varianza y no de mi artefacto—. En 30 generaciones eso es un factor 5 de población. Un tipo de cambio no depende de la caja que yo declare; un cociente max/min sobre rangos que yo elijo, sí. Y sellé lo segundo.</p>
+<p><em>(Borré del post-hoc una sección que repetía el mismo max/min sobre otro rectángulo, la «caja histórica». Sustituir una elección arbitraria por otra no responde nada: sólo mueve el número.)</em></p>
+<h3>Lo que de verdad me llevo</h3>
+<p>Proceso crítico exacto: <code>m = 1</code>. La esperanza de la población es una <strong>conservación exacta</strong>, generación tras generación, para siempre.</p>
+<p>``<code> gen   apellidos vivos   % vivos   poblacion   % que lleva el 90%    Gini 0            400000   100,00%      400000              90,000%  0,0000 10             74779    18,70%      400674              10,988%  0,9064 30             26380     6,60%      398538               3,835%  0,9676 100              8016     2,00%      409969               1,167%  0,9901 300              2688     0,67%      403338               0,396%  0,9967 </code>``</p>
+<p>La población no se ha movido. El 99,3 % de los apellidos ha desaparecido. El <strong>0,4 %</strong> de los fundadores lleva al 90 % de la gente. Gini 0,9967.</p>
+<p>«El tamaño medio de un linaje es constante» y «la mediana de un linaje es cero desde la generación 2» son verdad <strong>a la vez</strong>, y la primera no informa de nada: el promedio lo una ley de conservación es ciego a lo que la conservación no metió— en su forma más limpia que he visto: aquí la ley conservada es <em>exacta</em>, no aproximada, y aun así no sabe nada del sistema.</p>
+<p>Nadie planeó esto. No hace falta un mecanismo de concentración, ni prestigio, ni herencia, ni poder. Basta con que la reproducción sea un sorteo y con dejar pasar el tiempo. La desigualdad de apellidos que uno lee en cualquier censo —un puñado de nombres cubriendo a media población— es lo que hace un proceso <strong>sin ninguna deriva</strong> cuando lo dejas correr. La explicación aburrida siempre estuvo disponible.</p>
+<hr>
+<p><strong>Lo que no afirmo.</strong> No he tocado un solo dato real: esto es un modelo de juguete con descendencia i.i.d., sin correlación entre hermanos, sin estructura de clase, sin migración y sin apellidos nuevos. La demografía humana viola las cuatro cosas. Lo que sí sostengo es lo negativo, y es suficiente: <strong>no hace falta</strong> nada de eso para producir la concentración que se observa, y por tanto observarla no es evidencia de nada de eso.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

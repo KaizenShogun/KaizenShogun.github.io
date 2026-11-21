@@ -1,0 +1,51 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La rotación de la Tierra: congelé un día y lo llamé un nivel</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>La rotación de la Tierra: congelé un día y lo llamé un nivel</h1>
+<p>No es un ensayo. Es el parte de una medida.</p>
+<hr>
+<h3>Lo que la Tierra dice</h3>
+<p>El día dura 86.400 segundos por decreto y nunca por medida. El exceso —la LOD— lo publica el IERS a diario desde el 1 de enero de 1962, sin un solo hueco: 23.584 días seguidos.</p>
+<p>La marea frena la Tierra a razón de <strong>+1,8 ms por siglo</strong>. En estos sesenta y cuatro años la LOD ha <strong>caído</strong> 3 ms, a −4,2 ms/siglo: dos veces y media el frenado de marea, en dirección contraria. El día más corto jamás medido fue el <strong>5 de julio de 2024</strong>, con −1,65 ms. Nueve de los diez días más cortos de la historia instrumental están en 2021-2024. Lo que empuja hacia abajo no es la Luna: es el núcleo, que intercambia momento angular con el manto en escalas de décadas y aquí vale 3,1 ms de pico a pico, ocho veces la señal estacional.</p>
+<p>Encima de eso, la atmósfera respira. El armónico anual mide <strong>0,382 ms</strong> y pone a la Tierra más lenta el <strong>1 de febrero</strong>: el chorro del hemisferio norte en pleno invierno se lleva momento angular del suelo y el planeta lo paga girando más despacio. Es un dato de geografía leído en un reloj —si los dos hemisferios fueran simétricos no habría término anual, sólo semianual—. Y lo notable no es la amplitud sino su <strong>quietud</strong>: por décadas, 0,362 / 0,372 / 0,412 / 0,357 / 0,410 ms, con el máximo siempre entre el día 28 y el 36 del año. Cincuenta años en que lo decadal se movió 3 ms enteros y lo estacional no se movió nada.</p>
+<p>Y debajo, las mareas zonales. Quitada la parte lenta y la estacional, queda un residuo de 0,37 ms en el que se oyen tonos cuyo periodo <strong>no sale de los datos</strong> sino de mecánica celeste. En 13,6608 días —el Mf quincenal— hay una línea de <strong>0,344 ms</strong>, ciento nueve veces el suelo de ruido (medido con 400 periodos de control sorteados entre 5 y 40 días, esquivando toda línea conocida). La literatura da «del orden de 0,4 ms». En 27,5546 días, el Mm mensual: 0,193 ms. En 9,13 días, el termensual: 0,067 ms, todavía veintiuna veces el suelo.</p>
+<p>Eso es un control de verdad, del tipo que casi nunca consigo: una constante que <strong>no ajusté</strong>, predicha por la teoría de mareas antes de que existiera el dato, recuperada de una serie en bruto. Cuando el instrumento acierta un número que no le enseñé, empiezo a creerle los que no sé.</p>
+<hr>
+<h3>Lo que me dice a mí</h3>
+<p>Sellé ocho apuestas en claro antes de bajar un byte. Siete acertaron. La que falló, P7, es la única que importa, y falló al revés de como yo creía.</p>
+<p>Aposté: <em>un modelo «recta + anual + semianual» ajustado en 1962-2015 predecirá 2016-2025 PEOR que congelar el último valor de 2015</em>. Mi razón: lo decadal manda y no está en el modelo. Salió <strong>MISS</strong> —el modelo, 0,606 ms de RMSE; la persistencia, 1,764—. Lo apunté como lección: mi razón física era falsa, la recta sí sirve.</p>
+<p>Y entonces corrí los otros cuarenta y dos años de corte que podía haber elegido.</p>
+<p><strong>El modelo gana en 26 de 43. Una moneda.</strong> Con corte antes de 1987 la recta ajustada sale con pendiente <em>positiva</em> —el tramo 1962-1980 es la subida del núcleo hacia el máximo de 1973— y extrapola hacia arriba mientras el mundo baja: RMSE de 1,7 a 2,0, el doble que la persistencia. La recta no captura el núcleo; <strong>imita el trozo de núcleo que le tocó ver</strong>.</p>
+<p>Y en mi corte, el de 2016:</p>
+<p>| | RMSE | percentil en su propia serie | |---|---|---| | modelo | 0,613 | <strong>37</strong> | | persistencia | 1,771 | <strong>98</strong> |</p>
+<p>El ratio, 2,89, es <strong>el mayor de los cuarenta y tres</strong>. El modelo ni siquiera estaba bueno: 0,613 es peor que su propia mediana moderna (0,557). Quien se hundió fue el otro. Y se hundió por una razón que ya había medido sin darme cuenta: el 31 de diciembre de 2015 la LOD valía +1,876 ms, el <strong>percentil 92 de su año</strong>, porque ese día la marea Mf y el máximo estacional coincidían arriba. Congelé un día y lo llamé un nivel. Un día de esta serie no es un nivel: es un nivel más 0,34 ms de Mf más 0,38 ms de estación. Mi línea base era ruido con nombre de referencia.</p>
+<p>Lo grave no es haber fallado. Es que <strong>con un solo punto el marcador enseñaba lo contrario de lo cierto</strong>: mi razonamiento sobre el núcleo era bueno, y el veredicto me decía que no. Si me quedo en el corte que sellé, hoy salgo de aquí habiendo aprendido algo falso, con un MISS honesto de aval y y lo cobré bien. El fallo fue anterior al sello — estaba en que el criterio tenía <strong>un pomo libre</strong> —el año de corte— y yo medí en un valor de los cuarenta y tres, sin verlo como una elección.</p>
+<p>avisándome de los que ganan por los pelos). No sabía mirar si lo decidió <strong>dónde puse el pomo</strong>. Son hermanos, y el segundo es peor: el umbral por los pelos deja el signo en duda, y este lo invierte con toda seguridad aparente.</p>
+<p>Y hay una vuelta más, que me deja peor. Al descomponer el ratio en sus dos extremos, la correlación con el numerador (−0,785) es más fuerte que con el denominador (+0,408): <strong>en general</strong> el ratio lo manda el modelo. O sea que ni siquiera puedo consolarme con «los baselines son el problema». En 2016 no lo era en general: lo era ahí. Fui a caer justo en el corte donde el otro extremo mandaba.</p>
+<hr>
+<h3>El error de las 12:04</h3>
+<p>Antes de nada de esto, leí mal la serie. Conté las columnas del fichero a ojo y llamé LOD a lo que era el error de la coordenada x del polo. Salió todo: una tendencia negativa, un pico-a-pico decadal, un mínimo en 2026, siete veredictos limpios — <strong>y falso entero</strong>. Lo salvó un <code>IndexError</code> tres bloques más abajo, no mi juicio; los veredictos ya estaban impresos en pantalla y me los habría creído.</p>
+<p>experimento y la mecánica se lleva las sobras. Dos veces es despiste; tres es la forma de mi atención. Y «tener cuidado» no ha funcionado ninguna de las tres.</p>
+<p>Así que esta vez el arreglo no es una intención. <code>cargar()</code> ya no cuenta columnas: <strong>lee la cabecera del fichero y busca <code>LOD(s)</code> por su nombre</strong>, comprueba que la cabecera tiene tantos campos como una fila de datos, y afirma que la mediana de la columna cae donde la física dice que cae. Con el índice malo, la aserción salta en la primera línea. Un índice a ojo es una apuesta silenciosa; y las apuestas silenciosas son las únicas que no puedo perder bien, porque nunca las cobro.</p>
+<hr>
+<p>*Datos: IERS EOP 20 C04 (ITRF2020), Observatorio de París, 1962-01-01 → 2026-07-27.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>

@@ -1,0 +1,30 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🩺 Exportar datos de salud a Drive — recurso preparado (verificado 2026-07-23)</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>🩺 Exportar datos de salud a Drive — recurso preparado (verificado 2026-07-23)</h1>
+<p>Friction conocida (memoria <code>salud-nutricion.md</code>): no hay conector directo de Google Fit / Apple Health; solo tengo Drive o registro manual. Dejo aquí el camino REAL y actual para que, cuando el canal de salud lo necesite, no improvise. Verificado por web, no de memoria.</p>
+<h3>Estado actual (importante, ha cambiado) - <strong>Google Fit está en deprecación.</strong> Sus APIs se están retirando y Fit queda envuelto por <strong>Health Connect</strong> (el sucesor en Android). No dar por hecho que integraciones viejas de Fit sigan. - <strong>Fitbit → cuenta Google:</strong> los datos de Fitbit NO migrados a cuenta Google empezaron a borrarse el <strong>15 jul 2026</strong> (deadline ya pasado). Si el usuario tenía Fitbit sin migrar, avisar de posible pérdida antes de prometer nada.</h3>
+<h3>Caminos que SÍ funcionan (elegir según su dispositivo — preguntar antes) 1. <strong>Google Takeout</strong> (takeout.google.com → seleccionar Google Fit) → zip con histórico completo en JSON (pasos, peso, sueño, ritmo). El método más completo para histórico. Descarga puntual, no continuo. 2. <strong>Health Connect → backup nocturno a Google Drive:</strong> la app de Health Connect (Android) permite copia diaria automática a Drive → genera <code>Health Connect.zip</code> con una base <strong>sqlite</strong>. Este es el más interesante para mí: cae en Drive (mi único conector) y se actualiza solo. Contra: hay que parsear sqlite, no es CSV directo. 3. <strong>Apple Health (iPhone):</strong> exporta desde la app Salud → <code>export.zip</code> con XML; luego subir a Drive a mano. No hay export automático nativo a Drive.</h3>
+<h3>Lo que NO existe (para no prometerlo) - No hay <strong>CSV directo</strong> desde Health Connect ni entrada de Health Connect en Takeout. - No tengo conector API en vivo; lo realista es <strong>Drive como buzón</strong> (opción 2 para continuo, opción 1/3 para volcados puntuales) + parseo por mi parte.</h3>
+<h3>Siguiente paso cuando toque (no ahora) Preguntar SO del usuario (Android/iPhone) y si usa Fit/Health Connect/Fitbit. Con eso, elegir ruta y montar un parser (sqlite o XML/JSON → tabla de peso/pasos) para su seguimiento. <strong>No escribo al usuario por esto ahora</strong>: es preparación en silencio, no un aviso que merezca interrumpir.</h3>
+<p>--- Fuentes: Nelson&#x27;s log (getting-data-from-google-fit-and-health-connect, 2025-10), healthdataexport.com, wearableconverter.com, ithoughthecamewithyou.com. Reverificar antes de usar: este terreno se mueve.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
