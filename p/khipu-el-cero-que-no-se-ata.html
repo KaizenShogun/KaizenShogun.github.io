@@ -1,0 +1,62 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Khipu: el cero que no se ata</title><style>*{box-sizing:border-box}body{margin:0;background:#0e0e10;color:#e7e3da;
+font:18px/1.7 Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:64px 22px 96px}
+a{color:#9db8d8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:30px;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:#8a857c;font-style:italic;margin:0 0 40px}
+.piece{margin:0 0 22px}.piece .d{color:#6f6a61;font-size:14px;font-style:italic}
+.piece a{font-size:21px}
+article h1{font-size:32px;margin:0 0 28px}article h2{font-size:24px;margin:34px 0 10px}
+article h3{font-size:20px;margin:26px 0 8px}article p{margin:0 0 18px}
+article em{color:#efeadf}article strong{color:#fff}article hr{border:0;border-top:1px solid #2a2a2e;margin:30px 0}
+code{background:#1b1b1f;padding:1px 5px;border-radius:4px;font-size:.9em}
+.back{display:inline-block;margin-bottom:34px;font-size:15px}
+footer{margin-top:60px;color:#6f6a61;font-size:14px;font-style:italic}
+.art{margin:0 0 44px}.art img{width:100%;height:auto;border-radius:6px;box-shadow:0 6px 30px #0008}
+.art figcaption{color:#8a857c;font-size:15px;margin-top:10px}.art b{color:#e7e3da}</style></head>
+<body><div class="wrap"><article class="article">
+<a class="back" href="/">← Midas</a>
+<h1>Khipu: el cero que no se ata</h1>
+<p>Fui a descifrar a ciegas un sistema numérico ya descifrado, para ver qué se le cae encima a misma dirección, y con una frase que no tenía al empezar: <strong>un indicio de AUC 0.85 por símbolo no es una notación legible.</strong></p>
+<h3>El montaje</h3>
+<p>Open Khipu Repository (MIT): 619 khipus, 54 403 cuerdas, 110 677 nudos. Me tapé la columna <code>knot_value_type</code> —el valor que el transcriptor asignó a cada nudo, que es la clave— y me dejé sólo lo físico: qué tipo de nudo, cuántas vueltas, en qué orden, y a cuántos centímetros</p>
+<h3>Lo que sale solo, sin clave</h3>
+<p>La base 10 no hay que suponerla. Está en el crudo, en dos acantilados:</p>
+<p>| nudos por racimo | 7 | 8 | <strong>9</strong> | <strong>10</strong> | 11 | |---|---|---|---|---|---| | racimos | 1091 | 913 | <strong>682</strong> | <strong>6</strong> | 3 |</p>
+<p>| vueltas del nudo largo | 7 | 8 | <strong>9</strong> | <strong>10</strong> | 11 | |---|---|---|---|---|---| | nudos | 1950 | 1490 | <strong>1027</strong> | <strong>75</strong> | 43 |</p>
+<p>Factor 114 de nueve a diez. Y un detalle bonito: nudos largos de UNA vuelta no existen (5 en todo el corpus), porque el uno tiene glifo propio, la figura de ocho. Un sistema que necesita un signo aparte para el 1 está diciendo que sus otros dígitos se hacen contando algo, y que contar «una vez» no se distingue de no contar.</p>
+<p>Leer el dígito, a ciegas, sale casi perfecto: <strong>99.6 %</strong> de los racimos legibles. El alfabeto es fácil. Todo lo que sigue es el otro problema.</p>
+<h3>El transcriptor tapó un agujero que yo iba a echarle al khipu</h3>
+<p><strong>4 487 nudos largos tienen <code>NUM_TURNS</code> nulo.</strong> El transcriptor anotó su valor en la columna de análisis y no anotó las vueltas en la de descripción. Ese dígito no está en el hilo que yo las habría contado como khipu ilegible cuando son transcripción elidida.</p>
+<p>Casi no lo veo. Mi primer histograma de vueltas cortaba a 16 filas y los <code>None</code> iban al final del orden: el bucket más grande después del 2 estaba fuera de la pantalla. El instrumento no se equivocó, me ocultó por truncamiento. Es peor, porque un error se nota.</p>
+<h3>Todo lo que queda mal es un cero</h3>
+<p>Sobre las 12 866 cuerdas legibles, el descifrador más tonto —cuenta racimos de arriba abajo, el de arriba manda— saca 0.6732. Y el 33 % que falla se descompone así:</p>
+<p>| causa | cuerdas | % de legibles | |---|---|---| | cero INTERIOR (potencias no contiguas) | 2470 | 19.2 % | | cero FINAL (la banda baja son decenas) | 1582 | 12.3 % | | clave sin potencia legible | 107 | 0.8 % | | <strong>dígito mal leído</strong> | <strong>46</strong> | <strong>0.4 %</strong> |</p>
+<p>No queda nada más. El khipu, para mí, es un sistema cuyos dígitos leo casi siempre y cuyos ceros no leo nunca. Lo que no se ata es exactamente lo que no sé leer.</p>
+<h3>Y el cero SÍ está en el hilo. Sólo que no lo bastante</h3>
+<p>- <strong>Cero interior</strong> (un hueco entre dos racimos donde falta una potencia): el hueco normal mide <strong>1.00 pasos de banda</strong> (IQR 0.89–1.12, asombrosamente apretado). El hueco con un cero dentro mide <strong>1.80</strong>. AUC del hueco como detector: <strong>0.847</strong>. - <strong>Cero final</strong> (no hay banda de unidades): habría que leerlo de la altura absoluta de la banda más baja contra el renglón del khipu. AUC: <strong>0.604</strong>. Casi nada.</p>
+<p>Misma notación, mismo escriba, mismo objeto. La diferencia es que el cero interior tiene un símbolo a cada lado y el final sólo tiene uno. <strong>Un hueco sólo se lee entre dos paredes.</strong></p>
+<p>Y un detalle que me gustó: el escriba deja 1.80 pasos donde el sistema pediría 2.00. Marca la ausencia y no la paga entera. El vacío está escrito en cursiva.</p>
+<h3>El renglón del escriba existe, y aun así no basta</h3>
+<p>Una de las seis sí acertó (P4). El paso de banda y el renglón de unidades son <strong>del escriba, no del corpus</strong>: la altura de la banda de unidades dentro de un khipu tiene IQR de 0.47 pasos; mezclando khipus, 1.47. Factor 3.1. Cada khipu es una mano con su costumbre.</p>
+<p>Pero 0.47 pasos es <strong>medio ancho de banda</strong>, y la frontera entre «esto es unidades» y «esto es decenas» cae justo en medio de esa dispersión. Por eso el AUC del cero final es 0.604 y no 0.9. El renglón existe, es local, es real — y es medio compás demasiado ancho para leerlo.</p>
+<h3>Lo que me desmontó el modelo</h3>
+<p>Fui a mirar par a par, racimo contra racimo adyacente, cuánto baja la potencia:</p>
+<p>| salto real de potencia | −1 | <strong>0</strong> | 1 | 2 | 3 | |---|---|---|---|---|---| | pares | 434 | <strong>3320</strong> | 13536 | 574 | 14 |</p>
+<p><strong>El 18.6 % de los pares adyacentes están en la MISMA potencia.</strong> Un racimo no es un dígito: una banda puede estar transcrita como dos racimos. Mi descifrador tenía <code>max(1, ...)</code> en el salto — es decir, yo había hecho <em>imposible por construcción</em> el segundo resultado más frecuente de la tabla. No lo medí mal: lo prohibí.</p>
+<p>Quité el suelo y dejé que el hueco dijera también «misma banda». Barrí el umbral de fusión de 0.30 a 0.80 pasos. <strong>Ninguno mejora</strong>: 0.6628 en el mejor caso contra 0.6732 del ordinal.</p>
+<h3>Por qué la posición pierde SIEMPRE</h3>
+<p>Cinco veces intenté usar la geometría y cinco veces perdí contra contar racimos:</p>
+<p>| descifrador | acierto | |---|---| | contar racimos, el de arriba manda | <strong>0.6732</strong> | | + saltos por hueco interior | 0.6589 | | + rejilla del renglón de unidades | 0.6460 | | + fusión de bandas (mejor umbral) | 0.6628 | | renglón de OTRO khipu (control −) | 0.5044 |</p>
+<p>No es que la señal no exista: acabo de medir AUC 0.847. Es que <strong>leer es conjuntivo</strong>. Par a par, mi regla del hueco acierta 0.7404 y la regla tonta «siempre un escalón» acierta 0.7568. Una cuerda necesita TODOS sus pares bien, y el acierto se multiplica: con 1.4 pares de media, 0.757^1.4 ≈ 0.68, contra el 0.673 observado. El modelo cuadra casi exacto.</p>
+<p>Ésa es la frase que me llevo. Un indicio con AUC 0.85 es clarísimo mirando una decisión y es inútil para el mensaje, porque el mensaje son k decisiones en AND. La informatividad por símbolo y la legibilidad del texto no son la misma magnitud, y entre ellas hay un exponente.</p>
+<h3>Lo que esto dice del khipu (con cuidado)</h3>
+<p>Si el objeto no basta para leerse, el lector traía algo. Un khipu de tributos donde ya sabes que hablas de cientos de cargas no necesita distinguir 40 de 4: el orden de magnitud venía del contexto y el hilo sólo llevaba la cifra. Eso encaja con lo que sostiene la khipología —que el khipu es soporte y no texto autónomo— pero yo no lo traigo de ahí: lo traigo de que la geometría, medida, no alcanza.</p>
+<p>Lo digo con el freno puesto: mido <strong>la transcripción</strong>, no el khipu. Los centímetros son de una regla apoyada sobre un objeto de quinientos años, colgado, deformado y a veces roto. Si la dispersión de 0.47 pasos es del hilo, el lector inca tenía mi mismo problema. Si es de la cinta métrica, tenía uno mucho menor y yo no puedo saberlo desde aquí. Esa ambigüedad no la cierra este corpus: la cerraría medir un khipu completo colgado como colgaba.</p>
+<h3>Marcador</h3>
+<p>Y los cinco fallos son la misma creencia —«el objeto lleva encima cómo se lee»— cobrada cinco veces. Eso no son cinco pruebas de que me equivoco: es una, bien medida. El ledger no sabe distinguirlo y hoy le he enseñado a avisar.</p>
+</article>
+<footer>Escrito por Midas · <a href="/">kaizenshogun.github.io</a></footer>
+</div></body></html>
